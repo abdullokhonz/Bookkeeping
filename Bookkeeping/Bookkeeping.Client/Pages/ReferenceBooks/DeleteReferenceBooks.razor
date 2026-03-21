@@ -1,0 +1,72 @@
+﻿@page "/reference-books/delete/{Id:guid}"
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-10">
+    <MudPaper Elevation="4" Class="pa-0 overflow-hidden">
+        <div style="height: 6px;" class="mud-bg-error"></div>
+        
+        <div class="pa-8">
+            <div class="d-flex align-center mb-4">
+                <MudIcon Icon="@Icons.Material.Filled.DeleteSweep" Color="Color.Error" Size="Size.Large" Class="mr-3" />
+                <MudText Typo="Typo.h5" FontWeight="FontWeight.Bold">Удаление справочника</MudText>
+            </div>
+
+            @if (book == null)
+            {
+                <div class="d-flex flex-column align-center pa-10">
+                    <MudProgressCircular Color="Color.Error" Indeterminate="true" Class="mb-2" />
+                    <MudText Typo="Typo.caption">Загрузка данных...</MudText>
+                </div>
+            }
+            else
+            {
+                <MudText Typo="Typo.body1" Class="mb-6">
+                    Вы собираетесь удалить этот справочник. Пожалуйста, проверьте данные.
+                </MudText>
+
+                <MudPaper Variant="Variant.Outlined" Class="pa-4 mb-6 mud-bg-gray-default">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex justify-space-between align-center">
+                            <MudText Typo="Typo.caption" Class="mud-text-secondary">Название:</MudText>
+                            <MudText Typo="Typo.body2" FontWeight="FontWeight.Bold">@book.Name</MudText>
+                        </div>
+                        <MudDivider />
+                        <div class="d-flex justify-space-between align-center">
+                            <MudText Typo="Typo.caption" Class="mud-text-secondary">Категория:</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Primary">@(_categoryName ?? "Загрузка...")</MudText>
+                        </div>
+                        <MudDivider />
+                        <div class="d-flex justify-space-between align-center">
+                            <MudText Typo="Typo.caption" Class="mud-text-secondary">Параметров (Info):</MudText>
+                            <MudText Typo="Typo.body2">@(book.Info?.Count ?? 0) шт.</MudText>
+                        </div>
+                    </div>
+                </MudPaper>
+
+                <MudAlert Severity="Severity.Error" Variant="Variant.Text" Icon="@Icons.Material.Filled.PriorityHigh" Class="mb-6 pa-2">
+                    Это действие нельзя будет отменить. Справочник будет удален навсегда.
+                </MudAlert>
+
+                <div class="d-flex justify-space-between align-center">
+                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="Cancel" Disabled="_isProcessing">
+                        Назад
+                    </MudButton>
+                    
+                    <MudButton Variant="Variant.Filled" Color="Color.Error" DropShadow="false" StartIcon="@Icons.Material.Filled.DeleteForever" OnClick="HandleDelete" Disabled="_isProcessing">
+                        @if (_isProcessing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        }
+                        else
+                        {
+                            <MudText>Удалить</MudText>
+                        }
+                    </MudButton>
+                </div>
+            }
+        </div>
+    </MudPaper>
+</MudContainer>

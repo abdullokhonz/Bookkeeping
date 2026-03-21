@@ -1,0 +1,123 @@
+﻿@page "/income-categories/details/{Id:guid}"
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-6 mb-10">
+    <MudBreadcrumbs Items="_breadcrumbs" Class="px-0 mb-4" />
+
+    @if (_category == null)
+    {
+        <div class="d-flex flex-column align-center justify-center" style="height: 40vh;">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+            <MudText Typo="Typo.h6" Class="mt-4 mud-text-secondary">Загрузка статьи доходов...</MudText>
+        </div>
+    }
+    else
+    {
+        <MudPaper Elevation="4" Class="overflow-hidden rounded-lg">
+            @* ШАПКА С ГРАДИЕНТОМ *@
+            <div class="pa-8 d-flex align-start justify-space-between"
+                 style="background: linear-gradient(135deg, var(--mud-palette-success) 0%, var(--mud-palette-info) 100%); color: white;">
+                
+                <div class="d-flex align-center gap-4">
+                    <MudAvatar Color="Color.Secondary" Size="Size.Large" Elevation="2">
+                        <MudIcon Icon="@Icons.Material.Filled.RequestQuote" Size="Size.Medium" />
+                    </MudAvatar>
+                    <div>
+                        <MudText Typo="Typo.h4" FontWeight="FontWeight.Bold">@_category.Name</MudText>
+                        <MudText Typo="Typo.h6" Style="opacity: 0.9;">Статья доходов</MudText>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pa-8">
+                <MudGrid Spacing="6">
+                    @* ЛЕВАЯ КОЛОНКА *@
+                    <MudItem xs="12" md="7">
+                        <MudText Typo="Typo.h6" Class="mb-4 d-flex align-center gap-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Info" Color="Color.Success" />
+                            Параметры статьи
+                        </MudText>
+                        
+                        <MudPaper Variant="Variant.Outlined" Class="pa-4 rounded-lg">
+                            <div class="d-flex flex-column gap-4">
+                                <div class="d-flex justify-space-between align-center">
+                                    <MudText Color="Color.Secondary">Связанный счет (МСФО):</MudText>
+                                    @if (_accountInfo != null)
+                                    {
+                                        <div class="d-flex align-center gap-2">
+                                            <MudLink Href="@($"/accounts/details/{_accountInfo.Id}")"
+                                                     Typo="Typo.body1"
+                                                     Color="Color.Primary"
+                                                     Underline="Underline.Hover"
+                                                     Class="font-weight-bold">
+                                                @_accountInfo.AccountNumber - @_accountInfo.AccountName
+                                            </MudLink>
+                                            <MudIcon Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" Class="mud-text-primary" />
+                                        </div>
+                                    }
+                                    else if (_category.IfrsAccountId != Guid.Empty)
+                                    {
+                                        <MudText>Загрузка...</MudText>
+                                    }
+                                    else
+                                    {
+                                        <MudText>Не указан</MudText>
+                                    }
+                                </div>
+                            </div>
+                        </MudPaper>
+
+                        <MudText Typo="Typo.h6" Class="mt-8 mb-4 d-flex align-center gap-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Notes" Color="Color.Success" />
+                            Описание
+                        </MudText>
+                        <MudPaper Variant="Variant.Outlined" Class="pa-4 rounded-lg mud-text-secondary">
+                            @(string.IsNullOrWhiteSpace(_category.Description) ? "Описание отсутствует." : _category.Description)
+                        </MudPaper>
+                    </MudItem>
+
+                    @* ПРАВАЯ КОЛОНКА *@
+                    <MudItem xs="12" md="5">
+                        <MudText Typo="Typo.h6" Class="mb-4 d-flex align-center gap-2">
+                            <MudIcon Icon="@Icons.Material.Filled.History" Color="Color.Success" />
+                            История
+                        </MudText>
+                        <MudTimeline TimelinePosition="TimelinePosition.Start" Class="mb-6">
+                            <MudTimelineItem Color="Color.Success" Size="Size.Small">
+                                <MudText Typo="Typo.button">Создана</MudText>
+                                <MudText Typo="Typo.body2" Class="mud-text-secondary">@_category.CreatedAt.ToString("g")</MudText>
+                            </MudTimelineItem>
+                            @if (_category.UpdatedAt.HasValue)
+                            {
+                                <MudTimelineItem Color="Color.Info" Size="Size.Small">
+                                    <MudText Typo="Typo.button">Изменена</MudText>
+                                    <MudText Typo="Typo.body2" Class="mud-text-secondary">@_category.UpdatedAt.Value.ToString("g")</MudText>
+                                </MudTimelineItem>
+                            }
+                        </MudTimeline>
+                    </MudItem>
+                </MudGrid>
+
+                <MudDivider Class="my-8" />
+
+                @* ПАНЕЛЬ ДЕЙСТВИЙ *@
+                <div class="d-flex justify-space-between align-center">
+                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="GoToMain">
+                        Назад к списку
+                    </MudButton>
+                    <div class="d-flex gap-4">
+                        <MudButton Variant="Variant.Filled" Color="Color.Warning" StartIcon="@Icons.Material.Filled.Edit" OnClick="GoToEdit">
+                            Изменить
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.DeleteOutline" OnClick="GoToDelete">
+                            Удалить
+                        </MudButton>
+                    </div>
+                </div>
+            </div>
+        </MudPaper>
+    }
+</MudContainer>

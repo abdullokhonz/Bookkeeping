@@ -1,0 +1,90 @@
+﻿@page "/accounts/categories/create"
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+    <MudPaper Class="pa-8" Elevation="3">
+        <MudText Typo="Typo.h4" GutterBottom="true">Новая категория</MudText>
+        <MudText Typo="Typo.body2" Class="mb-6">Создайте категорию или подкатегорию для группировки счетов.</MudText>
+
+        <EditForm Model="@_category" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            
+            <MudGrid>
+                @* Название категории *@
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Название категории"
+                                  @bind-Value="_category.Name"
+                                  For="@(() => _category.Name)"
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"
+                                  Placeholder="Например: Оборотные активы" />
+                </MudItem>
+
+                @* Родительская категория (если есть) *@
+                <MudItem xs="12" md="6">
+                    <MudSelect T="Guid?"
+                               Label="Родительская категория"
+                               @bind-Value="_category.ParentId"
+                               Variant="Variant.Outlined"
+                               AnchorOrigin="Origin.BottomCenter"
+                               Clearable="true"
+                               Placeholder="Оставьте пустым, если это корень">
+                        @if (_parentCategories == null)
+                        {
+                            <MudSelectItem T="Guid?" Disabled="true" Value="null">Загрузка категорий...</MudSelectItem>
+                        }
+                        else
+                        {
+                            <MudSelectItem T="Guid?" Value="null">Нет родителя (Корневая)</MudSelectItem>
+                            @foreach (var cat in _parentCategories)
+                            {
+                                <MudSelectItem T="Guid?" Value="@cat.Id">
+                                    <div class="d-flex align-center gap-2">
+                                        <MudIcon Icon="@Icons.Material.Filled.Folder" Size="Size.Small" Color="Color.Primary" />
+                                        <MudText>@cat.Name</MudText>
+                                    </div>
+                                </MudSelectItem>
+                            }
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                @* Описание *@
+                <MudItem xs="12">
+                    <MudTextField Label="Описание"
+                                  @bind-Value="_category.Description"
+                                  For="@(() => _category.Description)"
+                                  Variant="Variant.Outlined"
+                                  Lines="3"
+                                  Placeholder="Краткое описание назначения категории..." />
+                </MudItem>
+
+                @* Кнопки действий *@
+                <MudItem xs="12" Class="d-flex justify-end gap-4 mt-4">
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Error"
+                               OnClick="Cancel">
+                        Отмена
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Submit"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Disabled="_isProcessing">
+                        @if (_isProcessing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Сохранение...</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Создать категорию</MudText>
+                        }
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudPaper>
+</MudContainer>

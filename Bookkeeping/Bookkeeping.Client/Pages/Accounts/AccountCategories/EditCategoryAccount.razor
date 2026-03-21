@@ -1,0 +1,71 @@
+﻿@page "/accounts/categories/edit/{Id:guid}"
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+    <MudPaper Class="pa-8">
+        <MudText Typo="Typo.h4" GutterBottom="true">Редактирование категории</MudText>
+        <MudText Typo="Typo.body2" Class="mb-6">Измените параметры категории счетов.</MudText>
+        
+        @if (_updateModel == null || _parentCategories == null)
+        {
+            <div class="d-flex justify-center pa-10">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+            </div>
+        }
+        else
+        {
+            <EditForm Model="@_updateModel" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <MudGrid>
+                    <MudItem xs="12" md="6">
+                        <MudTextField Label="Название категории"
+                                      @bind-Value="_updateModel.Name"
+                                      For="@(() => _updateModel.Name)"
+                                      Variant="Variant.Outlined"
+                                      Immediate="true" />
+                    </MudItem>
+
+                    <MudItem xs="12" md="6">
+                        <MudSelect T="Guid?" Label="Родительская категория"
+                                   @bind-Value="_updateModel.ParentId"
+                                   Variant="Variant.Outlined"
+                                   Clearable="true"
+                                   AnchorOrigin="Origin.BottomCenter">
+                            <MudSelectItem T="Guid?" Value="null">Нет родителя (Корневая)</MudSelectItem>
+                            @foreach (var cat in _parentCategories.Where(c => c.Id != Id))
+                            {
+                                <MudSelectItem T="Guid?" Value="@cat.Id">
+                                    <div class="d-flex align-center gap-2">
+                                        <MudIcon Icon="@Icons.Material.Filled.Folder" Size="Size.Small" Color="Color.Primary" />
+                                        <MudText>@cat.Name</MudText>
+                                    </div>
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTextField Label="Описание"
+                                      @bind-Value="_updateModel.Description"
+                                      Variant="Variant.Outlined"
+                                      Lines="3" />
+                    </MudItem>
+
+                    <MudItem xs="12" Class="d-flex justify-end gap-4">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="Cancel">Отмена</MudButton>
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="_isProcessing">
+                            @if (_isProcessing)
+                            {
+                                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                            }
+                            Сохранить изменения
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
+            </EditForm>
+        }
+    </MudPaper>
+</MudContainer>

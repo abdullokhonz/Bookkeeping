@@ -1,0 +1,497 @@
+﻿@page "/cash-receipt-orders/details/{Id:guid}"
+
+@using Bookkeeping.Contracts.DTOs.CashReceiptOrders.CashReceiptOrderDto
+@using Bookkeeping.Contracts.DTOs.CashReceiptOrders.ImageDto
+@using Bookkeeping.Contracts.DTOs.Accounts5d.IfrsAccountDto
+@using Bookkeeping.Contracts.DTOs.CashReceiptOrders.IncomeCategoryDto
+@using Bookkeeping.Contracts.DTOs.CashReceiptOrders.VatTaxDto
+@using Bookkeeping.Contracts.Common.Responses
+@using Bookkeeping.Contracts.Enums
+@using System.Net.Http.Json
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-6 mb-10">
+    <MudBreadcrumbs Items="_breadcrumbs" Class="px-0 mb-4" />
+
+    @if (_order == null)
+    {
+        <div class="d-flex flex-column align-center justify-center" style="height: 40vh;">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+            <MudText Typo="Typo.h6" Class="mt-4 mud-text-secondary">Загрузка данных ордера...</MudText>
+        </div>
+    }
+    else
+    {
+        <MudPaper Elevation="4" Class="overflow-hidden rounded-lg">
+            @* ШАПКА С ГРАДИЕНТОМ *@
+            <div class="pa-8 d-flex align-start justify-space-between"
+                 style="background: linear-gradient(135deg, var(--mud-palette-primary) 0%, var(--mud-palette-info) 100%); color: white;">
+                
+                <div class="d-flex align-center gap-4">
+                    <MudAvatar Color="Color.Secondary" Size="Size.Large" Elevation="2">
+                        <MudIcon Icon="@Icons.Material.Filled.Receipt" Size="Size.Medium" />
+                    </MudAvatar>
+                    <div>
+                        <div class="d-flex align-center gap-2">
+                            <MudText Typo="Typo.h4" FontWeight="FontWeight.Bold">@_order.DocumentNumber</MudText>
+                            <MudIconButton Icon="@Icons.Material.Filled.ContentCopy"
+                                           Color="Color.Surface"
+                                           Size="Size.Small"
+                                           OnClick="CopyDocumentNumber"
+                                           Title="Копировать номер" />
+                        </div>
+                        <MudText Typo="Typo.h6" Style="opacity: 0.9;">@_order.Name</MudText>
+                    </div>
+                </div>
+
+                <MudChip T="string"
+                         Color="GetStatusColor(_order.Status)"
+                         Icon="@GetStatusIcon(_order.Status)"
+                         Size="Size.Large"
+                         Variant="Variant.Filled"
+                         Elevation="1"
+                         Style="margin: 0;">
+                    @GetReadableStatus(_order.Status)
+                </MudChip>
+            </div>
+
+            <div class="pa-8">
+                <MudGrid Spacing="6">
+                    @* ЛЕВАЯ КОЛОНКА *@
+                    <MudItem xs="12" md="7">
+                        <MudText Typo="Typo.h6" Class="mb-4 d-flex align-center gap-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Info" Color="Color.Primary" />
+                            Параметры документа
+                        </MudText>
+                        
+                        <MudPaper Variant="Variant.Outlined" Class="pa-4 rounded-lg">
+                            <div class="d-flex flex-column gap-4">
+                                <div class="d-flex justify-space-between align-center">
+                                    <MudText Color="Color.Secondary">Сумма:</MudText>
+                                    <MudText FontWeight="FontWeight.Bold" Color="Color.Success" Typo="Typo.h6">
+                                        @FormatAmount(_order.Amount)
+                                    </MudText>
+                                </div>
+                                <MudDivider />
+                                <div class="d-flex justify-space-between align-center">
+                                    <MudText Color="Color.Secondary">Дата операции:</MudText>
+                                    <MudText FontWeight="FontWeight.Bold">@_order.OperationDate.ToString("dd.MM.yyyy HH:mm")</MudText>
+                                </div>
+                                <MudDivider />
+                                <div class="d-flex justify-space-between align-center">
+                                    <MudText Color="Color.Secondary">Дебет счета:</MudText>
+                                    <div class="d-flex align-center gap-2">
+                                        @if (_debitAccount != null)
+                                        {
+                                            <MudLink Href="@($"/accounts/details/{_debitAccount.Id}")"
+                                                     Typo="Typo.body1"
+                                                     Color="Color.Primary"
+                                                     Underline="Underline.Hover"
+                                                     Class="font-weight-bold">
+                                                @_debitAccount.AccountNumber - @_debitAccount.AccountName
+                                            </MudLink>
+                                            <MudIcon Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" Class="mud-text-primary" />
+                                        }
+                                        else
+                                        {
+                                            <MudText>Загрузка...</MudText>
+                                        }
+                                    </div>
+                                </div>
+                                <MudDivider />
+                                <div class="d-flex justify-space-between align-center">
+                                    <MudText Color="Color.Secondary">Кредит счета:</MudText>
+                                    <div class="d-flex align-center gap-2">
+                                        @if (_creditAccount != null)
+                                        {
+                                            <MudLink Href="@($"/accounts/details/{_creditAccount.Id}")"
+                                                     Typo="Typo.body1"
+                                                     Color="Color.Primary"
+                                                     Underline="Underline.Hover"
+                                                     Class="font-weight-bold">
+                                                @_creditAccount.AccountNumber - @_creditAccount.AccountName
+                                            </MudLink>
+                                            <MudIcon Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" Class="mud-text-primary" />
+                                        }
+                                        else
+                                        {
+                                            <MudText>Загрузка...</MudText>
+                                        }
+                                    </div>
+                                </div>
+                                <MudDivider />
+                                <div class="d-flex justify-space-between align-center">
+                                    <MudText Color="Color.Secondary">Статья доходов:</MudText>
+                                    <div class="d-flex align-center gap-2">
+                                        @if (_incomeCategory != null)
+                                        {
+                                            <MudLink Href="@($"/income-categories/details/{_incomeCategory.Id}")"
+                                                     Typo="Typo.body1"
+                                                     Color="Color.Primary"
+                                                     Underline="Underline.Hover"
+                                                     Class="font-weight-bold">
+                                                @_incomeCategory.Name
+                                            </MudLink>
+                                            <MudIcon Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" Class="mud-text-primary" />
+                                        }
+                                        else
+                                        {
+                                            <MudText>Загрузка...</MudText>
+                                        }
+                                    </div>
+                                </div>
+                                <MudDivider />
+                                <div class="d-flex justify-space-between align-center">
+                                    <MudText Color="Color.Secondary">Контрагент:</MudText>
+                                    <div class="d-flex align-center gap-2">
+                                        @if (_referenceBook != null)
+                                        {
+                                            <MudLink Href="@($"/reference-books/details/{_referenceBook.Id}")"
+                                                     Typo="Typo.body1"
+                                                     Color="Color.Primary"
+                                                     Underline="Underline.Hover"
+                                                     Class="font-weight-bold">
+                                                @_referenceBook.Name
+                                            </MudLink>
+                                            <MudIcon Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" Class="mud-text-primary" />
+                                        }
+                                        else
+                                        {
+                                            <MudText>Загрузка...</MudText>
+                                        }
+                                    </div>
+                                </div>
+                                <MudDivider />
+                                <div class="d-flex justify-space-between align-center">
+                                    <MudText Color="Color.Secondary">НДС:</MudText>
+                                    @if (_vatTax != null)
+                                    {
+                                        var vatAmount = _order.Amount * (_vatTax.VatRate / 100m);
+                                        <MudText FontWeight="FontWeight.Bold" Color="Color.Error">
+                                            -@FormatAmount(vatAmount) (<span class="mud-text-secondary; color: red;">@FormatRate(_vatTax.VatRate)%</span>)
+                                        </MudText>
+                                    }
+                                    else
+                                    {
+                                        <MudText>Без НДС</MudText>
+                                    }
+                                </div>
+                                <MudDivider />
+                                <div class="d-flex flex-column gap-2">
+                                    <div class="d-flex justify-space-between align-center">
+                                        <MudText Color="Color.Secondary">Главный бухгалтер:</MudText>
+                                        <MudText FontWeight="FontWeight.Bold">@_order.Accountant</MudText>
+                                    </div>
+                                    <div class="d-flex justify-space-between align-center">
+                                        <MudText Color="Color.Secondary">Кассир:</MudText>
+                                        <MudText FontWeight="FontWeight.Bold">@_order.Cashier</MudText>
+                                    </div>
+                                </div>
+                            </div>
+                        </MudPaper>
+
+                        <MudText Typo="Typo.h6" Class="mt-8 mb-4 d-flex align-center gap-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Notes" Color="Color.Primary" />
+                            Описание
+                        </MudText>
+                        <MudPaper Variant="Variant.Outlined" Class="pa-4 rounded-lg mud-text-secondary">
+                            @(string.IsNullOrWhiteSpace(_order.Description) ? "Описание отсутствует." : _order.Description)
+                        </MudPaper>
+                    </MudItem>
+
+                    @* ПРАВАЯ КОЛОНКА *@
+                    <MudItem xs="12" md="5">
+                        <MudText Typo="Typo.h6" Class="mb-4 d-flex align-center gap-2">
+                            <MudIcon Icon="@Icons.Material.Filled.History" Color="Color.Primary" />
+                            История
+                        </MudText>
+                        <MudTimeline TimelinePosition="TimelinePosition.Start" Class="mb-6">
+                            <MudTimelineItem Color="Color.Success" Size="Size.Small">
+                                <MudText Typo="Typo.button">Создан</MudText>
+                                <MudText Typo="Typo.body2" Class="mud-text-secondary">@_order.CreatedAt.ToString("dd.MM.yyyy HH:mm")</MudText>
+                            </MudTimelineItem>
+                            @if (_order.UpdatedAt.HasValue)
+                            {
+                                <MudTimelineItem Color="Color.Info" Size="Size.Small">
+                                    <MudText Typo="Typo.button">Изменен</MudText>
+                                    <MudText Typo="Typo.body2" Class="mud-text-secondary">@_order.UpdatedAt.Value.ToString("dd.MM.yyyy HH:mm")</MudText>
+                                </MudTimelineItem>
+                            }
+                        </MudTimeline>
+
+                        @if (_image != null)
+                        {
+                            <MudText Typo="Typo.h6" Class="mt-8 mb-4 d-flex align-center gap-2">
+                                <MudIcon Icon="@Icons.Material.Filled.AttachFile" Color="Color.Primary" />
+                                Прикрепленный файл
+                            </MudText>
+                            <MudPaper Variant="Variant.Outlined" Class="pa-4 rounded-lg">
+                                <div class="d-flex flex-column gap-3">
+                                    <div class="d-flex justify-space-between align-center">
+                                        <MudText Color="Color.Secondary">Название:</MudText>
+                                        <MudText FontWeight="FontWeight.Bold">@_image.Name</MudText>
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(_image.Description))
+                                    {
+                                        <MudDivider />
+                                        <div class="d-flex justify-space-between align-center">
+                                            <MudText Color="Color.Secondary">Описание:</MudText>
+                                            <MudText>@_image.Description</MudText>
+                                        </div>
+                                    }
+                                    <MudDivider />
+                                    <div class="d-flex justify-space-between align-center">
+                                        <MudText Color="Color.Secondary">Дата загрузки:</MudText>
+                                        <MudText>@_image.CreatedAt.ToString("dd.MM.yyyy HH:mm")</MudText>
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(_image?.Path))
+                                    {
+                                        <div class="d-flex gap-2">
+                                            <MudButton Variant="Variant.Outlined"
+                                                       Color="Color.Info"
+                                                       StartIcon="@Icons.Material.Filled.OpenInBrowser"
+                                                       FullWidth="true"
+                                                       Href="@_image.Path"
+                                                       Target="_blank">
+                                                Открыть
+                                            </MudButton>
+                                            <MudButton Variant="Variant.Outlined"
+                                                       Color="Color.Primary"
+                                                       StartIcon="@Icons.Material.Filled.Download"
+                                                       FullWidth="true"
+                                                       OnClick="DownloadFile"
+                                                       Disabled="true">
+                                                Скачать
+                                            </MudButton>
+                                        </div>
+                                    }
+                                </div>
+                            </MudPaper>
+                        }
+                    </MudItem>
+                </MudGrid>
+
+                <MudDivider Class="my-8" />
+
+                @* ПАНЕЛЬ ДЕЙСТВИЙ *@
+                <div class="d-flex justify-space-between align-center">
+                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="GoToMain">
+                        Назад к списку
+                    </MudButton>
+                    <div class="d-flex gap-4">
+                        <MudButton Variant="Variant.Filled" Color="Color.Warning" StartIcon="@Icons.Material.Filled.Edit" OnClick="GoToEdit">
+                            Изменить
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.DeleteOutline" OnClick="GoToDelete">
+                            Удалить
+                        </MudButton>
+                    </div>
+                </div>
+            </div>
+        </MudPaper>
+    }
+</MudContainer>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    private CashReceiptOrderGetDto? _order;
+    private IfrsAccountTreeDto? _debitAccount;
+    private IfrsAccountTreeDto? _creditAccount;
+    private IncomeCategoryGetDto? _incomeCategory;
+    private ReferenceBookGetDto? _referenceBook;
+    private VatTaxGetDto? _vatTax;
+    private ImageGetDto? _image;
+
+    private List<BreadcrumbItem> _breadcrumbs = new()
+    {
+        new BreadcrumbItem("Приходные кассовые ордера", href: "/cash-receipt-orders"),
+        new BreadcrumbItem("Детали документа", href: null, disabled: true)
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _order = null;
+        _debitAccount = null;
+        _creditAccount = null;
+        _incomeCategory = null;
+        _referenceBook = null;
+        _vatTax = null;
+        _image = null;
+        await LoadOrderDetails();
+    }
+
+    private async Task LoadOrderDetails()
+    {
+        try
+        {
+            var response = await Http.GetFromJsonAsync<ApiResponse<CashReceiptOrderGetDto>>($"/api/v1/CashReceiptOrder/GetById/{Id}");
+            if (response != null && response.IsSuccess && response.Data != null)
+            {
+                _order = response.Data;
+                _breadcrumbs[1] = new BreadcrumbItem($"ПКО №{_order.DocumentNumber}", href: null, disabled: true);
+
+                var tasks = new List<Task>();
+
+                if (_order.DebitIfrsAccountId != Guid.Empty)
+                    tasks.Add(LoadDebitAccount(_order.DebitIfrsAccountId));
+                if (_order.CreditIfrsAccountId != Guid.Empty)
+                    tasks.Add(LoadCreditAccount(_order.CreditIfrsAccountId));
+                if (_order.IncomeCategoryId != Guid.Empty)
+                    tasks.Add(LoadIncomeCategory(_order.IncomeCategoryId));
+                if (_order.ReferenceBookId != Guid.Empty)
+                    tasks.Add(LoadReferenceBook(_order.ReferenceBookId));
+                if (_order.VatTaxId.HasValue)
+                    tasks.Add(LoadVatTax(_order.VatTaxId.Value));
+                tasks.Add(LoadImage());
+
+                await Task.WhenAll(tasks);
+            }
+            else
+            {
+                Snackbar.Add("Не удалось найти данные ордера", Severity.Warning);
+                GoToMain();
+            }
+        }
+        catch (Exception)
+        {
+            Snackbar.Add("Ошибка связи с сервером", Severity.Error);
+        }
+    }
+
+    private async Task LoadDebitAccount(Guid id)
+    {
+        try
+        {
+            var result = await Http.GetFromJsonAsync<ApiResponse<IfrsAccountTreeDto>>($"/api/v1/IfrsAccount/GetById/{id}");
+            if (result?.IsSuccess == true && result.Data != null)
+                _debitAccount = result.Data;
+        }
+        catch { /* ignore */ }
+    }
+
+    private async Task LoadCreditAccount(Guid id)
+    {
+        try
+        {
+            var result = await Http.GetFromJsonAsync<ApiResponse<IfrsAccountTreeDto>>($"/api/v1/IfrsAccount/GetById/{id}");
+            if (result?.IsSuccess == true && result.Data != null)
+                _creditAccount = result.Data;
+        }
+        catch { /* ignore */ }
+    }
+
+    private async Task LoadIncomeCategory(Guid id)
+    {
+        try
+        {
+            var result = await Http.GetFromJsonAsync<ApiResponse<IncomeCategoryGetDto>>($"/api/v1/IncomeCategory/GetById/{id}");
+            if (result?.IsSuccess == true && result.Data != null)
+                _incomeCategory = result.Data;
+        }
+        catch { /* ignore */ }
+    }
+
+    private async Task LoadReferenceBook(Guid id)
+    {
+        try
+        {
+            var result = await Http.GetFromJsonAsync<ApiResponse<ReferenceBookGetDto>>($"/api/v1/ReferenceBook/GetById/{id}");
+            if (result?.IsSuccess == true && result.Data != null)
+                _referenceBook = result.Data;
+        }
+        catch { /* ignore */ }
+    }
+
+    private async Task LoadVatTax(Guid id)
+    {
+        try
+        {
+            var result = await Http.GetFromJsonAsync<ApiResponse<VatTaxGetDto>>($"/api/v1/VatTax/GetById/{id}");
+            if (result?.IsSuccess == true && result.Data != null)
+                _vatTax = result.Data;
+        }
+        catch { /* ignore */ }
+    }
+
+    private async Task LoadImage()
+    {
+        try
+        {
+            var response = await Http.GetFromJsonAsync<ApiResponse<List<ImageGetDto>>>("/api/v1/Image/GetAll");
+            if (response?.IsSuccess == true && response.Data != null)
+                _image = response.Data.FirstOrDefault(x => x.EntityId == Id);
+        }
+        catch { /* ignore */ }
+    }
+
+    private string FormatAmount(decimal amount)
+    {
+        return amount % 1 == 0 ? amount.ToString("N0") : amount.ToString("N2");
+    }
+
+    private string FormatRate(decimal rate)
+    {
+        return rate % 1 == 0 ? rate.ToString("0") : rate.ToString("N2");
+    }
+
+    private void CopyDocumentNumber()
+    {
+        Snackbar.Add($"Номер {_order?.DocumentNumber} скопирован!", Severity.Success);
+    }
+
+    private void DownloadFile()
+    {
+        if (!string.IsNullOrWhiteSpace(_image?.Path))
+        {
+            Nav.NavigateTo($"/api/v1/Image/Download/{_image.Id}", forceLoad: true);
+        }
+        else
+        {
+            Snackbar.Add("Файл недоступен для скачивания", Severity.Warning);
+        }
+    }
+
+    // private void OpenFile()
+    // {
+    //     if (!string.IsNullOrWhiteSpace(_image?.Path))
+    //     {
+    //         Nav.NavigateTo(_image.Path, forceLoad: true);
+    //     }
+    //     else
+    //     {
+    //         Snackbar.Add("Невозможно открыть файл: путь не указан", Severity.Warning);
+    //     }
+    // }
+
+    private void GoToMain() => Nav.NavigateTo("/cash-receipt-orders");
+    private void GoToEdit() => Nav.NavigateTo($"/cash-receipt-orders/edit/{Id}");
+    private void GoToDelete() => Nav.NavigateTo($"/cash-receipt-orders/delete/{Id}");
+
+    private Color GetStatusColor(DocumentStatus status) => status switch
+    {
+        DocumentStatus.Processed => Color.Success,
+        DocumentStatus.Canceled => Color.Error,
+        DocumentStatus.Draft => Color.Warning,
+        _ => Color.Default
+    };
+
+    private string GetStatusIcon(DocumentStatus status) => status switch
+    {
+        DocumentStatus.Processed => Icons.Material.Filled.CheckCircle,
+        DocumentStatus.Canceled => Icons.Material.Filled.Cancel,
+        DocumentStatus.Draft => Icons.Material.Filled.EditNote,
+        _ => Icons.Material.Filled.Error
+    };
+
+    private string GetReadableStatus(DocumentStatus status) => status switch
+    {
+        DocumentStatus.Draft => "Черновик",
+        DocumentStatus.Processed => "Проведен",
+        DocumentStatus.Canceled => "Отменен",
+        _ => status.ToString()
+    };
+}

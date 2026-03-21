@@ -1,0 +1,68 @@
+﻿@page "/accounts/categories/delete/{Id:guid}"
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-10">
+    <MudPaper Elevation="4" Class="pa-0 overflow-hidden">
+        <div style="height: 6px;" class="mud-bg-error"></div>
+        
+        <div class="pa-8">
+            <div class="d-flex align-center mb-4">
+                <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Error" Size="Size.Large" Class="mr-3" />
+                <MudText Typo="Typo.h5" FontWeight="FontWeight.Bold">Удаление категории</MudText>
+            </div>
+
+            @if (_category == null)
+            {
+                <div class="d-flex flex-column align-center pa-10">
+                    <MudProgressCircular Color="Color.Error" Indeterminate="true" Class="mb-2" />
+                    <MudText Typo="Typo.caption">Загрузка данных...</MudText>
+                </div>
+            }
+            else
+            {
+                <MudText Typo="Typo.body1" Class="mb-6">
+                    Вы уверены, что хотите удалить эту категорию? Это может затронуть связанные счета.
+                </MudText>
+
+                <MudPaper Variant="Variant.Outlined" Class="pa-4 mb-6 mud-bg-gray-default">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex justify-space-between align-center">
+                            <MudText Typo="Typo.caption" Class="mud-text-secondary">Название:</MudText>
+                            <MudText Typo="Typo.body2" FontWeight="FontWeight.Bold">@_category.Name</MudText>
+                        </div>
+                        <MudDivider />
+                        <div class="d-flex justify-space-between align-center">
+                            <MudText Typo="Typo.caption" Class="mud-text-secondary">Описание:</MudText>
+                            <MudText Typo="Typo.body2">@(_category.Description ?? "—")</MudText>
+                        </div>
+                    </div>
+                </MudPaper>
+
+                <MudAlert Severity="Severity.Error" Variant="Variant.Text" Icon="@Icons.Material.Filled.Warning" Class="mb-6 pa-2">
+                    Внимание: Безвозвратное удаление.
+                </MudAlert>
+
+                <div class="d-flex justify-space-between align-center">
+                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="Cancel">
+                        Отмена
+                    </MudButton>
+                    
+                    <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.DeleteForever"
+                               OnClick="HandleDelete" Disabled="_isProcessing">
+                        @if (_isProcessing)
+                        {
+                            <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                        }
+                        else
+                        {
+                            <MudText>Удалить</MudText>
+                        }
+                    </MudButton>
+                </div>
+            }
+        </div>
+    </MudPaper>
+</MudContainer>

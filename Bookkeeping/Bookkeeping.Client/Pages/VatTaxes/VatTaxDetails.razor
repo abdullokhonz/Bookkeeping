@@ -1,0 +1,79 @@
+﻿@page "/vat-taxes/details/{Id:guid}"
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-6 mb-10">
+    @if (_model == null)
+    {
+        <div class="d-flex flex-column align-center justify-center" style="height: 40vh;">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+        </div>
+    }
+    else
+    {
+        <MudPaper Elevation="4" Class="overflow-hidden rounded-lg">
+            <div class="pa-8 d-flex align-start justify-space-between"
+                 style="background: linear-gradient(135deg, var(--mud-palette-primary) 0%, var(--mud-palette-secondary) 100%); color: white;">
+                
+                <div class="d-flex align-center gap-4">
+                    <MudAvatar Color="Color.Secondary" Size="Size.Large" Elevation="2">
+                        <MudIcon Icon="@Icons.Material.Filled.Percent" />
+                    </MudAvatar>
+                    <div>
+                        <MudText Typo="Typo.h4" FontWeight="FontWeight.Bold">@_model.VatRate%</MudText>
+                        <MudText Typo="Typo.h6" Style="opacity: 0.9;">Ставка НДС</MudText>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pa-8">
+                <MudGrid Spacing="6">
+                    <MudItem xs="12" md="7">
+                        <MudText Typo="Typo.h6" Class="mb-4 d-flex align-center gap-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Info" Color="Color.Primary" />
+                            Информация
+                        </MudText>
+                        <MudPaper Variant="Variant.Outlined" Class="pa-4 rounded-lg">
+                            <MudText Typo="Typo.body1" Class="mud-text-secondary">Описание:</MudText>
+                            <MudText Typo="Typo.body1" Class="mt-2">
+                                @(string.IsNullOrWhiteSpace(_model.Description) ? "Описание не заполнено." : _model.Description)
+                            </MudText>
+                        </MudPaper>
+                    </MudItem>
+
+                    <MudItem xs="12" md="5">
+                        <MudText Typo="Typo.h6" Class="mb-4 d-flex align-center gap-2">
+                            <MudIcon Icon="@Icons.Material.Filled.History" Color="Color.Primary" />
+                            История
+                        </MudText>
+                        <MudTimeline TimelinePosition="TimelinePosition.Start">
+                            <MudTimelineItem Color="Color.Success" Size="Size.Small">
+                                <MudText Typo="Typo.button">Создана</MudText>
+                                <MudText Typo="Typo.body2" Class="mud-text-secondary">@_model.CreatedAt.ToString("g")</MudText>
+                            </MudTimelineItem>
+                            @if (_model.UpdatedAt.HasValue)
+                            {
+                                <MudTimelineItem Color="Color.Info" Size="Size.Small">
+                                    <MudText Typo="Typo.button">Изменена</MudText>
+                                    <MudText Typo="Typo.body2" Class="mud-text-secondary">@_model.UpdatedAt.Value.ToString("g")</MudText>
+                                </MudTimelineItem>
+                            }
+                        </MudTimeline>
+                    </MudItem>
+                </MudGrid>
+
+                <MudDivider Class="my-8" />
+
+                <div class="d-flex justify-space-between">
+                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="GoBack">К списку</MudButton>
+                    <div class="d-flex gap-2">
+                        <MudButton Variant="Variant.Filled" Color="Color.Warning" OnClick="GoToEdit">Изменить</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="GoToDelete">Удалить</MudButton>
+                    </div>
+                </div>
+            </div>
+        </MudPaper>
+    }
+</MudContainer>

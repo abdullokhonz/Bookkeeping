@@ -1,0 +1,20 @@
+﻿@page "/not-found"
+
+@layout MainLayout
+
+@inject NavigationManager Nav
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column align-center justify-center" Style="min-height: 70vh;">
+    <MudText Typo="Typo.h1" Color="Color.Error" Align="Align.Center" Style="font-size: 8rem; font-weight: 900; line-height: 1;">404</MudText>
+    <MudText Typo="Typo.h4" Align="Align.Center" Class="mt-2 mb-4" Style="letter-spacing: 0.3rem;">СТРАНИЦА НЕ НАЙДЕНА</MudText>
+    <MudText Typo="Typo.body1" Align="Align.Center" Class="mb-8 mud-text-secondary" Style="max-width: 400px;">
+        Возможно, страница была удалена, её название изменено или она временно недоступна.
+    </MudText>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" StartIcon="@Icons.Material.Filled.Home" OnClick="GoToHome">
+        НА ГЛАВНУЮ
+    </MudButton>
+</MudContainer>
+
+@code {
+    private void GoToHome() => Nav.NavigateTo("/");
+}

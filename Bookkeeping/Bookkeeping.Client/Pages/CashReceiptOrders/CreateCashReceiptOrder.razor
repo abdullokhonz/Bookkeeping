@@ -1,0 +1,398 @@
+﻿@page "/cash-receipt-orders/create"
+
+@using System.Net.Http.Headers
+@using System.Text.Json
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8 mb-16">
+    <MudText Typo="Typo.h4" Class="mb-6 font-weight-bold">Создание ПКО</MudText>
+
+    @if (_isLoadingData)
+    {
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-4" />
+    }
+    else
+    {
+        <EditForm Model="@_pkoModel" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+
+            <MudGrid>
+                @* ЛЕВАЯ КОЛОНКА *@
+                <MudItem xs="12" md="8">
+                    <MudStack Spacing="4">
+                        <!-- Основная информация -->
+                        <MudCard Elevation="3">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h6">Основная информация</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudGrid>
+                                    <MudItem xs="12">
+                                        <MudTextField Label="Наименование"
+                                                      @bind-Value="_pkoModel.Name"
+                                                      For="@(() => _pkoModel.Name)"
+                                                      Variant="Variant.Outlined"
+                                                      Immediate="true"
+                                                      Placeholder="Например: Оплата по договору №123" />
+                                    </MudItem>
+                                    <MudItem xs="12">
+                                        <MudTextField Label="Описание"
+                                                      @bind-Value="_pkoModel.Description"
+                                                      For="@(() => _pkoModel.Description)"
+                                                      Variant="Variant.Outlined"
+                                                      Lines="3"
+                                                      Placeholder="Дополнительные детали (необязательно)" />
+                                    </MudItem>
+                                </MudGrid>
+                            </MudCardContent>
+                        </MudCard>
+
+                        <!-- Финансы и аналитика -->
+                        <MudCard Elevation="3">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h6">Финансы и аналитика</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudGrid>
+                                    <MudItem xs="12" sm="6">
+                                        <MudNumericField Label="Сумма"
+                                                         @bind-Value="_pkoModel.Amount"
+                                                         For="@(() => _pkoModel.Amount)"
+                                                         Variant="Variant.Outlined"
+                                                         Format="N2"
+                                                         HideSpinButtons="true"
+                                                         Adornment="Adornment.Start"
+                                                         AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                                                         AdornmentColor="Color.Primary" />
+                                    </MudItem>
+
+                                    <MudItem xs="12" sm="6">
+                                        <MudSelect T="Guid?"
+                                                   Label="Ставка НДС"
+                                                   @bind-Value="_pkoModel.VatTaxId"
+                                                   Variant="Variant.Outlined"
+                                                   AnchorOrigin="Origin.BottomCenter"
+                                                   Clearable="true"
+                                                   Placeholder="Без НДС">
+                                            @foreach (var vat in _vatTaxes)
+                                            {
+                                                <MudSelectItem T="Guid?" Value="@vat.Id">
+                                                    <div class="d-flex align-center gap-2">
+                                                        <MudIcon Icon="@Icons.Material.Filled.Percent" Size="Size.Small" Color="Color.Primary" />
+                                                        <MudText>@vat.VatRate%</MudText>
+                                                    </div>
+                                                </MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </MudItem>
+
+                                    <MudItem xs="12" sm="6">
+                                        <MudSelect T="Guid?"
+                                                   Label="Статья доходов"
+                                                   @bind-Value="_pkoModel.IncomeCategoryId"
+                                                   For="@(() => _pkoModel.IncomeCategoryId)"
+                                                   Variant="Variant.Outlined"
+                                                   AnchorOrigin="Origin.BottomCenter"
+                                                   Clearable="true"
+                                                   Placeholder="Выберите статью">
+                                            @foreach (var category in _incomeCategories)
+                                            {
+                                                <MudSelectItem T="Guid?" Value="@category.Id">
+                                                    <div class="d-flex align-center gap-2">
+                                                        <MudIcon Icon="@Icons.Material.Filled.AddChart" Size="Size.Small" Color="Color.Primary" />
+                                                        <MudText>@category.Name</MudText>
+                                                    </div>
+                                                </MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </MudItem>
+
+                                    <MudItem xs="12" sm="6">
+                                        <MudSelect T="Guid?"
+                                                   Label="Контрагент"
+                                                   @bind-Value="_pkoModel.ReferenceBookId"
+                                                   For="@(() => _pkoModel.ReferenceBookId)"
+                                                   Variant="Variant.Outlined"
+                                                   AnchorOrigin="Origin.BottomCenter"
+                                                   Clearable="true"
+                                                   Placeholder="Выберите контрагента">
+                                            @foreach (var refBook in _referenceBooks)
+                                            {
+                                                <MudSelectItem T="Guid?" Value="@refBook.Id">
+                                                    <div class="d-flex align-center gap-2">
+                                                        <MudIcon Icon="@Icons.Material.Filled.Handshake" Size="Size.Small" Color="Color.Primary" />
+                                                        <MudText>@refBook.Name</MudText>
+                                                    </div>
+                                                </MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudStack>
+                </MudItem>
+
+                @* ПРАВАЯ КОЛОНКА *@
+                <MudItem xs="12" md="4">
+                    <MudStack Spacing="4">
+                        <!-- Ответственные лица -->
+                        <MudCard Elevation="3">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h6">Ответственные лица</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudTextField Label="Главный бухгалтер"
+                                              @bind-Value="_pkoModel.Accountant"
+                                              For="@(() => _pkoModel.Accountant)"
+                                              Variant="Variant.Outlined"
+                                              Placeholder="ФИО бухгалтера"
+                                              Class="mb-4" />
+                                <MudTextField Label="Кассир"
+                                              @bind-Value="_pkoModel.Cashier"
+                                              For="@(() => _pkoModel.Cashier)"
+                                              Variant="Variant.Outlined"
+                                              Placeholder="ФИО кассира" />
+                            </MudCardContent>
+                        </MudCard>
+
+                        <!-- Блок файлов -->
+                        <MudCard Elevation="3">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h6">Прикрепленный файл (необязательно)</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudFileUpload T="IBrowserFile"
+                                               FilesChanged="OnFileSelected"
+                                               Accept=".png, .jpg, .jpeg, .pdf"
+                                               SuppressOnChangeWhenInvalid="true">
+                                    <CustomContent Context="fileUploadContext">
+                                        <MudButton Variant="Variant.Outlined"
+                                                   Color="Color.Primary"
+                                                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                                                   FullWidth="true"
+                                                   OnClick="@fileUploadContext.OpenFilePickerAsync">
+                                            @( _selectedFile == null ? "Выбрать файл" : "Заменить файл" )
+                                        </MudButton>
+                                    </CustomContent>
+                                    <SelectedTemplate Context="fileUploadContext">
+                                        @* Пустой шаблон, чтобы скрыть стандартное отображение *@
+                                    </SelectedTemplate>
+                                </MudFileUpload>
+
+                                @if (_selectedFile != null)
+                                {
+                                    <div class="mt-4 pa-4 rounded-lg" style="background-color: var(--mud-palette-background-grey); border: 1px solid var(--mud-palette-divider);">
+                                        <div class="d-flex align-center justify-space-between mb-3 gap-2">
+                                            <div class="d-flex align-center flex-grow-1 px-3 py-1 rounded-pill"
+                                                 style="background-color: var(--mud-palette-secondary); color: white; max-width: 80%; min-height: 32px;">
+                                                <MudIcon Icon="@Icons.Material.Filled.AttachFile" Size="Size.Small" Class="mr-2" />
+                                                <MudText Typo="Typo.body2" Class="text-truncate font-weight-bold">
+                                                    @_selectedFile.Name (@(_selectedFile.Size / 1024) KB)
+                                                </MudText>
+                                            </div>
+
+                                            <MudTooltip Text="Убрать файл">
+                                                <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                                               Color="Color.Error"
+                                                               Variant="Variant.Filled"
+                                                               Size="Size.Small"
+                                                               OnClick="ClearSelectedFile" />
+                                            </MudTooltip>
+                                        </div>
+
+                                        <MudStack Spacing="2">
+                                            <MudTextField Label="Название для базы"
+                                                          @bind-Value="_imageModel.Name"
+                                                          Variant="Variant.Outlined"
+                                                          Margin="Margin.Dense"
+                                                          Dense="true" />
+                                            <MudTextField Label="Описание файла"
+                                                          @bind-Value="_imageModel.Description"
+                                                          Variant="Variant.Outlined"
+                                                          Margin="Margin.Dense"
+                                                          Lines="2"
+                                                          Dense="true" />
+                                        </MudStack>
+                                    </div>
+                                }
+                            </MudCardContent>
+                        </MudCard>
+                    </MudStack>
+                </MudItem>
+
+                <MudItem xs="12" Class="d-flex justify-end gap-4 mt-2">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="Cancel" Disabled="_isProcessing">
+                        Отмена
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Disabled="_isProcessing">
+                        @if (_isProcessing)
+                        {
+                            <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                        }
+                        else
+                        {
+                            <MudText>Создать ордер</MudText>
+                        }
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    }
+</MudContainer>
+
+@code {
+    // DTOs для ответа
+    public record IncomeCategoryGetDto(Guid Id, string Name);
+    public record ReferenceBookGetDto(Guid Id, string Name);
+    public record VatTaxGetDto(Guid Id, decimal VatRate);
+
+    public class ApiResponse<T>
+    {
+        public T? Data { get; set; }
+        public bool IsSuccess { get; set; }
+        public string? Message { get; set; }
+    }
+
+    private CashReceiptOrderCreateDto _pkoModel = new();
+    private ImageCreateDto _imageModel = new();
+    private IBrowserFile? _selectedFile;
+
+    private bool _isLoadingData = true;
+    private bool _isProcessing = false;
+
+    private List<IncomeCategoryGetDto> _incomeCategories = new();
+    private List<ReferenceBookGetDto> _referenceBooks = new();
+    private List<VatTaxGetDto> _vatTaxes = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var vatTask = Http.GetFromJsonAsync<ApiResponse<List<VatTaxGetDto>>>("/api/v1/VatTax/GetAll");
+            var catTask = Http.GetFromJsonAsync<ApiResponse<List<IncomeCategoryGetDto>>>("/api/v1/IncomeCategory/GetAll");
+            var refTask = Http.GetFromJsonAsync<ApiResponse<List<ReferenceBookGetDto>>>("/api/v1/ReferenceBook/GetAll");
+
+            await Task.WhenAll(vatTask, catTask, refTask);
+
+            _vatTaxes = vatTask.Result?.Data ?? new();
+            _incomeCategories = catTask.Result?.Data ?? new();
+            _referenceBooks = refTask.Result?.Data ?? new();
+        }
+        catch (Exception)
+        {
+            Snackbar.Add("Ошибка при загрузке справочников. Проверьте соединение.", Severity.Error);
+        }
+        finally
+        {
+            _isLoadingData = false;
+        }
+    }
+
+    private void OnFileSelected(IBrowserFile? file)
+    {
+        _selectedFile = file;
+
+        if (file == null)
+        {
+            _imageModel = new();
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_imageModel.Name))
+        {
+            _imageModel.Name = Path.GetFileNameWithoutExtension(file.Name);
+        }
+    }
+
+    private void ClearSelectedFile()
+    {
+        _selectedFile = null;
+        _imageModel = new();
+        StateHasChanged();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        _isProcessing = true;
+        try
+        {
+            var response = await Http.PostAsJsonAsync("/api/v1/CashReceiptOrder/Create", _pkoModel);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Не удалось создать ордер. Проверьте правильность заполнения.", Severity.Error);
+                return;
+            }
+
+            var jsonContent = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(jsonContent);
+
+            if (doc.RootElement.TryGetProperty("data", out var dataProp) && dataProp.TryGetProperty("id", out var idProp))
+            {
+                Guid newId = idProp.GetGuid();
+
+                if (_selectedFile != null)
+                {
+                    await UploadImageAsync(newId);
+                }
+
+                Snackbar.Add("Приходный кассовый ордер успешно создан!", Severity.Success);
+                Nav.NavigateTo("/cash-receipt-orders");
+            }
+            else
+            {
+                Snackbar.Add("Ордер создан, но не удалось получить его ID для загрузки файла.", Severity.Warning);
+                Nav.NavigateTo("/cash-receipt-orders");
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Ошибка: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isProcessing = false;
+        }
+    }
+
+    private async Task UploadImageAsync(Guid entityId)
+    {
+        try
+        {
+            using var content = new MultipartFormDataContent();
+
+            content.Add(new StringContent(_imageModel.Name ?? ""), "Name");
+            content.Add(new StringContent(_imageModel.Description ?? ""), "Description");
+            content.Add(new StringContent(entityId.ToString()), "EntityId");
+
+            var streamContent = new StreamContent(_selectedFile!.OpenReadStream(10 * 1024 * 1024));
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue(_selectedFile.ContentType);
+            content.Add(streamContent, "file", _selectedFile.Name);
+
+            var res = await Http.PostAsync("/api/v1/Image/Upload", content);
+
+            if (!res.IsSuccessStatusCode)
+            {
+                Snackbar.Add("ПКО сохранен, но файл не был загружен (ошибка сервера).", Severity.Warning);
+            }
+        }
+        catch (Exception)
+        {
+            Snackbar.Add("ПКО сохранен, но произошла ошибка при передаче файла.", Severity.Warning);
+        }
+    }
+
+    private void Cancel() => Nav.NavigateTo("/cash-receipt-orders");
+}

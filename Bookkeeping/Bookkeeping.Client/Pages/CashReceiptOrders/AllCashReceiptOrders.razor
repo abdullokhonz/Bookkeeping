@@ -1,0 +1,184 @@
+﻿@page "/cash-receipt-orders"
+
+@using Bookkeeping.Contracts.Common.Responses
+@using Bookkeeping.Contracts.DTOs.CashReceiptOrders.CashReceiptOrderDto
+@using Bookkeeping.Contracts.DTOs.CashReceiptOrders.VatTaxDto
+@using Bookkeeping.Contracts.Enums
+@using System.Net.Http.Json
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-8">
+    @* Шапка *@
+    <MudPaper Class="pa-4 mb-4" Elevation="2">
+        <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h6" Class="flex-grow-1">Приходные кассовые ордера</MudText>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Add"
+                       Size="Size.Small"
+                       OnClick="@(() => Nav.NavigateTo("/cash-receipt-orders/create"))">
+                Создать ПКО
+            </MudButton>
+        </MudStack>
+    </MudPaper>
+
+    @if (_isLoading)
+    {
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-4" />
+    }
+
+    <MudPaper Elevation="2" Class="pa-2">
+        <MudTable ServerData="@ServerReload"
+                  Dense="true"
+                  Hover="true"
+                  Striped="false"
+                  @ref="_table"
+                  Bordered="false"
+                  Elevation="0"
+                  Loading="false"
+                  RowsPerPage="25">
+            
+            <HeaderContent>
+                <MudTh>№ Документа</MudTh>
+                <MudTh>Дата</MudTh>
+                <MudTh>Статус</MudTh>
+                <MudTh Style="text-align: right;">Сумма</MudTh>
+                <MudTh Style="text-align: right;">НДС</MudTh>
+                <MudTh Style="text-align: right;">Действия</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd DataLabel="№ Документа">
+                    <MudText Typo="Typo.body2" Class="font-weight-bold">@context.DocumentNumber</MudText>
+                </MudTd>
+    
+                <MudTd DataLabel="Дата">
+                    <MudText Typo="Typo.body2">@context.OperationDate.ToString("dd.MM.yyyy")</MudText>
+                </MudTd>
+    
+                <MudTd DataLabel="Статус">
+                    @switch (context.Status)
+                    {
+                        case DocumentStatus.Draft:
+                            <MudChip T="string" Icon="@Icons.Material.Filled.EditNote" Color="Color.Default" Size="Size.Small">Черновик</MudChip>
+                            break;
+                        case DocumentStatus.Processed:
+                            <MudChip T="string" Icon="@Icons.Material.Filled.DoneAll" Color="Color.Success" Size="Size.Small">Проведен</MudChip>
+                            break;
+                        case DocumentStatus.Canceled:
+                            <MudChip T="string" Icon="@Icons.Material.Filled.Block" Color="Color.Error" Size="Size.Small">Отменен</MudChip>
+                            break;
+                        default:
+                            <MudText Typo="Typo.body2">@context.Status</MudText>
+                            break;
+                    }
+                </MudTd>
+    
+                <MudTd DataLabel="Сумма" Style="text-align: right;">
+                    <MudText Typo="Typo.body2" Color="Color.Success" Class="font-weight-bold">
+                        @(context.Amount % 1 == 0 ? context.Amount.ToString("N0") : context.Amount.ToString("N2"))
+                    </MudText>
+                </MudTd>
+    
+                <MudTd DataLabel="НДС" Style="text-align: right;">
+                    @if (context.VatTaxId.HasValue && _vatRates.TryGetValue(context.VatTaxId.Value, out var rate))
+                    {
+                        var vatAmount = context.Amount * (rate / 100m);
+                        var formattedVat = vatAmount % 1 == 0 ? vatAmount.ToString("N0") : vatAmount.ToString("N2");
+                        var formattedRate = rate % 1 == 0 ? rate.ToString("0") : rate.ToString("N2");
+            
+                        <MudText Typo="Typo.body2" Color="Color.Error" Class="font-weight-bold">
+                            -@formattedVat
+                            <MudText Typo="Typo.caption" Color="Color.Default" Class="ml-1">(@formattedRate%)</MudText>
+                        </MudText>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.body2" Color="Color.Default">Без НДС</MudText>
+                    }
+                </MudTd>
+    
+                <MudTd DataLabel="Действия" Style="text-align: right; white-space: nowrap;">
+                    <MudIconButton Icon="@Icons.Material.Filled.Visibility"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   OnClick="@(() => Nav.NavigateTo($"/cash-receipt-orders/details/{context.Id}"))" />
+        
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Color="Color.Default"
+                                   Size="Size.Small"
+                                   OnClick="@(() => Nav.NavigateTo($"/cash-receipt-orders/edit/{context.Id}"))" />
+        
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Color="Color.Error"
+                                   Size="Size.Small"
+                                   OnClick="@(() => Nav.NavigateTo($"/cash-receipt-orders/delete/{context.Id}"))" />
+                </MudTd>
+            </RowTemplate>
+
+            <PagerContent>
+                <MudTablePager InfoFormat="{first_item}-{last_item} из {all_items}"
+                               RowsPerPageString="Строк на странице:"
+                               PageSizeOptions="new int[]{10, 25, 50, 100}" />
+            </PagerContent>
+        </MudTable>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private MudTable<CashReceiptOrderGetDto> _table = null!;
+    private bool _isLoading = false;
+
+    private Dictionary<Guid, decimal> _vatRates = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var vatRes = await Http.GetFromJsonAsync<ApiResponse<List<VatTaxGetDto>>>("/api/v1/VatTax/GetAll");
+            if (vatRes?.Data != null)
+            {
+                _vatRates = vatRes.Data.ToDictionary(x => x.Id, x => x.VatRate);
+            }
+        }
+        catch (Exception)
+        {
+            Snackbar.Add("Не удалось загрузить ставки НДС для таблицы", Severity.Warning);
+        }
+    }
+
+    private async Task<TableData<CashReceiptOrderGetDto>> ServerReload(TableState state, CancellationToken token)
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            var url = $"/api/v1/CashReceiptOrder/GetPaged?page={state.Page + 1}&size={state.PageSize}";
+            var response = await Http.GetFromJsonAsync<ApiResponse<List<CashReceiptOrderGetDto>>>(url, token);
+
+            if (response != null && response.IsSuccess)
+            {
+                return new TableData<CashReceiptOrderGetDto>()
+                {
+                    TotalItems = response.Metadata?.TotalCount ?? response.Count ?? 0,
+                    Items = response.Data ?? new List<CashReceiptOrderGetDto>()
+                };
+            }
+        }
+        catch (Exception ex) when (ex is not TaskCanceledException)
+        {
+            Snackbar.Add("Не удалось загрузить список ПКО", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+
+        return new TableData<CashReceiptOrderGetDto>() { TotalItems = 0, Items = new List<CashReceiptOrderGetDto>() };
+    }
+}

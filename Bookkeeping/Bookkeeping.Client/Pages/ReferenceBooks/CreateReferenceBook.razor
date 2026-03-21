@@ -1,0 +1,97 @@
+﻿@page "/reference-books/create"
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+    <MudPaper Class="pa-8">
+        <MudText Typo="Typo.h4" GutterBottom="true">Новый справочник</MudText>
+        <MudText Typo="Typo.body2" Class="mb-6">Заполните данные для добавления нового справочника.</MudText>
+
+        <EditForm Model="@_referenceBook" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            
+            <MudGrid>
+                @* Название справочника *@
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Название справочника"
+                                  @bind-Value="_referenceBook.Name"
+                                  For="@(() => _referenceBook.Name)"
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"
+                                  MaxLength="250" />
+                </MudItem>
+
+                @* Категория справочника *@
+                <MudItem xs="12" md="6">
+                    <MudSelect T="Guid?"
+                               Label="Категория"
+                               @bind-Value="_referenceBook.ReferenceBookCategoryId"
+                               For="@(() => _referenceBook.ReferenceBookCategoryId)"
+                               Variant="Variant.Outlined"
+                               AnchorOrigin="Origin.BottomCenter"
+                               Clearable="true"
+                               Placeholder="Выберите категорию из списка">
+                        @if (_categories == null)
+                        {
+                            <MudSelectItem T="Guid?" Disabled="true" Value="null">Загрузка...</MudSelectItem>
+                        }
+                        else
+                        {
+                            @foreach (var cat in _categories)
+                            {
+                                <MudSelectItem T="Guid?" Value="@cat.Id">
+                                    <div class="d-flex align-center gap-2">
+                                        <MudIcon Icon="@Icons.Material.Filled.Folder" Size="Size.Small" Color="Color.Primary" />
+                                        <MudText>@cat.Name</MudText>
+                                    </div>
+                                </MudSelectItem>
+                            }
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                @* Описание *@
+                <MudItem xs="12">
+                    <MudTextField Label="Описание"
+                                  @bind-Value="_referenceBook.Description"
+                                  For="@(() => _referenceBook.Description)"
+                                  Variant="Variant.Outlined"
+                                  Lines="3"
+                                  MaxLength="500" />
+                </MudItem>
+
+                @* Дополнительная информация (Словарь Info) *@
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h6" Class="mt-4 mb-2">Дополнительные параметры (Info)</MudText>
+                    <MudDivider Class="mb-4" />
+                    
+                    @foreach (var item in _infoItems)
+                    {
+                        <MudGrid Spacing="2" Class="align-center mb-2">
+                            <MudItem xs="5">
+                                <MudTextField Label="Ключ (например: key_0)" @bind-Value="item.Key" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            </MudItem>
+                            <MudItem xs="5">
+                                <MudTextField Label="Значение (например: 7173)" @bind-Value="item.Value" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            </MudItem>
+                            <MudItem xs="2" Class="d-flex justify-center">
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => RemoveInfoItem(item))" />
+                            </MudItem>
+                        </MudGrid>
+                    }
+                    <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="AddInfoItem" Class="mt-2">
+                        Добавить параметр
+                    </MudButton>
+                </MudItem>
+
+                @* Кнопки действий *@
+                <MudItem xs="12" Class="d-flex justify-end gap-4 mt-4">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="Cancel">Отмена</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Сохранить</MudButton>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudPaper>
+</MudContainer>

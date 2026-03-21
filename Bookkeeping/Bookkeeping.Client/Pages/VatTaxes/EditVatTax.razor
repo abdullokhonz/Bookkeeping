@@ -1,0 +1,44 @@
+﻿@page "/vat-taxes/edit/{Id:guid}"
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-8">
+    <MudPaper Class="pa-8" Elevation="3">
+        <MudText Typo="Typo.h5" Class="mb-6">Редактирование ставки</MudText>
+
+        @if (_model == null)
+        {
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        }
+        else
+        {
+            <EditForm Model="@_model" OnValidSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
+                <MudNumericField Label="Ставка НДС (%)"
+                                 @bind-Value="_model.VatRate"
+                                 For="@(() => _model.VatRate)"
+                                 Variant="Variant.Outlined"
+                                 Class="mb-4" />
+
+                <MudTextField Label="Описание"
+                              @bind-Value="_model.Description"
+                              For="@(() => _model.Description)"
+                              Variant="Variant.Outlined"
+                              Lines="3"
+                              Class="mb-6" />
+
+                <div class="d-flex justify-end gap-2">
+                    <MudButton OnClick="Cancel" Variant="Variant.Text">Отмена</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Disabled="_isProcessing">
+                        @(_isProcessing ? "Сохранение..." : "Сохранить")
+                    </MudButton>
+                </div>
+            </EditForm>
+        }
+    </MudPaper>
+</MudContainer>

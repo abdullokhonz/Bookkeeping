@@ -1,0 +1,103 @@
+﻿@page "/accounts/create"
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+    <MudPaper Class="pa-8">
+        <MudText Typo="Typo.h4" GutterBottom="true">Новый счет</MudText>
+        <MudText Typo="Typo.body2" Class="mb-6">Заполните данные для добавления нового счета.</MudText>
+
+        <EditForm Model="@_account" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            
+            <MudGrid>
+                @* Номер счета *@
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Номер счета"
+                                  @bind-Value="_account.AccountNumber"
+                                  For="@(() => _account.AccountNumber)"
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"
+                                  MaxLength="7"
+                                  InputType="InputType.Text"
+                                  InputMode="InputMode.numeric" />
+                </MudItem>
+
+                @* Название счета *@
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Название счета"
+                                  @bind-Value="_account.AccountName"
+                                  For="@(() => _account.AccountName)"
+                                  Variant="Variant.Outlined"
+                                  Immediate="true" />
+                </MudItem>
+
+                @* Категория *@
+                <MudItem xs="12" md="6">
+                    <MudSelect T="Guid?"
+                               Label="Категория счета"
+                               @bind-Value="_account.CategoryAccountId"
+                               For="@(() => _account.CategoryAccountId)"
+                               Variant="Variant.Outlined"
+                               AnchorOrigin="Origin.BottomCenter"
+                               Clearable="true"
+                               Placeholder="Выберите категорию из списка">
+                        @if (_categories == null)
+                        {
+                            <MudSelectItem T="Guid?" Disabled="true" Value="null">Загрузка...</MudSelectItem>
+                        }
+                        else
+                        {
+                            @foreach (var cat in _categories)
+                            {
+                                <MudSelectItem T="Guid?" Value="@cat.Id">
+                                    <div class="d-flex align-center gap-2">
+                                        <MudIcon Icon="@Icons.Material.Filled.Folder" Size="Size.Small" Color="Color.Primary" />
+                                        <MudText>@cat.Name</MudText>
+                                    </div>
+                                </MudSelectItem>
+                            }
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                @* Тип счета *@
+                <MudItem xs="12" md="6">
+                    <MudSelect T="AccountNature?"
+                               Label="Тип счета"
+                               @bind-Value="_account.AccountNature"
+                               For="@(() => _account.AccountNature)"
+                               Variant="Variant.Outlined"
+                               AnchorOrigin="Origin.BottomCenter"
+                               Clearable="true"
+                               Placeholder="Выберите тип из списка">
+                        @foreach (AccountNature item in Enum.GetValues(typeof(AccountNature)))
+                        {
+                            <MudSelectItem T="AccountNature?" Value="@item">
+                                <div class="d-flex align-center gap-2">
+                                    <MudIcon Icon="@Icons.Material.Filled.Toc" Size="Size.Small" Color="Color.Primary" />
+                                    <MudText>@GetReadableName(item)</MudText>
+                                </div>
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                @* Описание *@
+                <MudItem xs="12">
+                    <MudTextField Label="Описание"
+                                  @bind-Value="_account.Description"
+                                  Variant="Variant.Outlined"
+                                  Lines="3" />
+                </MudItem>
+
+                <MudItem xs="12" Class="d-flex justify-end gap-4">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="Cancel">Отмена</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Сохранить</MudButton>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudPaper>
+</MudContainer>

@@ -1,0 +1,146 @@
+﻿@page "/accounts"
+
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+@inject NavigationManager NavManager
+
+@* <PageTitle>План счёт</PageTitle> *@
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-8">
+    <!-- Шапка с кнопкой создания (без изменений) -->
+    <MudPaper Class="pa-4 mb-4" Elevation="2">
+        <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h6" Class="flex-grow-1">План счетов</MudText>
+            <MudButton Href="/accounts/categories/create" Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Add" Size="Size.Small">
+                Создать категорию
+            </MudButton>
+            <MudButton Href="/accounts/create" Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Add" Size="Size.Small">
+                Создать счет
+            </MudButton>
+        </MudStack>
+    </MudPaper>
+
+    <!-- Индикатор загрузки и таблица (без изменений) -->
+    @if (_isLoading)
+    {
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-4" />
+    }
+    else
+    {
+        <MudPaper Elevation="2" Class="pa-2">
+            <table class="mud-table mud-table-hover mud-table-striped" style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+                <thead class="mud-table-head">
+                    <tr>
+                        <th class="mud-table-cell" style="width: 180px;">Номер счета</th>
+                        <th class="mud-table-cell">Наименование</th>
+                        <th class="mud-table-cell" style="width: 120px;">Тип</th>
+                        <th class="mud-table-cell" style="width: 130px; text-align:right;">Действия</th>
+                    </tr>
+                </thead>
+                <tbody class="mud-table-body">
+                    @if (_treeNodes == null || !_treeNodes.Any())
+                    {
+                        <tr>
+                            <td colspan="4" class="mud-table-cell text-center">Нет данных</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var node in _treeNodes)
+                        {
+                            @RenderNode(node, 0)
+                        }
+                    }
+                </tbody>
+            </table>
+        </MudPaper>
+    }
+</MudContainer>
+
+@code {
+    // Рекурсивный рендеринг
+    private RenderFragment RenderNode(TreeNode node, int level) => __builder =>
+    {
+        var hasChildren = node.Children.Any();
+        var isExpanded = _expandedNodes.Contains(node.Id);
+        var isCategory = node.Type == NodeType.Category;
+
+        <tr class="mud-table-row">
+            <td class="mud-table-cell" style="padding: 8px 12px;">
+                <div style="display: flex; align-items: center; padding-left: @(level * 20)px;">
+                    @if (hasChildren)
+                    {
+                        <MudIconButton Icon="@(isExpanded? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)"
+                                       Size="Size.Small"
+                                       Variant="Variant.Text"
+                                       OnClick="@(e => ToggleNode(node.Id))"
+                                       OnClickStopPropagation="true"
+                                       Class="mr-1" />
+                    }
+                    else
+                    {
+                        <span style="width: 32px;"></span>
+                    }
+                    @if (isCategory)
+                    {
+                        <MudIcon Icon="@(isExpanded? Icons.Material.Filled.FolderOpen : Icons.Material.Filled.Folder)" Size="Size.Small" Class="mr-1 mud-text-secondary" />
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@(isExpanded? Icons.Material.Filled.FileOpen : Icons.Material.Filled.Description)" Size="Size.Small" Class="mr-1 mud-text-info" />
+                    }
+                    <MudText Typo="Typo.body2" Class="ml-1">
+                        @(node.AccountNumber ?? "")
+                    </MudText>
+                </div>
+            </td>
+            <td class="mud-table-cell" style="padding: 8px 12px;">
+                <MudText Typo="Typo.body2" Class="font-weight-bold">
+                    @node.Name
+                </MudText>
+                @if (!string.IsNullOrEmpty(node.Description))
+                {
+                    <MudText Typo="Typo.caption" Class="mud-text-secondary">@node.Description</MudText>
+                }
+            </td>
+            <td class="mud-table-cell" style="padding: 8px 12px;">
+                @if (node.Nature.HasValue)
+                {
+                    <MudChip T="string" Size="Size.Small" Color="Color.Info">@GetNatureName(node.Nature.Value)</MudChip>
+                }
+                else
+                {
+                    <span>—</span>
+                }
+            </td>
+            <td class="mud-table-cell" style="padding: 8px 12px; text-align:right; white-space:nowrap;">
+                <MudIconButton Icon="@Icons.Material.Filled.Visibility" Size="Size.Small" Color="Color.Primary"
+                               OnClick="@(() => NavigateToDetail(node))" Title="Просмотр" />
+                @if (node.Type == NodeType.Account)
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Inherit"
+                                   Href="@($"/accounts/edit/{node.Id}")" Title="Редактировать" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error"
+                                   Href="@($"/accounts/delete/{node.Id}")" Title="Удалить" />
+                }
+                else
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Inherit"
+                                   Href="@($"/accounts/categories/edit/{node.Id}")" Title="Редактировать" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error"
+                                   Href="@($"/accounts/categories/delete/{node.Id}")" Title="Удалить" />
+                }
+            </td>
+        </tr>
+
+        @if (hasChildren && isExpanded)
+        {
+            @foreach (var child in node.Children)
+            {
+                @RenderNode(child, level + 1)
+            }
+        }
+    };
+}

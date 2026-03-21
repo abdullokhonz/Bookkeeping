@@ -1,0 +1,65 @@
+﻿@page "/vat-taxes/create"
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+    <MudPaper Class="pa-8" Elevation="3">
+        <MudText Typo="Typo.h4" GutterBottom="true">Новая ставка НДС</MudText>
+        <MudText Typo="Typo.body2" Class="mb-6">Укажите размер процентной ставки НДС для использования в финансовых документах.</MudText>
+
+        <EditForm Model="@_model" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudNumericField Label="Ставка НДС"
+                                     @bind-Value="_model.VatRate"
+                                     For="@(() => _model.VatRate)"
+                                     Variant="Variant.Outlined"
+                                     Adornment="Adornment.End"
+                                     AdornmentText="%"
+                                     HideSpinButtons="false"
+                                     Min="0"
+                                     Max="100"
+                                     Format="N2"
+                                     HelperText="Например: 20 или 0" />
+                </MudItem>
+
+                <MudItem xs="12" md="6" />
+
+                <MudItem xs="12">
+                    <MudTextField Label="Описание"
+                                  @bind-Value="_model.Description"
+                                  For="@(() => _model.Description)"
+                                  Variant="Variant.Outlined"
+                                  Lines="3"
+                                  Placeholder="Краткое пояснение (например: Основная ставка 2026)" />
+                </MudItem>
+
+                <MudItem xs="12" Class="d-flex justify-end gap-4 mt-4">
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Error"
+                               OnClick="Cancel">
+                        Отмена
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Submit"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Disabled="_isProcessing">
+                        @if (_isProcessing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Сохранение...</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Создать ставку</MudText>
+                        }
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudPaper>
+</MudContainer>

@@ -1,0 +1,93 @@
+﻿@page "/income-categories"
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-8">
+    @* Шапка *@
+    <MudPaper Class="pa-4 mb-4" Elevation="2">
+        <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h6" Class="flex-grow-1">Статьи доходов</MudText>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"
+                       OnClick="@(() => Nav.NavigateTo("/income-categories/create"))" Size="Size.Small">
+                Добавить статью
+            </MudButton>
+        </MudStack>
+    </MudPaper>
+
+    @if (_isLoading)
+    {
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-4" />
+    }
+
+    <MudPaper Elevation="2" Class="pa-2">
+        @* Установлено RowsPerPage="25" для дефолтного размера *@
+        <MudTable ServerData="@ServerReload"
+                  Dense="true"
+                  Hover="true"
+                  Striped="false"
+                  @ref="_table"
+                  Bordered="false"
+                  Elevation="0"
+                  Loading="false"
+                  RowsPerPage="25">
+            
+            <HeaderContent>
+                <MudTh>Название</MudTh>
+                <MudTh>Описание</MudTh>
+                <MudTh>Счет (План счетов)</MudTh>
+                <MudTh Style="text-align:right">Действия</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd DataLabel="Название">
+                    <MudText Typo="Typo.body2" Class="font-weight-bold">@context.Name</MudText>
+                </MudTd>
+                <MudTd DataLabel="Описание">
+                    <MudText Typo="Typo.caption" Class="mud-text-secondary text-truncate" Style="max-width: 250px; display: block;">
+                        @(string.IsNullOrEmpty(context.Description) ? "—" : context.Description)
+                    </MudText>
+                </MudTd>
+                <MudTd DataLabel="Счет">
+                    <div class="d-flex align-center">
+                        @if (_accountCache.TryGetValue(context.IfrsAccountId, out var accountName))
+                        {
+                            <MudLink Typo="Typo.body2" Color="Color.Info" Underline="Underline.Hover"
+                                     OnClick="@(() => Nav.NavigateTo($"/accounts/details/{context.IfrsAccountId}"))"
+                                     Style="cursor: pointer; font-weight: 500;">
+                                @accountName
+                            </MudLink>
+                        }
+                        else
+                        {
+                            <MudTooltip Text="Загрузка названия счета...">
+                                <div class="d-flex align-center">
+                                    <MudText Typo="Typo.caption" Class="mud-text-secondary mr-2">
+                                        @context.IfrsAccountId.ToString().Substring(0, 8)...
+                                    </MudText>
+                                    <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" Style="width:12px; height:12px;" />
+                                </div>
+                            </MudTooltip>
+                        }
+                        <MudIcon Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" Class="mud-text-primary ml-2" />
+                    </div>
+                </MudTd>
+                <MudTd DataLabel="Действия" Style="text-align:right; white-space:nowrap;">
+                    <MudIconButton Icon="@Icons.Material.Filled.Visibility" Size="Size.Small" Color="Color.Primary"
+                                   OnClick="@(() => Nav.NavigateTo($"/income-categories/details/{context.Id}"))" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Inherit"
+                                   OnClick="@(() => Nav.NavigateTo($"/income-categories/edit/{context.Id}"))" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error"
+                                   OnClick="@(() => Nav.NavigateTo($"/income-categories/delete/{context.Id}"))" />
+                </MudTd>
+            </RowTemplate>
+
+            <PagerContent>
+                <MudTablePager InfoFormat="{first_item}-{last_item} из {all_items}"
+                               RowsPerPageString="Строк на странице:"
+                               PageSizeOptions="new int[]{10, 25, 50, 100}" />
+            </PagerContent>
+        </MudTable>
+    </MudPaper>
+</MudContainer>

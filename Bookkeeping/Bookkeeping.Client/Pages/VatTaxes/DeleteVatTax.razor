@@ -1,0 +1,35 @@
+﻿@page "/vat-taxes/delete/{Id:guid}"
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-10">
+    <MudPaper Elevation="4" Class="pa-0 overflow-hidden">
+        <div style="height: 6px;" class="mud-bg-error"></div>
+        <div class="pa-8">
+            <MudText Typo="Typo.h5" Class="mb-4">Удаление ставки НДС</MudText>
+
+            @if (_model == null)
+            {
+                <MudProgressCircular Color="Color.Error" Indeterminate="true" />
+            }
+            else
+            {
+                <MudAlert Severity="Severity.Warning" Variant="Variant.Filled" Class="mb-6">
+                    Вы уверены, что хотите удалить ставку <b>@_model.VatRate%</b>?
+                </MudAlert>
+
+                <div class="d-flex justify-space-between">
+                    <MudButton OnClick="Cancel" Variant="Variant.Text">Назад</MudButton>
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Error"
+                               OnClick="HandleDelete"
+                               Disabled="_isProcessing">
+                        Удалить навсегда
+                    </MudButton>
+                </div>
+            }
+        </div>
+    </MudPaper>
+</MudContainer>

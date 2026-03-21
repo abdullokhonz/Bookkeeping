@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Bookkeeping.Contracts/Bookkeeping.Contracts.csproj" />
+  <Project Path="Bookkeeping/Bookkeeping.Client/Bookkeeping.Client.csproj" />
+  <Project Path="Bookkeeping/Bookkeeping/Bookkeeping.csproj" />
+</Solution>

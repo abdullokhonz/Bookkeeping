@@ -1,0 +1,27 @@
+﻿using Bookkeeping.Application.Commands.Base.DeleteBase;
+using Bookkeeping.Contracts.Common.Results;
+using Bookkeeping.Entities.Accounts5d;
+using Bookkeeping.Services.Interfaces.Accounts5d;
+using MediatR;
+
+namespace Bookkeeping.Application.Commands.IfrsAccounts.DeleteIfrsAccount
+{
+    public class DeleteIfrsAccountCommandHandler
+        : DeleteBaseCommandHandler<IfrsAccount>,
+        IRequestHandler<DeleteIfrsAccountCommand, Result>
+    {
+        public DeleteIfrsAccountCommandHandler(
+            IIfrsAccountService service,
+            ILogger<DeleteIfrsAccountCommandHandler> logger)
+            : base(service, logger)
+        {
+
+        }
+
+        public async Task<Result> Handle
+            (DeleteIfrsAccountCommand request, CancellationToken ct)
+        {
+            return await base.Handle(request, ct);
+        }
+    }
+}

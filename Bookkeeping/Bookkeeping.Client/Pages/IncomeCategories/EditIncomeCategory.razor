@@ -1,0 +1,84 @@
+﻿@page "/income-categories/edit/{Id:guid}"
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+    <MudPaper Class="pa-8" Elevation="3">
+        <MudText Typo="Typo.h4" GutterBottom="true">Редактирование статьи</MudText>
+        <MudText Typo="Typo.body2" Class="mb-6">Измените параметры классификации доходов.</MudText>
+        
+        @if (_model == null || _accounts == null)
+        {
+            <div class="d-flex justify-center pa-10">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+            </div>
+        }
+        else
+        {
+            <EditForm Model="@_model" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <MudGrid>
+                    @* Название статьи *@
+                    <MudItem xs="12" md="6">
+                        <MudTextField Label="Название статьи"
+                                      @bind-Value="_model.Name"
+                                      For="@(() => _model.Name)"
+                                      Variant="Variant.Outlined"
+                                      Immediate="true" />
+                    </MudItem>
+
+                    @* Привязка к счету *@
+                    <MudItem xs="12" md="6">
+                        <MudSelect T="Guid?"
+                                   Label="Связанный счет (ПС)"
+                                   @bind-Value="_model.IfrsAccountId"
+                                   For="@(() => _model.IfrsAccountId)"
+                                   Variant="Variant.Outlined"
+                                   Clearable="true"
+                                   AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var acc in _accounts)
+                            {
+                                <MudSelectItem T="Guid?" Value="@((Guid?)acc.Id)">
+                                    <div class="d-flex align-center gap-2">
+                                        <MudText Typo="Typo.body2" Color="Color.Primary" FontWeight="FontWeight.Bold">@acc.AccountNumber</MudText>
+                                        <MudDivider Vertical="true" FlexItem="true" Class="mx-1" />
+                                        <MudText Typo="Typo.body2">@acc.AccountName</MudText>
+                                    </div>
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+
+                    @* Описание *@
+                    <MudItem xs="12">
+                        <MudTextField Label="Описание"
+                                      @bind-Value="_model.Description"
+                                      For="@(() => _model.Description)"
+                                      Variant="Variant.Outlined"
+                                      Lines="3" />
+                    </MudItem>
+
+                    <MudItem xs="12" Class="d-flex justify-end gap-4 mt-4">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="Cancel">Отмена</MudButton>
+                        <MudButton ButtonType="ButtonType.Submit"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Disabled="_isProcessing">
+                            @if (_isProcessing)
+                            {
+                                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                <MudText Class="ms-2">Сохранение...</MudText>
+                            }
+                            else
+                            {
+                                <MudText>Сохранить изменения</MudText>
+                            }
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
+            </EditForm>
+        }
+    </MudPaper>
+</MudContainer>

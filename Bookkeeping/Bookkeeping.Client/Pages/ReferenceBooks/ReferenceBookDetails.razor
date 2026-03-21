@@ -1,0 +1,118 @@
+﻿@page "/reference-books/details/{Id:guid}"
+
+@using Bookkeeping.Contracts.DTOs.ReferenceBooks.ReferenceBookDto
+@using Bookkeeping.Contracts.DTOs.ReferenceBooks.ReferenceBookCategoryDto
+@using Bookkeeping.Contracts.Common.Responses
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-6 mb-10">
+    <MudBreadcrumbs Items="_breadcrumbs" Class="px-0 mb-4" />
+
+    @if (_book == null)
+    {
+        <div class="d-flex flex-column align-center justify-center" style="height: 40vh;">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+            <MudText Typo="Typo.h6" Class="mt-4 mud-text-secondary">Загрузка данных справочника...</MudText>
+        </div>
+    }
+    else
+    {
+        <MudPaper Elevation="4" Class="overflow-hidden rounded-lg">
+            @* ШАПКА С ГРАДИЕНТОМ *@
+            <div class="pa-8 d-flex align-start justify-space-between"
+                 style="background: linear-gradient(135deg, var(--mud-palette-primary) 0%, var(--mud-palette-info) 100%); color: white;">
+                
+                <div class="d-flex align-center gap-4">
+                    <MudAvatar Color="Color.Secondary" Size="Size.Large" Elevation="2">
+                        <MudIcon Icon="@Icons.Material.Filled.LibraryBooks" Size="Size.Medium" />
+                    </MudAvatar>
+                    <div>
+                        <MudText Typo="Typo.h4" FontWeight="FontWeight.Bold">@_book.Name</MudText>
+                        <MudText Typo="Typo.h6" Style="opacity: 0.9;">Категория: @(_categoryName ?? "...")</MudText>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pa-8">
+                <MudGrid Spacing="6">
+                    @* ЛЕВАЯ КОЛОНКА *@
+                    <MudItem xs="12" md="7">
+                        <MudText Typo="Typo.h6" Class="mb-4 d-flex align-center gap-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Notes" Color="Color.Primary" />
+                            Описание
+                        </MudText>
+                        <MudPaper Variant="Variant.Outlined" Class="pa-4 rounded-lg mud-text-secondary mb-8">
+                            @(string.IsNullOrWhiteSpace(_book.Description) ? "Описание отсутствует." : _book.Description)
+                        </MudPaper>
+
+                        <MudText Typo="Typo.h6" Class="mb-4 d-flex align-center gap-2">
+                            <MudIcon Icon="@Icons.Material.Filled.DataObject" Color="Color.Primary" />
+                            Дополнительная информация (Info)
+                        </MudText>
+                        
+                        <MudPaper Variant="Variant.Outlined" Class="pa-4 rounded-lg">
+                            @if (_book.Info == null || !_book.Info.Any())
+                            {
+                                <MudText Color="Color.Secondary">Дополнительных параметров нет.</MudText>
+                            }
+                            else
+                            {
+                                <div class="d-flex flex-column gap-2">
+                                    @foreach (var kvp in _book.Info)
+                                    {
+                                        <div class="d-flex justify-space-between align-center">
+                                            <MudText Color="Color.Secondary">@kvp.Key:</MudText>
+                                            <MudText FontWeight="FontWeight.Medium">@kvp.Value</MudText>
+                                        </div>
+                                        <MudDivider />
+                                    }
+                                </div>
+                            }
+                        </MudPaper>
+                    </MudItem>
+
+                    @* ПРАВАЯ КОЛОНКА *@
+                    <MudItem xs="12" md="5">
+                        <MudText Typo="Typo.h6" Class="mb-4 d-flex align-center gap-2">
+                            <MudIcon Icon="@Icons.Material.Filled.History" Color="Color.Primary" />
+                            История
+                        </MudText>
+                        <MudTimeline TimelinePosition="TimelinePosition.Start">
+                            <MudTimelineItem Color="Color.Success" Size="Size.Small">
+                                <MudText Typo="Typo.button">Создан</MudText>
+                                <MudText Typo="Typo.body2" Class="mud-text-secondary">@_book.CreatedAt.ToString("g")</MudText>
+                            </MudTimelineItem>
+                            @if (_book.UpdatedAt.HasValue)
+                            {
+                                <MudTimelineItem Color="Color.Info" Size="Size.Small">
+                                    <MudText Typo="Typo.button">Изменен</MudText>
+                                    <MudText Typo="Typo.body2" Class="mud-text-secondary">@_book.UpdatedAt.Value.ToString("g")</MudText>
+                                </MudTimelineItem>
+                            }
+                        </MudTimeline>
+                    </MudItem>
+                </MudGrid>
+
+                <MudDivider Class="my-8" />
+
+                @* ПАНЕЛЬ ДЕЙСТВИЙ *@
+                <div class="d-flex justify-space-between align-center">
+                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="GoToMain">
+                        Назад к списку
+                    </MudButton>
+                    <div class="d-flex gap-4">
+                        <MudButton Variant="Variant.Filled" Color="Color.Warning" StartIcon="@Icons.Material.Filled.Edit" OnClick="GoToEdit">
+                            Изменить
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.DeleteOutline" OnClick="GoToDelete">
+                            Удалить
+                        </MudButton>
+                    </div>
+                </div>
+            </div>
+        </MudPaper>
+    }
+</MudContainer>

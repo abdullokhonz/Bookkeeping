@@ -1,0 +1,198 @@
+﻿@page "/cash-receipt-orders/delete/{Id:guid}"
+
+@using Bookkeeping.Contracts.DTOs.CashReceiptOrders.CashReceiptOrderDto
+@using Bookkeeping.Contracts.DTOs.CashReceiptOrders.ImageDto
+@using Bookkeeping.Contracts.Common.Responses
+@using Bookkeeping.Contracts.Enums
+@using System.Net.Http.Json
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-10">
+    <MudPaper Elevation="4" Class="pa-0 overflow-hidden">
+        <div style="height: 6px;" class="mud-bg-error"></div>
+        
+        <div class="pa-8">
+            <div class="d-flex align-center mb-4">
+                <MudIcon Icon="@Icons.Material.Filled.DeleteSweep" Color="Color.Error" Size="Size.Large" Class="mr-3" />
+                <MudText Typo="Typo.h5" FontWeight="FontWeight.Bold">Удаление ПКО</MudText>
+            </div>
+
+            @if (order == null)
+            {
+                <div class="d-flex flex-column align-center pa-10">
+                    <MudProgressCircular Color="Color.Error" Indeterminate="true" Class="mb-2" />
+                    <MudText Typo="Typo.caption">Загрузка данных...</MudText>
+                </div>
+            }
+            else
+            {
+                <MudText Typo="Typo.body1" Class="mb-6">
+                    Вы собираетесь удалить следующий ордер. Пожалуйста, проверьте данные.
+                </MudText>
+
+                <MudPaper Variant="Variant.Outlined" Class="pa-4 mb-6 mud-bg-gray-default">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex justify-space-between align-center">
+                            <MudText Typo="Typo.caption" Class="mud-text-secondary">№ Документа:</MudText>
+                            <MudText Typo="Typo.body2" FontWeight="FontWeight.Bold">@order.DocumentNumber</MudText>
+                        </div>
+                        <MudDivider />
+                        <div class="d-flex justify-space-between align-center">
+                            <MudText Typo="Typo.caption" Class="mud-text-secondary">Наименование:</MudText>
+                            <MudText Typo="Typo.body2">@order.Name</MudText>
+                        </div>
+                        <MudDivider />
+                        <div class="d-flex justify-space-between align-center">
+                            <MudText Typo="Typo.caption" Class="mud-text-secondary">Сумма:</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Success" FontWeight="FontWeight.Bold">
+                                @(order.Amount % 1 == 0 ? order.Amount.ToString("N0") : order.Amount.ToString("N2"))
+                            </MudText>
+                        </div>
+                        <MudDivider />
+                        <div class="d-flex justify-space-between align-center">
+                            <MudText Typo="Typo.caption" Class="mud-text-secondary">Статус:</MudText>
+                            <MudChip T="string" Size="Size.Small" Color="GetStatusColor(order.Status)" Variant="Variant.Text" Label="true">
+                                @GetReadableStatus(order.Status)
+                            </MudChip>
+                        </div>
+                        @if (image != null)
+                        {
+                            <MudDivider />
+                            <div class="d-flex justify-space-between align-center">
+                                <MudText Typo="Typo.caption" Class="mud-text-secondary">Прикрепленный файл:</MudText>
+                                <MudText Typo="Typo.body2" FontWeight="FontWeight.Bold">@image.Name</MudText>
+                            </div>
+                        }
+                    </div>
+                </MudPaper>
+
+                <MudAlert Severity="Severity.Error" Variant="Variant.Text" Icon="@Icons.Material.Filled.PriorityHigh" Class="mb-6 pa-2">
+                    Это действие нельзя будет отменить.
+                </MudAlert>
+
+                <div class="d-flex justify-space-between align-center">
+                    <MudButton Variant="Variant.Text"
+                               StartIcon="@Icons.Material.Filled.ArrowBack"
+                               OnClick="Cancel"
+                               Disabled="_isProcessing">
+                        Назад
+                    </MudButton>
+                    
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Error"
+                               DropShadow="false"
+                               StartIcon="@Icons.Material.Filled.DeleteForever"
+                               OnClick="HandleDelete"
+                               Disabled="_isProcessing">
+                        @if (_isProcessing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Удаление...</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Удалить</MudText>
+                        }
+                    </MudButton>
+                </div>
+            }
+        </div>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    private CashReceiptOrderGetDto? order;
+    private ImageGetDto? image;
+    private bool _isProcessing = false;
+
+    protected override async Task OnInitializedAsync() => await LoadData();
+
+    private async Task LoadData()
+    {
+        try
+        {
+            var orderTask = Http.GetFromJsonAsync<ApiResponse<CashReceiptOrderGetDto>>($"/api/v1/CashReceiptOrder/GetById/{Id}");
+            var imagesTask = Http.GetFromJsonAsync<ApiResponse<List<ImageGetDto>>>("/api/v1/Image/GetAll");
+
+            await Task.WhenAll(orderTask, imagesTask);
+
+            var orderRes = orderTask.Result;
+            if (orderRes != null && orderRes.IsSuccess)
+                order = orderRes.Data;
+            else
+                Snackbar.Add("Запись не найдена", Severity.Error);
+
+            var imagesRes = imagesTask.Result;
+            if (imagesRes?.IsSuccess == true && imagesRes.Data != null)
+                image = imagesRes.Data.FirstOrDefault(x => x.EntityId == Id);
+        }
+        catch (Exception)
+        {
+            Snackbar.Add("Ошибка загрузки данных", Severity.Error);
+            Nav.NavigateTo("/cash-receipt-orders");
+        }
+    }
+
+    private async Task HandleDelete()
+    {
+        _isProcessing = true;
+        try
+        {
+            bool fileDeleted = true;
+            // Если есть прикреплённый файл — удаляем его
+            if (image != null)
+            {
+                var fileResponse = await Http.DeleteAsync($"/api/v1/Image/HardDelete/{image.Id}/permanent");
+                if (!fileResponse.IsSuccessStatusCode)
+                {
+                    Snackbar.Add("Не удалось удалить прикреплённый файл", Severity.Warning);
+                    fileDeleted = false;
+                }
+            }
+
+            // Удаляем сам ПКО
+            var orderResponse = await Http.DeleteAsync($"/api/v1/CashReceiptOrder/HardDelete/{Id}/permanent");
+
+            if (orderResponse.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Ордер успешно удален", Severity.Success);
+                Nav.NavigateTo("/cash-receipt-orders");
+            }
+            else
+            {
+                Snackbar.Add("Ошибка при удалении ордера", Severity.Error);
+            }
+        }
+        catch (Exception)
+        {
+            Snackbar.Add("Ошибка при удалении", Severity.Error);
+        }
+        finally
+        {
+            _isProcessing = false;
+        }
+    }
+
+    private void Cancel() => Nav.NavigateTo("/cash-receipt-orders");
+
+    private Color GetStatusColor(DocumentStatus status) => status switch
+    {
+        DocumentStatus.Processed => Color.Success,
+        DocumentStatus.Canceled => Color.Error,
+        DocumentStatus.Draft => Color.Warning,
+        _ => Color.Default
+    };
+
+    private string GetReadableStatus(DocumentStatus status) => status switch
+    {
+        DocumentStatus.Draft => "Черновик",
+        DocumentStatus.Processed => "Проведен",
+        DocumentStatus.Canceled => "Отменен",
+        _ => status.ToString()
+    };
+}
