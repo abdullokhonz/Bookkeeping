@@ -32,8 +32,6 @@ namespace Bookkeeping.Client.Pages.CashReceiptOrders
         private async Task<TableData<CashReceiptOrderGetDto>> ServerReload(TableState state, CancellationToken token)
         {
             _isLoading = true;
-            StateHasChanged();
-
             try
             {
                 var url = $"/api/v1/CashReceiptOrder/GetPaged?page={state.Page + 1}&size={state.PageSize}";
@@ -55,7 +53,6 @@ namespace Bookkeeping.Client.Pages.CashReceiptOrders
             finally
             {
                 _isLoading = false;
-                StateHasChanged();
             }
 
             return new TableData<CashReceiptOrderGetDto>() { TotalItems = 0, Items = new List<CashReceiptOrderGetDto>() };

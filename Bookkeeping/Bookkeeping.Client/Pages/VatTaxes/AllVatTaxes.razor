@@ -8,10 +8,10 @@
     <MudPaper Class="pa-4 mb-4" Elevation="2">
         <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.h6" Class="flex-grow-1">Ставки НДС</MudText>
-            <MudButton Variant="Variant.Filled" 
-                       Color="Color.Primary" 
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
                        StartIcon="@Icons.Material.Filled.Add"
-                       OnClick="@(() => Nav.NavigateTo("/vat-taxes/create"))" 
+                       OnClick="@(() => Nav.NavigateTo("/vat-taxes/create"))"
                        Size="Size.Small">
                 Добавить ставку
             </MudButton>
@@ -22,6 +22,7 @@
     {
         <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-4" />
     }
+
     <MudPaper Elevation="2" Class="pa-2">
         <MudTable ServerData="@ServerReload"
                   Dense="true"
@@ -30,16 +31,11 @@
                   @ref="_table"
                   Bordered="false"
                   Elevation="0"
-                  RowsPerPage="10">
-
-            <LoadingContent>
-                <MudText>Минутку, ищем налоги...</MudText>
-            </LoadingContent>
-
+                  Loading="false">
+            
             <HeaderContent>
                 <MudTh>Ставка (%)</MudTh>
                 <MudTh>Описание</MudTh>
-                @* <MudTh>Дата создания</MudTh> *@
                 <MudTh Style="text-align:right">Действия</MudTh>
             </HeaderContent>
 
@@ -54,43 +50,32 @@
                         @(string.IsNullOrEmpty(context.Description) ? "—" : context.Description)
                     </MudText>
                 </MudTd>
-                @* <MudTd DataLabel="Дата создания">
-                    <MudText Typo="Typo.body2">@context.CreatedAt.ToString("dd.MM.yyyy HH:mm")</MudText>
-                </MudTd> *@
                 <MudTd DataLabel="Действия" Style="text-align:right; white-space:nowrap;">
                     <MudTooltip Text="Просмотр">
-                        <MudIconButton Icon="@Icons.Material.Filled.Visibility" 
-                                       Size="Size.Small" 
+                        <MudIconButton Icon="@Icons.Material.Filled.Visibility"
+                                       Size="Size.Small"
                                        Color="Color.Primary"
                                        OnClick="@(() => Nav.NavigateTo($"/vat-taxes/details/{context.Id}"))" />
                     </MudTooltip>
                     <MudTooltip Text="Изменить">
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit" 
-                                       Size="Size.Small" 
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Size="Size.Small"
                                        Color="Color.Inherit"
                                        OnClick="@(() => Nav.NavigateTo($"/vat-taxes/edit/{context.Id}"))" />
                     </MudTooltip>
                     <MudTooltip Text="Удалить">
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" 
-                                       Size="Size.Small" 
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Size="Size.Small"
                                        Color="Color.Error"
                                        OnClick="@(() => Nav.NavigateTo($"/vat-taxes/delete/{context.Id}"))" />
                     </MudTooltip>
                 </MudTd>
             </RowTemplate>
 
-            <NoRecordsContent>
-                <MudText Typo="Typo.body2" Class="pa-4 text-center">Ставки НДС не найдены</MudText>
-            </NoRecordsContent>
-
-            <LoadingContent>
-                <MudText Typo="Typo.body2" Class="pa-4 text-center">Загрузка данных...</MudText>
-            </LoadingContent>
-
             <PagerContent>
                 <MudTablePager InfoFormat="{first_item}-{last_item} из {all_items}"
                                RowsPerPageString="Строк на странице:"
-                               PageSizeOptions="new int[]{10, 25, 50}" />
+                               PageSizeOptions="new int[]{10, 25, 50, 100}" />
             </PagerContent>
         </MudTable>
     </MudPaper>

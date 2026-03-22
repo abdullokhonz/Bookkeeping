@@ -15,12 +15,9 @@ namespace Bookkeeping.Client.Pages.IncomeCategories
         private async Task<TableData<IncomeCategoryGetDto>> ServerReload(TableState state, CancellationToken token)
         {
             _isLoading = true;
-            StateHasChanged();
-
             try
             {
                 var url = $"/api/v1/IncomeCategory/GetPaged?page={state.Page + 1}&size={state.PageSize}";
-
                 var response = await Http.GetFromJsonAsync<ApiResponse<List<IncomeCategoryGetDto>>>(url, token);
 
                 if (response != null && response.IsSuccess)
@@ -42,7 +39,6 @@ namespace Bookkeeping.Client.Pages.IncomeCategories
             finally
             {
                 _isLoading = false;
-                StateHasChanged();
             }
 
             return new TableData<IncomeCategoryGetDto>() { TotalItems = 0, Items = new List<IncomeCategoryGetDto>() };
@@ -60,7 +56,7 @@ namespace Bookkeeping.Client.Pages.IncomeCategories
                     if (res != null && res.IsSuccess && res.Data != null)
                     {
                         _accountCache[id] = res.Data.AccountNumber;
-                        StateHasChanged();
+                        await InvokeAsync(StateHasChanged);
                     }
                 }
                 catch { }
