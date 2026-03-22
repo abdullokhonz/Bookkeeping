@@ -18,16 +18,19 @@
         </MudStack>
     </MudPaper>
 
+    @if (_isLoading)
+    {
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-4" />
+    }
     <MudPaper Elevation="2" Class="pa-2">
         <MudTable ServerData="@ServerReload"
                   Dense="true"
                   Hover="true"
-                  Striped="true"
+                  Striped="false"
                   @ref="_table"
                   Bordered="false"
                   Elevation="0"
-                  RowsPerPage="10"
-                  Loading="@_isLoading">
+                  RowsPerPage="10">
 
             <LoadingContent>
                 <MudText>Минутку, ищем налоги...</MudText>

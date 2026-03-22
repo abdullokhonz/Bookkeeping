@@ -42,7 +42,6 @@ namespace Bookkeeping.Client.Pages.ReferenceBooks.ReferenceBookCategories
             _isProcessing = true;
             try
             {
-                // Используем HardDelete как в твоем примере
                 var response = await Http.DeleteAsync($"/api/v1/ReferenceBookCategory/HardDelete/{Id}/permanent");
                 if (response.IsSuccessStatusCode)
                 {

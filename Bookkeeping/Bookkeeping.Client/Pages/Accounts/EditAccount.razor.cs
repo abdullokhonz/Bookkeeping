@@ -25,7 +25,6 @@ namespace Bookkeeping.Client.Pages.Accounts
         {
             try
             {
-                // Получаем текущие данные (обычно сервер отдает полную модель)
                 var result = await Http.GetFromJsonAsync<ApiResponse<IfrsAccountUpdateDto>>($"/api/v1/IfrsAccount/GetById/{Id}");
                 if (result != null && result.IsSuccess)
                 {
@@ -46,7 +45,6 @@ namespace Bookkeeping.Client.Pages.Accounts
 
         private async Task HandleValidSubmit()
         {
-            // Метод PUT для обновления
             var response = await Http.PutAsJsonAsync($"/api/v1/IfrsAccount/Update/{Id}", updateModel);
 
             if (response.IsSuccessStatusCode)

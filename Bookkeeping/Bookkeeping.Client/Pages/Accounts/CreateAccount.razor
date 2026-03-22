@@ -13,7 +13,6 @@
             <DataAnnotationsValidator />
             
             <MudGrid>
-                @* Номер счета *@
                 <MudItem xs="12" md="6">
                     <MudTextField Label="Номер счета"
                                   @bind-Value="_account.AccountNumber"
@@ -25,7 +24,6 @@
                                   InputMode="InputMode.numeric" />
                 </MudItem>
 
-                @* Название счета *@
                 <MudItem xs="12" md="6">
                     <MudTextField Label="Название счета"
                                   @bind-Value="_account.AccountName"
@@ -34,7 +32,6 @@
                                   Immediate="true" />
                 </MudItem>
 
-                @* Категория *@
                 <MudItem xs="12" md="6">
                     <MudSelect T="Guid?"
                                Label="Категория счета"
@@ -63,7 +60,6 @@
                     </MudSelect>
                 </MudItem>
 
-                @* Тип счета *@
                 <MudItem xs="12" md="6">
                     <MudSelect T="AccountNature?"
                                Label="Тип счета"
@@ -85,7 +81,6 @@
                     </MudSelect>
                 </MudItem>
 
-                @* Описание *@
                 <MudItem xs="12">
                     <MudTextField Label="Описание"
                                   @bind-Value="_account.Description"

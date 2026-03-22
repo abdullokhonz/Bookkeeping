@@ -1,41 +1,41 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Bookkeeping</a>
-    </div>
-</div>
+﻿<MudNavMenu>
+    <MudNavLink Href="" Match="NavLinkMatch.All"
+                Icon="@Icons.Material.Filled.Home" IconColor="Color.Inherit">
+        Главная
+    </MudNavLink>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+    <MudNavLink Href="counter" Match="NavLinkMatch.Prefix"
+                Icon="@Icons.Material.Filled.Countertops" IconColor="Color.Inherit">
+        Counter
+    </MudNavLink>
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
+    <MudNavLink Href="weather" Match="NavLinkMatch.Prefix"
+                Icon="@Icons.Material.Filled.Cloud" IconColor="Color.Inherit">
+        Weather
+    </MudNavLink>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
+    <MudNavLink Href="accounts" Match="NavLinkMatch.Prefix"
+                Icon="@Icons.Material.Filled.AccountTree" IconColor="Color.Inherit">
+        План счёт
+    </MudNavLink>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
+    <MudNavLink Href="income-categories" Match="NavLinkMatch.Prefix"
+                Icon="@Icons.Material.Filled.AddChart" IconColor="Color.Inherit">
+        Статья доходов
+    </MudNavLink>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="category-account-5d">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Category Accounts 5d
-            </NavLink>
-        </div>
+    <MudNavLink Href="reference-books" Match="NavLinkMatch.Prefix"
+                Icon="@Icons.Material.Filled.LibraryBooks" IconColor="Color.Inherit">
+        Справочники
+    </MudNavLink>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="accounts">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> План счет
-            </NavLink>
-        </div>
-    </nav>
-</div>
+    <MudNavLink Href="vat-taxes" Match="NavLinkMatch.Prefix"
+                Icon="@Icons.Material.Filled.Percent" IconColor="Color.Inherit">
+        НДС
+    </MudNavLink>
+
+    <MudNavLink Href="cash-receipt-orders" Match="NavLinkMatch.Prefix"
+                Icon="@Icons.Material.Filled.ReceiptLong" IconColor="Color.Inherit">
+        ПКО
+    </MudNavLink>
+</MudNavMenu>

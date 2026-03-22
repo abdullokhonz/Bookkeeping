@@ -7,11 +7,6 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Services.AddMudServices();
 builder.Services.AddLocalization();
 
-/*
-var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"]
-                 ?? throw new InvalidOperationException("API BaseUrl not configured.");
-*/
-
 var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"]
     ?? builder.HostEnvironment.BaseAddress;
 if (!apiBaseUrl.EndsWith("/")) apiBaseUrl += "/";

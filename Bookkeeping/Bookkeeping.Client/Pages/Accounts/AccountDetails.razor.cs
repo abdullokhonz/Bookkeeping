@@ -15,14 +15,12 @@ namespace Bookkeeping.Client.Pages.Accounts
         private IfrsAccountTreeDto? _account;
         private string? _categoryName;
 
-        // Настраиваем хлебные крошки
         private List<BreadcrumbItem> _breadcrumbs = new()
-    {
-        new BreadcrumbItem("План счетов", href: "/accounts"),
-        new BreadcrumbItem("Детали счета", href: null, disabled: true)
-    };
+        {
+            new BreadcrumbItem("План счетов", href: "/accounts"),
+            new BreadcrumbItem("Детали счета", href: null, disabled: true)
+        };
 
-        // Оставили ТОЛЬКО OnParametersSetAsync, чтобы избежать двойного вызова
         protected override async Task OnParametersSetAsync()
         {
             _account = null;

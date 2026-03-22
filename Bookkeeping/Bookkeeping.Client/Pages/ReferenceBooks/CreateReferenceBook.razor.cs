@@ -12,7 +12,6 @@ namespace Bookkeeping.Client.Pages.ReferenceBooks
             Info = new Dictionary<string, object>()
         };
 
-        // Временный класс для привязки ключей и значений из UI
         private class KeyValueItem
         {
             public string Key { get; set; } = string.Empty;
@@ -59,13 +58,11 @@ namespace Bookkeeping.Client.Pages.ReferenceBooks
         {
             try
             {
-                // Конвертируем временный список обратно в Dictionary<string, object>
-                // Игнорируем пустые ключи, чтобы не отправить мусор на бэкенд
                 _referenceBook.Info = _infoItems
                     .Where(x => !string.IsNullOrWhiteSpace(x.Key))
                     .ToDictionary(
                         x => x.Key,
-                        x => (object)x.Value // Приводим к object, как требует DTO
+                        x => (object)x.Value
                     );
 
                 var response = await Http.PostAsJsonAsync("/api/v1/ReferenceBook/Create", _referenceBook);

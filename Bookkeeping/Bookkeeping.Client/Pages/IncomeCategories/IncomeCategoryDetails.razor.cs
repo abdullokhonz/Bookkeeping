@@ -12,7 +12,7 @@ namespace Bookkeeping.Client.Pages.IncomeCategories
         [Parameter] public Guid Id { get; set; }
 
         private IncomeCategoryGetDto? _category;
-        private IfrsAccountTreeDto? _accountInfo; // для отображения связанного счета
+        private IfrsAccountTreeDto? _accountInfo;
         private List<BreadcrumbItem> _breadcrumbs = new()
     {
         new BreadcrumbItem("Статьи доходов", href: "/income-categories"),
@@ -60,11 +60,7 @@ namespace Bookkeeping.Client.Pages.IncomeCategories
                     _accountInfo = result.Data;
                 }
             }
-            catch
-            {
-                // Если не удалось загрузить, оставляем null – пользователь увидит только ссылку на недоступный счёт?
-                // В данном случае лучше не показывать ссылку, а просто текст "Не удалось загрузить"
-            }
+            catch { }
         }
 
         private void GoToMain() => Nav.NavigateTo("/income-categories");

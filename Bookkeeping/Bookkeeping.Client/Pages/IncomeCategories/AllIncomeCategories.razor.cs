@@ -19,7 +19,6 @@ namespace Bookkeeping.Client.Pages.IncomeCategories
 
             try
             {
-                // Убрали параметр search из URL
                 var url = $"/api/v1/IncomeCategory/GetPaged?page={state.Page + 1}&size={state.PageSize}";
 
                 var response = await Http.GetFromJsonAsync<ApiResponse<List<IncomeCategoryGetDto>>>(url, token);
@@ -64,7 +63,7 @@ namespace Bookkeeping.Client.Pages.IncomeCategories
                         StateHasChanged();
                     }
                 }
-                catch { /* Игнорируем ошибки для отдельных имен */ }
+                catch { }
             }
         }
     }

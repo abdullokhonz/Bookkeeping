@@ -5,7 +5,6 @@
 @inject ISnackbar Snackbar
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-8">
-    @* Шапка *@
     <MudPaper Class="pa-4 mb-4" Elevation="2">
         <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.h6" Class="flex-grow-1">Статьи доходов</MudText>
@@ -22,7 +21,6 @@
     }
 
     <MudPaper Elevation="2" Class="pa-2">
-        @* Установлено RowsPerPage="25" для дефолтного размера *@
         <MudTable ServerData="@ServerReload"
                   Dense="true"
                   Hover="true"
@@ -31,7 +29,7 @@
                   Bordered="false"
                   Elevation="0"
                   Loading="false"
-                  RowsPerPage="25">
+                  RowsPerPage="10">
             
             <HeaderContent>
                 <MudTh>Название</MudTh>

@@ -1,9 +1,5 @@
 ﻿@page "/reference-books/details/{Id:guid}"
 
-@using Bookkeeping.Contracts.DTOs.ReferenceBooks.ReferenceBookDto
-@using Bookkeeping.Contracts.DTOs.ReferenceBooks.ReferenceBookCategoryDto
-@using Bookkeeping.Contracts.Common.Responses
-
 @inject HttpClient Http
 @inject NavigationManager Nav
 @inject ISnackbar Snackbar
@@ -21,7 +17,6 @@
     else
     {
         <MudPaper Elevation="4" Class="overflow-hidden rounded-lg">
-            @* ШАПКА С ГРАДИЕНТОМ *@
             <div class="pa-8 d-flex align-start justify-space-between"
                  style="background: linear-gradient(135deg, var(--mud-palette-primary) 0%, var(--mud-palette-info) 100%); color: white;">
                 
@@ -38,7 +33,6 @@
 
             <div class="pa-8">
                 <MudGrid Spacing="6">
-                    @* ЛЕВАЯ КОЛОНКА *@
                     <MudItem xs="12" md="7">
                         <MudText Typo="Typo.h6" Class="mb-4 d-flex align-center gap-2">
                             <MudIcon Icon="@Icons.Material.Filled.Notes" Color="Color.Primary" />
@@ -74,7 +68,6 @@
                         </MudPaper>
                     </MudItem>
 
-                    @* ПРАВАЯ КОЛОНКА *@
                     <MudItem xs="12" md="5">
                         <MudText Typo="Typo.h6" Class="mb-4 d-flex align-center gap-2">
                             <MudIcon Icon="@Icons.Material.Filled.History" Color="Color.Primary" />
@@ -98,7 +91,6 @@
 
                 <MudDivider Class="my-8" />
 
-                @* ПАНЕЛЬ ДЕЙСТВИЙ *@
                 <div class="d-flex justify-space-between align-center">
                     <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="GoToMain">
                         Назад к списку

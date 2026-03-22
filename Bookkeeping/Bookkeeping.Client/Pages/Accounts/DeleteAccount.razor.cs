@@ -1,6 +1,6 @@
 using Bookkeeping.Contracts.Common.Responses;
 using Bookkeeping.Contracts.DTOs.Accounts5d.IfrsAccountDto;
-using Bookkeeping.Contracts.DTOs.Accounts5d.CategoryAccount5dDto; // Убедись, что DTO категории тут
+using Bookkeeping.Contracts.DTOs.Accounts5d.CategoryAccount5dDto;
 using Bookkeeping.Contracts.Enums;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -13,7 +13,7 @@ namespace Bookkeeping.Client.Pages.Accounts
         [Parameter] public Guid Id { get; set; }
 
         private IfrsAccountUpdateDto? account;
-        private string? _categoryName; // Для хранения названия категории
+        private string? _categoryName;
         private bool _isProcessing = false;
 
         protected override async Task OnInitializedAsync() => await LoadAccountData();
@@ -26,7 +26,7 @@ namespace Bookkeeping.Client.Pages.Accounts
                 if (result != null && result.IsSuccess)
                 {
                     account = result.Data;
-                    // После загрузки счета, запрашиваем название категории
+
                     if (account!.CategoryAccountId.HasValue)
                     {
                         await LoadCategoryName(account.CategoryAccountId.Value);
@@ -48,7 +48,6 @@ namespace Bookkeeping.Client.Pages.Accounts
         {
             try
             {
-                // Подставь здесь правильный DTO, который возвращает твой API для категорий
                 var result = await Http.GetFromJsonAsync<ApiResponse<CategoryAccount5dTreeDto>>($"/api/v1/CategoryAccount5d/GetById/{categoryId}");
                 if (result != null && result.IsSuccess)
                 {
@@ -75,13 +74,11 @@ namespace Bookkeeping.Client.Pages.Accounts
                 }
                 else
                 {
-                    // Ошибка на стороне сервера (например, запись привязана)
                     Snackbar.Add("Ошибка при удалении счета", Severity.Error);
                 }
             }
             catch (Exception)
             {
-                // Ошибка сети или критический сбой
                 Snackbar.Add("Ошибка при удалении счета", Severity.Error);
             }
             finally

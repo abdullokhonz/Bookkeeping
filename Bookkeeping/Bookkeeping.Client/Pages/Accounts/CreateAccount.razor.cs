@@ -25,7 +25,6 @@ namespace Bookkeeping.Client.Pages.Accounts
         {
             try
             {
-                // ВНИМАНИЕ: Проверь в F12, как называется поле с данными: Data, Value или Result?
                 var response = await Http.GetFromJsonAsync<ApiResponse<List<CategoryAccount5dTreeDto>>>("/api/v1/CategoryAccount5d/GetAll");
                 if (response != null && response.IsSuccess)
                 {

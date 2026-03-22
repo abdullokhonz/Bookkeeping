@@ -41,7 +41,6 @@ namespace Bookkeeping.Client.Pages.ReferenceBooks
                 if (result != null && result.IsSuccess && result.Data != null)
                 {
                     var data = result.Data;
-                    // Мапим GetDto в UpdateDto
                     updateModel = new ReferenceBookUpdateDto
                     {
                         Name = data.Name,
@@ -50,7 +49,6 @@ namespace Bookkeeping.Client.Pages.ReferenceBooks
                         Info = data.Info
                     };
 
-                    // Распаковываем словарь для UI
                     if (data.Info != null)
                     {
                         _infoItems = data.Info.Select(kvp => new KeyValueItem

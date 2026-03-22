@@ -60,10 +60,8 @@ namespace Bookkeeping.Client.Pages.Accounts
             }
         }
 
-        // 📌 ИСПРАВЛЕННЫЙ МЕТОД BuildTree
         private List<TreeNode> BuildTree(List<CategoryAccount5dTreeDto> categories, List<IfrsAccountTreeDto> accounts)
         {
-            // 1. Строим дерево категорий (рекурсивно)
             var categoryNodes = new Dictionary<Guid, TreeNode>();
             var rootCategories = new List<TreeNode>();
 
@@ -90,7 +88,6 @@ namespace Bookkeeping.Client.Pages.Accounts
             foreach (var cat in categories)
                 AddCategoryNode(cat);
 
-            // 2. Рекурсивное преобразование счёта и его дочерних счетов (используем готовую иерархию из DTO)
             TreeNode ConvertAccount(IfrsAccountTreeDto acc)
             {
                 var node = new TreeNode
@@ -101,15 +98,15 @@ namespace Bookkeeping.Client.Pages.Accounts
                     Nature = acc.AccountNature,
                     Type = NodeType.Account
                 };
-                // Добавляем детей рекурсивно
+
                 foreach (var child in acc.Children ?? new())
                 {
                     node.Children.Add(ConvertAccount(child));
                 }
+
                 return node;
             }
 
-            // 3. Привязываем корневые счета к категориям
             foreach (var acc in accounts)
             {
                 var accountNode = ConvertAccount(acc);
@@ -119,15 +116,12 @@ namespace Bookkeeping.Client.Pages.Accounts
                 }
                 else
                 {
-                    // Если категория не найдена, добавляем счёт в корень (на один уровень с категориями)
                     rootCategories.Add(accountNode);
                 }
             }
 
             return rootCategories;
         }
-
-        // --------- RenderNode Method
 
         private void ToggleNode(Guid id)
         {

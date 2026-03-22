@@ -1,10 +1,5 @@
 ﻿@page "/cash-receipt-orders/edit/{Id:guid}"
 
-@using System.Net.Http.Headers
-@using Bookkeeping.Contracts.Enums
-@using Bookkeeping.Contracts.DTOs.CashReceiptOrders.CashReceiptOrderDto
-@using Bookkeeping.Contracts.DTOs.CashReceiptOrders.ImageDto
-@using Dialogs
 @inject HttpClient Http
 @inject NavigationManager Nav
 @inject ISnackbar Snackbar
@@ -27,7 +22,6 @@
             <DataAnnotationsValidator />
 
             <MudGrid>
-                @* ЛЕВАЯ КОЛОНКА (без изменений) *@
                 <MudItem xs="12" md="8">
                     <MudStack Spacing="4">
                         <MudCard Elevation="3">
@@ -161,7 +155,6 @@
                     </MudStack>
                 </MudItem>
 
-                @* ПРАВАЯ КОЛОНКА *@
                 <MudItem xs="12" md="4">
                     <MudStack Spacing="4">
                         <MudCard Elevation="3">
@@ -176,14 +169,13 @@
                             </MudCardContent>
                         </MudCard>
 
-                        @* Блок файлов (исправленный) *@
                         <MudCard Elevation="3">
-    <MudCardHeader>
-        <CardHeaderContent>
-            <MudText Typo="Typo.h6">Прикрепленный файл</MudText>
-        </CardHeaderContent>
-    </MudCardHeader>
-    <MudCardContent>
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h6">Прикрепленный файл</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
                                 <MudFileUpload T="IBrowserFile"
                                                FilesChanged="OnFileSelected"
                                                Accept=".png, .jpg, .jpeg, .pdf">
@@ -197,48 +189,47 @@
                                         </MudButton>
                                     </CustomContent>
                                     <SelectedTemplate Context="fileUploadContext">
-                                        @* Пустой шаблон, чтобы скрыть стандартное отображение *@
                                     </SelectedTemplate>
                                 </MudFileUpload>
 
-        @if (_existingImage != null || _selectedFile != null)
-        {
-            <div class="mt-4 pa-4 rounded-lg" style="background-color: var(--mud-palette-background-grey); border: 1px solid var(--mud-palette-divider);">
-                <div class="d-flex align-center justify-space-between mb-3 gap-2">
-                    <div class="d-flex align-center flex-grow-1 px-3 py-1 rounded-pill"
-                         style="background-color: var(--mud-palette-secondary); color: white; max-width: 80%; min-height: 32px;">
-                        <MudIcon Icon="@Icons.Material.Filled.AttachFile" Size="Size.Small" Class="mr-2" />
-                        <MudText Typo="Typo.body2" Class="text-truncate font-weight-bold">
-                            @(_selectedFile?.Name ?? _existingImage?.Name)
-                        </MudText>
-                    </div>
+                                @if (_existingImage != null || _selectedFile != null)
+                                {
+                                    <div class="mt-4 pa-4 rounded-lg" style="background-color: var(--mud-palette-background-grey); border: 1px solid var(--mud-palette-divider);">
+                                        <div class="d-flex align-center justify-space-between mb-3 gap-2">
+                                            <div class="d-flex align-center flex-grow-1 px-3 py-1 rounded-pill"
+                                                 style="background-color: var(--mud-palette-secondary); color: white; max-width: 80%; min-height: 32px;">
+                                                <MudIcon Icon="@Icons.Material.Filled.AttachFile" Size="Size.Small" Class="mr-2" />
+                                                <MudText Typo="Typo.body2" Class="text-truncate font-weight-bold">
+                                                    @(_selectedFile?.Name ?? _existingImage?.Name)
+                                                </MudText>
+                                            </div>
 
-                    <MudTooltip Text="Удалить файл">
-                        <MudIconButton Icon="@Icons.Material.Filled.DeleteForever"
-                                       Color="Color.Error"
-                                       Variant="Variant.Filled"
-                                       Size="Size.Small"
-                                       OnClick="RemoveFileAsync" />
-                    </MudTooltip>
-                </div>
+                                            <MudTooltip Text="Удалить файл">
+                                                <MudIconButton Icon="@Icons.Material.Filled.DeleteForever"
+                                                               Color="Color.Error"
+                                                               Variant="Variant.Filled"
+                                                               Size="Size.Small"
+                                                               OnClick="RemoveFileAsync" />
+                                            </MudTooltip>
+                                        </div>
 
-                <MudStack Spacing="2">
-                    <MudTextField Label="Название для базы"
-                                  @bind-Value="_imageUpdateModel.Name"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense"
-                                  Dense="true" />
-                    <MudTextField Label="Описание файла"
-                                  @bind-Value="_imageUpdateModel.Description"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense"
-                                  Lines="2"
-                                  Dense="true" />
-                </MudStack>
-            </div>
-        }
-    </MudCardContent>
-</MudCard>
+                                        <MudStack Spacing="2">
+                                            <MudTextField Label="Название для базы"
+                                                          @bind-Value="_imageUpdateModel.Name"
+                                                          Variant="Variant.Outlined"
+                                                          Margin="Margin.Dense"
+                                                          Dense="true" />
+                                            <MudTextField Label="Описание файла"
+                                                          @bind-Value="_imageUpdateModel.Description"
+                                                          Variant="Variant.Outlined"
+                                                          Margin="Margin.Dense"
+                                                          Lines="2"
+                                                          Dense="true" />
+                                        </MudStack>
+                                    </div>
+                                }
+                            </MudCardContent>
+                        </MudCard>
                     </MudStack>
                 </MudItem>
 
@@ -259,250 +250,3 @@
         </EditForm>
     }
 </MudContainer>
-
-@code {
-    [Parameter] public Guid Id { get; set; }
-
-    // DTO и вспомогательные классы
-    public record IncomeCategoryGetDto(Guid Id, string Name);
-    public record ReferenceBookGetDto(Guid Id, string Name);
-    public record VatTaxGetDto(Guid Id, decimal VatRate);
-
-    public class ApiResponse<T>
-    {
-        public bool IsSuccess { get; set; }
-        public T? Data { get; set; }
-        public string? Message { get; set; }
-    }
-
-    private CashReceiptOrderUpdateDto? _pkoModel;
-    private ImageGetDto? _existingImage;
-    private ImageUpdateDto _imageUpdateModel = new();
-    
-    private IBrowserFile? _selectedFile;
-    private bool _isLoadingData = true;
-    private bool _isProcessing = false;
-
-    private List<IncomeCategoryGetDto> _incomeCategories = new();
-    private List<ReferenceBookGetDto> _referenceBooks = new();
-    private List<VatTaxGetDto> _vatTaxes = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            var vatTask = Http.GetFromJsonAsync<ApiResponse<List<VatTaxGetDto>>>("/api/v1/VatTax/GetAll");
-            var catTask = Http.GetFromJsonAsync<ApiResponse<List<IncomeCategoryGetDto>>>("/api/v1/IncomeCategory/GetAll");
-            var refTask = Http.GetFromJsonAsync<ApiResponse<List<ReferenceBookGetDto>>>("/api/v1/ReferenceBook/GetAll");
-            var orderTask = Http.GetFromJsonAsync<ApiResponse<CashReceiptOrderGetDto>>($"/api/v1/CashReceiptOrder/GetById/{Id}");
-
-            await Task.WhenAll(vatTask, catTask, refTask, orderTask);
-
-            _vatTaxes = vatTask.Result?.Data ?? new();
-            _incomeCategories = catTask.Result?.Data ?? new();
-            _referenceBooks = refTask.Result?.Data ?? new();
-
-            var orderData = orderTask.Result?.Data;
-            if (orderData != null)
-            {
-                _pkoModel = new CashReceiptOrderUpdateDto
-                {
-                    Name = orderData.Name,
-                    Description = orderData.Description,
-                    Amount = orderData.Amount,
-                    Status = orderData.Status,
-                    IncomeCategoryId = orderData.IncomeCategoryId,
-                    ReferenceBookId = orderData.ReferenceBookId,
-                    VatTaxId = orderData.VatTaxId,
-                    Accountant = orderData.Accountant,
-                    Cashier = orderData.Cashier
-                };
-                
-                await LoadImageInfo();
-            }
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add($"Ошибка загрузки: {ex.Message}", Severity.Error);
-        }
-        finally { _isLoadingData = false; }
-    }
-
-    private async Task LoadImageInfo()
-    {
-        try
-        {
-            // Получаем все изображения
-            var response = await Http.GetFromJsonAsync<ApiResponse<List<ImageGetDto>>>("/api/v1/Image/GetAll");
-            if (response?.IsSuccess == true && response.Data != null)
-            {
-                // Ищем изображение, привязанное к текущему ПКО
-                var foundImage = response.Data.FirstOrDefault(x => x.EntityId == Id);
-                if (foundImage != null)
-                {
-                    _existingImage = foundImage;
-                    _imageUpdateModel.Name = foundImage.Name;
-                    _imageUpdateModel.Description = foundImage.Description;
-                    _imageUpdateModel.EntityId = Id;
-                }
-            }
-        }
-        catch (Exception ex) { Console.WriteLine($"Ошибка загрузки файла: {ex.Message}"); }
-    }
-
-    private async Task RemoveFileAsync()
-    {
-        if (_existingImage != null)
-        {
-            var parameters = new DialogParameters
-        {
-            { nameof(ConfirmDeleteDialog.ContentText), $"Удалить файл \"{_existingImage.Name}\" из базы данных навсегда?" },
-            { nameof(ConfirmDeleteDialog.Title), "Удаление файла" },
-            { nameof(ConfirmDeleteDialog.ConfirmText), "Удалить" }
-        };
-            var options = new DialogOptions { CloseButton = false, MaxWidth = MaxWidth.ExtraSmall, FullWidth = true };
-            var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Удаление", parameters, options);
-            var result = await dialog.Result;
-        
-            if (result!.Canceled) return;
-
-            var resp = await Http.DeleteAsync($"/api/v1/Image/HardDelete/{_existingImage.Id}/permanent");
-            if (!resp.IsSuccessStatusCode)
-            {
-                Snackbar.Add("Ошибка при удалении из базы", Severity.Error);
-                return;
-            }
-            Snackbar.Add("Файл удален", Severity.Success);
-        }
-
-        _existingImage = null;
-        _selectedFile = null;
-        _imageUpdateModel = new ImageUpdateDto();
-        StateHasChanged();
-    }
-
-    private void OnFileSelected(IBrowserFile? file)
-    {
-        if (file == null) return;
-        _selectedFile = file;
-        _imageUpdateModel.EntityId = Id;
-        if (string.IsNullOrWhiteSpace(_imageUpdateModel.Name))
-        {
-            _imageUpdateModel.Name = Path.GetFileNameWithoutExtension(file.Name);
-        }
-    }
-
-    private async Task HandleValidSubmit()
-    {
-        if (_pkoModel == null) return;
-        _isProcessing = true;
-        try
-        {
-            var pkoResponse = await Http.PutAsJsonAsync($"/api/v1/CashReceiptOrder/Update/{Id}", _pkoModel);
-            if (!pkoResponse.IsSuccessStatusCode)
-            {
-                Snackbar.Add("Ошибка при сохранении ПКО", Severity.Error);
-                return;
-            }
-
-            // Обработка файла
-            bool fileProcessed = await ProcessFileAsync();
-            if (!fileProcessed)
-            {
-                Snackbar.Add("ПКО обновлен, но возникла ошибка при работе с файлом", Severity.Warning);
-            }
-            else
-            {
-                Snackbar.Add("Изменения успешно сохранены", Severity.Success);
-            }
-
-            Nav.NavigateTo("/cash-receipt-orders");
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add($"Критическая ошибка: {ex.Message}", Severity.Error);
-        }
-        finally { _isProcessing = false; }
-    }
-
-    private async Task<bool> ProcessFileAsync()
-    {
-        try
-        {
-            // Случай 1: Файл был удалён (и нет нового) – уже удалён в RemoveFileAsync
-            if (_existingImage == null && _selectedFile == null)
-                return true; // ничего не делаем
-
-            // Случай 2: Есть новый файл (замена или добавление)
-            if (_selectedFile != null)
-            {
-                using var content = new MultipartFormDataContent();
-                content.Add(new StringContent(_imageUpdateModel.Name ?? ""), "Name");
-                content.Add(new StringContent(_imageUpdateModel.Description ?? ""), "Description");
-                content.Add(new StringContent(Id.ToString()), "EntityId");
-
-                var stream = _selectedFile.OpenReadStream(10 * 1024 * 1024); // 10 MB limit
-                var fileContent = new StreamContent(stream);
-                fileContent.Headers.ContentType = new MediaTypeHeaderValue(_selectedFile.ContentType);
-                content.Add(fileContent, "file", _selectedFile.Name);
-
-                if (_existingImage != null)
-                {
-                    // Замена существующего файла
-                    var response = await Http.PutAsync($"/api/v1/Image/Update/{_existingImage.Id}", content);
-                    return response.IsSuccessStatusCode;
-                }
-                else
-                {
-                    // Новый файл
-                    var response = await Http.PostAsync("/api/v1/Image/Upload", content);
-                    return response.IsSuccessStatusCode;
-                }
-            }
-
-            // Случай 3: Файл есть, но изменены метаданные (без замены файла)
-            if (_existingImage != null && ( _imageUpdateModel.Name != _existingImage.Name || 
-                                            _imageUpdateModel.Description != _existingImage.Description ))
-            {
-                using var content = new MultipartFormDataContent();
-                content.Add(new StringContent(_imageUpdateModel.Name ?? ""), "Name");
-                content.Add(new StringContent(_imageUpdateModel.Description ?? ""), "Description");
-                content.Add(new StringContent(Id.ToString()), "EntityId");
-                // Без файла — обновляем только метаданные
-                var response = await Http.PutAsync($"/api/v1/Image/Update/{_existingImage.Id}", content);
-                return response.IsSuccessStatusCode;
-            }
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Ошибка обработки файла: {ex.Message}");
-            return false;
-        }
-    }
-
-    private string GetStatusName(DocumentStatus status) => status switch
-    {
-        DocumentStatus.Draft => "Черновик",
-        DocumentStatus.Processed => "Проведен",
-        DocumentStatus.Canceled => "Отменен",
-        _ => status.ToString()
-    };
-
-    private Color GetStatusColor(DocumentStatus status) => status switch
-    {
-        DocumentStatus.Processed => Color.Success,
-        DocumentStatus.Canceled => Color.Error,
-        DocumentStatus.Draft => Color.Warning,
-        _ => Color.Default
-    };
-
-    private string GetStatusIcon(DocumentStatus status) => status switch
-    {
-        DocumentStatus.Processed => Icons.Material.Filled.CheckCircle,
-        DocumentStatus.Canceled => Icons.Material.Filled.Cancel,
-        DocumentStatus.Draft => Icons.Material.Filled.EditNote,
-        _ => Icons.Material.Filled.Error
-    };
-}

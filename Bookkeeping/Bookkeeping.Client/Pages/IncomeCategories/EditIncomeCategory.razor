@@ -20,7 +20,6 @@
             <EditForm Model="@_model" OnValidSubmit="HandleValidSubmit">
                 <DataAnnotationsValidator />
                 <MudGrid>
-                    @* Название статьи *@
                     <MudItem xs="12" md="6">
                         <MudTextField Label="Название статьи"
                                       @bind-Value="_model.Name"
@@ -29,7 +28,6 @@
                                       Immediate="true" />
                     </MudItem>
 
-                    @* Привязка к счету *@
                     <MudItem xs="12" md="6">
                         <MudSelect T="Guid?"
                                    Label="Связанный счет (ПС)"
@@ -51,7 +49,6 @@
                         </MudSelect>
                     </MudItem>
 
-                    @* Описание *@
                     <MudItem xs="12">
                         <MudTextField Label="Описание"
                                       @bind-Value="_model.Description"

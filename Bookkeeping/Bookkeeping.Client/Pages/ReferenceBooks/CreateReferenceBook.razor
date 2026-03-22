@@ -13,7 +13,6 @@
             <DataAnnotationsValidator />
             
             <MudGrid>
-                @* Название справочника *@
                 <MudItem xs="12" md="6">
                     <MudTextField Label="Название справочника"
                                   @bind-Value="_referenceBook.Name"
@@ -23,7 +22,6 @@
                                   MaxLength="250" />
                 </MudItem>
 
-                @* Категория справочника *@
                 <MudItem xs="12" md="6">
                     <MudSelect T="Guid?"
                                Label="Категория"
@@ -52,7 +50,6 @@
                     </MudSelect>
                 </MudItem>
 
-                @* Описание *@
                 <MudItem xs="12">
                     <MudTextField Label="Описание"
                                   @bind-Value="_referenceBook.Description"
@@ -62,7 +59,6 @@
                                   MaxLength="500" />
                 </MudItem>
 
-                @* Дополнительная информация (Словарь Info) *@
                 <MudItem xs="12">
                     <MudText Typo="Typo.h6" Class="mt-4 mb-2">Дополнительные параметры (Info)</MudText>
                     <MudDivider Class="mb-4" />
@@ -86,7 +82,6 @@
                     </MudButton>
                 </MudItem>
 
-                @* Кнопки действий *@
                 <MudItem xs="12" Class="d-flex justify-end gap-4 mt-4">
                     <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="Cancel">Отмена</MudButton>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Сохранить</MudButton>

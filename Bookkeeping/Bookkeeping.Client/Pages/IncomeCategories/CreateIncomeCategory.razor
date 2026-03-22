@@ -13,7 +13,6 @@
             <DataAnnotationsValidator />
             
             <MudGrid>
-                @* Название статьи *@
                 <MudItem xs="12" md="6">
                     <MudTextField Label="Название статьи"
                                   @bind-Value="_model.Name"
@@ -23,7 +22,6 @@
                                   Placeholder="Например: Выручка от реализации" />
                 </MudItem>
 
-                @* Привязка к счету ПС *@
                 <MudItem xs="12" md="6">
                     <MudSelect T="Guid?"
                                Label="Связанный счет (ПС)"
@@ -53,7 +51,6 @@
                     </MudSelect>
                 </MudItem>
 
-                @* Описание *@
                 <MudItem xs="12">
                     <MudTextField Label="Описание статьи"
                                   @bind-Value="_model.Description"
@@ -63,7 +60,6 @@
                                   Placeholder="Укажите назначение данной статьи доходов..." />
                 </MudItem>
 
-                @* Кнопки *@
                 <MudItem xs="12" Class="d-flex justify-end gap-4 mt-4">
                     <MudButton Variant="Variant.Outlined"
                                Color="Color.Error"

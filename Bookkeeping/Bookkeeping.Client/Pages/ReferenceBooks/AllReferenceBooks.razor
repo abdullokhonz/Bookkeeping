@@ -2,7 +2,7 @@
 
 @inject HttpClient Http
 @inject ISnackbar Snackbar
-@inject NavigationManager NavManager
+@inject NavigationManager Nav
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-8">
     <MudPaper Class="pa-4 mb-4" Elevation="2">
@@ -98,7 +98,6 @@
                 </MudText>
             </td>
 
-            @* КОЛОНКА СО СЧЕТОМ (Как в статьях доходов) *@
             <td class="mud-table-cell">
                 @if (node.AccountId.HasValue)
                 {
@@ -106,7 +105,7 @@
                         @if (_accountCache.TryGetValue(node.AccountId.Value, out var accountName))
                         {
                             <MudLink Typo="Typo.body2" Color="Color.Info" Underline="Underline.Hover"
-                                     OnClick="@(() => NavManager.NavigateTo($"/accounts/details/{node.AccountId}"))"
+                                     OnClick="@(() => Nav.NavigateTo($"/accounts/details/{node.AccountId}"))"
                                      Style="cursor: pointer; font-weight: 500;">
                                 @accountName
                             </MudLink>

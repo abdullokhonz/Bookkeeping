@@ -13,7 +13,6 @@
             <DataAnnotationsValidator />
             
             <MudGrid>
-                @* Название категории *@
                 <MudItem xs="12" md="6">
                     <MudTextField Label="Название категории"
                                   @bind-Value="_category.Name"
@@ -23,7 +22,6 @@
                                   Placeholder="Например: Оборотные активы" />
                 </MudItem>
 
-                @* Родительская категория (если есть) *@
                 <MudItem xs="12" md="6">
                     <MudSelect T="Guid?"
                                Label="Родительская категория"
@@ -52,7 +50,6 @@
                     </MudSelect>
                 </MudItem>
 
-                @* Описание *@
                 <MudItem xs="12">
                     <MudTextField Label="Описание"
                                   @bind-Value="_category.Description"
@@ -62,7 +59,6 @@
                                   Placeholder="Краткое описание назначения категории..." />
                 </MudItem>
 
-                @* Кнопки действий *@
                 <MudItem xs="12" Class="d-flex justify-end gap-4 mt-4">
                     <MudButton Variant="Variant.Outlined"
                                Color="Color.Error"

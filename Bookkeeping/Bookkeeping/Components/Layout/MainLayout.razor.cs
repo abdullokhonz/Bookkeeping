@@ -5,7 +5,7 @@ namespace Bookkeeping.Components.Layout
     public partial class MainLayout
     {
         private bool _isDarkMode;
-        private bool _open = true; // по умолчанию открыто
+        private bool _open = true;
         private bool _isInitialized;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -14,19 +14,17 @@ namespace Bookkeeping.Components.Layout
             {
                 try
                 {
-                    // Загружаем состояние темы
                     var savedDark = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "darkMode");
                     if (bool.TryParse(savedDark, out var isDark))
                         _isDarkMode = isDark;
                     else
-                        _isDarkMode = false; // светлая по умолчанию
+                        _isDarkMode = false;
 
-                    // Загружаем состояние Drawer
                     var savedDrawer = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "drawerOpen");
                     if (bool.TryParse(savedDrawer, out var isOpen))
                         _open = isOpen;
                     else
-                        _open = true; // открыто по умолчанию
+                        _open = true;
                 }
                 catch
                 {
@@ -34,7 +32,7 @@ namespace Bookkeeping.Components.Layout
                     _open = true;
                 }
                 _isInitialized = true;
-                StateHasChanged(); // обновляем UI
+                StateHasChanged();
             }
         }
 

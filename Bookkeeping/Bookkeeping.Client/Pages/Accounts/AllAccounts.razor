@@ -4,10 +4,7 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
 
-@* <PageTitle>План счёт</PageTitle> *@
-
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-8">
-    <!-- Шапка с кнопкой создания (без изменений) -->
     <MudPaper Class="pa-4 mb-4" Elevation="2">
         <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.h6" Class="flex-grow-1">План счетов</MudText>
@@ -22,7 +19,6 @@
         </MudStack>
     </MudPaper>
 
-    <!-- Индикатор загрузки и таблица (без изменений) -->
     @if (_isLoading)
     {
         <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-4" />
@@ -60,7 +56,6 @@
 </MudContainer>
 
 @code {
-    // Рекурсивный рендеринг
     private RenderFragment RenderNode(TreeNode node, int level) => __builder =>
     {
         var hasChildren = node.Children.Any();

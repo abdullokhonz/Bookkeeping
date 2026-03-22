@@ -1,9 +1,5 @@
 ﻿@page "/reference-books/categories/create"
 
-@using Bookkeeping.Contracts.DTOs.ReferenceBooks.ReferenceBookCategoryDto
-@using Bookkeeping.Contracts.Common.Responses
-@using Bookkeeping.Contracts.DTOs.Accounts5d.IfrsAccountDto
-
 @inject HttpClient Http
 @inject NavigationManager Nav
 @inject ISnackbar Snackbar
@@ -25,7 +21,6 @@
                 <DataAnnotationsValidator />
                 
                 <MudGrid>
-                    @* Название категории *@
                     <MudItem xs="12" md="6">
                         <MudTextField Label="Название категории"
                                       @bind-Value="_category.Name"
@@ -35,7 +30,6 @@
                                       Placeholder="Например: Поставщики услуг" />
                     </MudItem>
 
-                    @* Выбор МСФО счета в стиле статей дохода *@
                     <MudItem xs="12" md="6">
                         <MudSelect T="Guid?"
                                    Label="Связанный счет (ПС)"
@@ -58,7 +52,6 @@
                         </MudSelect>
                     </MudItem>
 
-                    @* Описание *@
                     <MudItem xs="12">
                         <MudTextField Label="Описание"
                                       @bind-Value="_category.Description"
@@ -68,7 +61,6 @@
                                       Placeholder="Краткое описание категории..." />
                     </MudItem>
 
-                    @* Кнопки действий *@
                     <MudItem xs="12" Class="d-flex justify-end gap-4 mt-4">
                         <MudButton Variant="Variant.Outlined"
                                    Color="Color.Error"

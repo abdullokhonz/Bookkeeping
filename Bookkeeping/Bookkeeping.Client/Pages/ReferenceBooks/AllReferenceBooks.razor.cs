@@ -22,7 +22,7 @@ namespace Bookkeeping.Client.Pages.ReferenceBooks
             public string Name { get; set; } = "";
             public string? Description { get; set; }
             public NodeType Type { get; set; }
-            public Guid? AccountId { get; set; } // Общее поле для IfrsAccountId или SubIfrsAccountId
+            public Guid? AccountId { get; set; }
             public int InfoItemsCount { get; set; } = 0;
             public List<TreeNode> Children { get; set; } = new();
         }
@@ -49,7 +49,6 @@ namespace Bookkeeping.Client.Pages.ReferenceBooks
                 {
                     _treeNodes = BuildTree(categoriesResponse.Data ?? new(), booksResponse.Data ?? new());
 
-                    // Запускаем фоновую подгрузку имен счетов
                     _ = FetchMissingAccountNames();
                 }
                 else
@@ -113,7 +112,6 @@ namespace Bookkeeping.Client.Pages.ReferenceBooks
 
         private async Task FetchMissingAccountNames()
         {
-            // Собираем все уникальные ID счетов из дерева
             var allAccountIds = GetAllAccountIds(_treeNodes)
                 .Where(id => id != Guid.Empty && !_accountCache.ContainsKey(id))
                 .Distinct();
@@ -129,7 +127,7 @@ namespace Bookkeeping.Client.Pages.ReferenceBooks
                         StateHasChanged();
                     }
                 }
-                catch { /* Игнорируем ошибки для отдельных записей */ }
+                catch { }
             }
         }
 
@@ -151,9 +149,9 @@ namespace Bookkeeping.Client.Pages.ReferenceBooks
         private void NavigateToDetail(TreeNode node)
         {
             if (node.Type == NodeType.ReferenceBook)
-                NavManager.NavigateTo($"/reference-books/details/{node.Id}");
+                Nav.NavigateTo($"/reference-books/details/{node.Id}");
             else
-                NavManager.NavigateTo($"/reference-books/categories/details/{node.Id}");
+                Nav.NavigateTo($"/reference-books/categories/details/{node.Id}");
         }
     }
 }
