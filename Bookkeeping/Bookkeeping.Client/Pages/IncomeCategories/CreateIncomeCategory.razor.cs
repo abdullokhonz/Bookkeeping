@@ -72,5 +72,7 @@ namespace Bookkeeping.Client.Pages.IncomeCategories
         }
 
         private void Cancel() => Nav.NavigateTo("/income-categories");
+
+        private void CreateAccount() => Nav.NavigateTo("/accounts/create");
     }
 }

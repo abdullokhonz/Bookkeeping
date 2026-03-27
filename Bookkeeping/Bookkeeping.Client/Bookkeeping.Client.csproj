@@ -10,10 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Pages\Accountsv1.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.3" />
     <PackageReference Include="MudBlazor" Version="9.1.0" />
   </ItemGroup>

@@ -1,5 +1,263 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-6 mb-16">
+    
+    @* --- БЛОК 1: ПРИВЕТСТВЕННЫЙ БАННЕР --- *@
+    <MudPaper Elevation="4" Class="pa-8 rounded-xl mb-8 welcome-banner" 
+              Style="background: linear-gradient(135deg, var(--mud-palette-primary) 0%, var(--mud-palette-secondary) 100%); color: white;">
+        <MudGrid align-items="center">
+            <MudItem xs="12" md="8">
+                <div class="d-flex align-center gap-4 mb-2">
+                    <MudIcon Icon="@Icons.Material.Filled.Insights" Size="Size.Large" Style="color: rgba(255,255,255,0.8);" />
+                    <MudText Typo="Typo.h3" Class="font-weight-bold" Style="color: white;">Система финансового учета</MudText>
+                </div>
+                <MudText Typo="Typo.h6" Class="mt-2 mb-6" Style="color: rgba(255,255,255,0.9); max-width: 650px; line-height: 1.4;">
+                    Ваш центр управления операциями. Отслеживайте динамику поступлений, управляйте Журналом ПКО и актуализируйте справочники в режиме реального времени.
+                </MudText>
+                <div class="d-flex align-center gap-3">
+                    <MudChip T="string" Style="background: rgba(255,255,255,0.15); color: white;" Variant="Variant.Text" Icon="@Icons.Material.Filled.CalendarToday" Label="true">
+                        <b>@DateTime.Now.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("ru-RU"))</b>
+                    </MudChip>
+                    <MudChip T="string" Style="background: rgba(255,255,255,0.15); color: white;" Variant="Variant.Text" Icon="@Icons.Material.Filled.VerifiedUser" Label="true">
+                        Финансовый контролер
+                    </MudChip>
+                </div>
+            </MudItem>
+            <MudItem xs="12" md="4" Class="d-flex justify-center justify-md-end relative">
+                <MudIcon Icon="@Icons.Material.Filled.AccountBalance" Size="Size.Large" 
+                         Style="font-size: 9rem; color: rgba(255,255,255,0.12); position: absolute; right: 0; bottom: -20px;" />
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
 
-Welcome to your new app.
+    @* --- БЛОК 2: KPI --- *@
+    <MudGrid Class="mb-8">
+        @foreach (var metric in _kpiMetrics)
+        {
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Class="pa-6 rounded-xl elevation-3 kpi-card h-100" Style="@($"border-bottom: 5px solid {GetMetricColor(metric.Color)}!important")">
+                    <div class="d-flex align-center justify-space-between mb-4">
+                        <MudAvatar Color="@metric.Color" Variant="Variant.Filled" Size="Size.Large">
+                            <MudIcon Icon="@metric.Icon" />
+                        </MudAvatar>
+                        <div class="d-flex flex-column align-end">
+                            <MudText Typo="Typo.subtitle2" Class="font-weight-medium" Style="opacity: 0.6;">@metric.Title</MudText>
+                            <MudText Typo="Typo.h4" Class="font-weight-black">@metric.Value</MudText>
+                        </div>
+                    </div>
+                    <MudDivider Class="mb-3" />
+                    <div class="d-flex align-center justify-space-between">
+                        <div class="d-flex align-center gap-1">
+                            <MudIcon Icon="@(metric.IsIncrease ? Icons.Material.Filled.TrendingUp : Icons.Material.Filled.TrendingDown)" 
+                                     Size="Size.Small" 
+                                     Color="@(metric.IsIncrease ? Color.Success : Color.Error)" />
+                            <MudText Typo="Typo.caption" Class="font-weight-bold" Color="@(metric.IsIncrease ? Color.Success : Color.Error)">
+                                @metric.Comparison
+                            </MudText>
+                        </div>
+                        <MudText Typo="Typo.caption" Style="opacity: 0.5;">за период</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+
+    <MudGrid>
+        @* --- БЛОК 3: ГРАФИК --- *@
+        <MudItem xs="12" md="8">
+            <MudPaper Class="pa-6 rounded-xl elevation-3 h-100 analytics-card">
+                <MudText Typo="Typo.h6" Class="font-weight-bold mb-5">Динамика поступлений</MudText>
+                <MudChart ChartType="ChartType.Line" 
+                          ChartSeries="@_series" 
+                          ChartLabels="@_xAxisLabels" 
+                          ChartOptions="@_options"
+                          Width="100%" 
+                          Height="300px"
+                          LegendPosition="Position.Bottom" />
+            </MudPaper>
+        </MudItem>
+
+        @* --- БЛОК 4: ОПЕРАЦИОННЫЙ ХАБ --- *@
+        <MudItem xs="12" md="4">
+            <MudPaper Class="pa-6 rounded-xl elevation-3 h-100 navigation-hub">
+                <MudText Typo="Typo.h6" Class="font-weight-bold mb-5">Операционный Хаб</MudText>
+                
+                <MudNavMenu Rounded="true" Color="Color.Primary" Class="pa-0 hub-menu">
+                    <MudNavLink Icon="@Icons.Material.Filled.Assignment" IconColor="Color.Primary"
+                                OnClick="@(() => Nav.NavigateTo("/cash-receipt-orders"))">
+                        <div class="d-flex flex-column">
+                            <MudText Typo="Typo.body1" Class="font-weight-bold">Журнал ПКО</MudText>
+                            <MudText Typo="Typo.caption">Реестр кассовых ордеров</MudText>
+                        </div>
+                    </MudNavLink>
+                    
+                    <MudNavLink Icon="@Icons.Material.Filled.AccountTree" IconColor="Color.Secondary"
+                                OnClick="@(() => Nav.NavigateTo("/ifrs-accounts"))" Class="mt-2">
+                        <div class="d-flex flex-column">
+                            <MudText Typo="Typo.body1" Class="font-weight-bold">План счетов МСФО</MudText>
+                            <MudText Typo="Typo.caption">Настройка финансовой модели</MudText>
+                        </div>
+                    </MudNavLink>
+                    
+                    <MudNavLink Icon="@Icons.Material.Filled.AddChart" IconColor="Color.Info"
+                                OnClick="@(() => Nav.NavigateTo("/income-articles"))" Class="mt-2">
+                        <div class="d-flex flex-column">
+                            <MudText Typo="Typo.body1" Class="font-weight-bold">Статьи доходов</MudText>
+                            <MudText Typo="Typo.caption">Классификатор поступлений</MudText>
+                        </div>
+                    </MudNavLink>
+
+                    <MudNavLink Icon="@Icons.Material.Filled.LibraryBooks" IconColor="Color.Tertiary"
+                                OnClick="@(() => Nav.NavigateTo("/reference-books"))" Class="mt-2">
+                        <div class="d-flex flex-column">
+                            <MudText Typo="Typo.body1" Class="font-weight-bold">Все справочники</MudText>
+                            <MudText Typo="Typo.caption">Системные мастер-данные</MudText>
+                        </div>
+                    </MudNavLink>
+                </MudNavMenu>
+            </MudPaper>
+        </MudItem>
+
+        @* --- БЛОК 5: ТАБЛИЦА ЖУРНАЛА --- *@
+        <MudItem xs="12" lg="7">
+            <MudPaper Class="pa-6 rounded-xl elevation-3 h-100">
+                <div class="d-flex align-center justify-space-between mb-5">
+                    <MudText Typo="Typo.h6" Class="font-weight-bold">Последние записи: ПКО</MudText>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Nav.NavigateTo("/cash-receipt-orders"))">Журнал</MudButton>
+                </div>
+                <MudTable Items="@_recentOrders" Dense="true" Hover="true" Elevation="0">
+                    <HeaderContent>
+                        <MudTh>Дата</MudTh>
+                        <MudTh>Наименование</MudTh>
+                        <MudTh>Сумма</MudTh>
+                        <MudTh>Статус</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.Date.ToString("dd.MM.yyyy")</MudTd>
+                        <MudTd>@context.Name</MudTd>
+                        <MudTd Class="font-weight-bold">@context.Amount.ToString("N0")</MudTd>
+                        <MudTd>
+                            <MudChip T="string" Size="Size.Small" Color="@GetStatusColor(context.Status)" Variant="Variant.Filled">
+                                @GetStatusName(context.Status)
+                            </MudChip>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudPaper>
+        </MudItem>
+
+        @* --- БЛОК 6: ТАБЛИЦА СПРАВОЧНИКОВ --- *@
+        <MudItem xs="12" lg="5">
+            <MudPaper Class="pa-6 rounded-xl elevation-3 h-100">
+                <div class="d-flex align-center justify-space-between mb-5">
+                    <MudText Typo="Typo.h6" Class="font-weight-bold">Активные справочники</MudText>
+                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Size="Size.Small" OnClick="@(() => Nav.NavigateTo("/reference-books"))" />
+                </div>
+                <MudTable Items="@_referenceBooks" Dense="true" Hover="true" Elevation="0">
+                    <HeaderContent>
+                        <MudTh>Название</MudTh>
+                        <MudTh>Записей</MudTh>
+                        <MudTh>Тип</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.Title</MudTd>
+                        <MudTd>
+                            <MudBadge Content="@context.Count" Color="Color.Info" Overlap="false" Class="mx-2" />
+                        </MudTd>
+                        <MudTd>
+                            <MudText Typo="Typo.caption">@context.Type</MudText>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    @* --- НИЖНЯЯ ПАНЕЛЬ (ФУТЕР) --- *@
+    <div class="d-flex align-center justify-space-between mt-8 pa-4" style="opacity: 0.5;">
+        <MudText Typo="Typo.caption">© 2026 Bookkeeping App — Система финансового контроля</MudText>
+        <div class="d-flex gap-4">
+            <MudText Typo="Typo.caption">Статус: <b>Online</b></MudText>
+            <MudText Typo="Typo.caption">Версия: <b>1.2.0-stable</b></MudText>
+        </div>
+    </div>
+
+</MudContainer>
+
+<style>
+    .kpi-card, .analytics-card, .navigation-hub {
+        transition: all 0.3s ease;
+    }
+    .kpi-card:hover { transform: translateY(-4px); box-shadow: var(--mud-elevation-6)!important; }
+    .hub-menu .mud-nav-link { border-radius: 12px; padding: 12px; }
+    .hub-menu .mud-nav-link:hover { background-color: var(--mud-palette-background-grey); }
+</style>
+
+@code {
+    @inject NavigationManager Nav
+    @using MudBlazor.Charts
+
+    private class KpiItem {
+        public string Title { get; set; } = "";
+        public string Value { get; set; } = "";
+        public string Icon { get; set; } = "";
+        public Color Color { get; set; }
+        public string Comparison { get; set; } = "";
+        public bool IsIncrease { get; set; }
+    }
+
+    private List<KpiItem> _kpiMetrics = new()
+    {
+        new KpiItem { Title = "Оборот сегодня", Value = "150 400", Icon = Icons.Material.Filled.TrendingUp, Color = Color.Success, Comparison = "+5.2%", IsIncrease = true },
+        new KpiItem { Title = "Счета МСФО", Value = "45", Icon = Icons.Material.Filled.AccountBalanceWallet, Color = Color.Primary, Comparison = "Стабильно", IsIncrease = true },
+        new KpiItem { Title = "Черновики ПКО", Value = "12", Icon = Icons.Material.Filled.HistoryEdu, Color = Color.Warning, Comparison = "+3 записи", IsIncrease = true },
+        new KpiItem { Title = "Мастер-данные", Value = "2 340", Icon = Icons.Material.Filled.Layers, Color = Color.Info, Comparison = "+12", IsIncrease = true },
+    };
+
+    private LineChartOptions _options = new LineChartOptions()
+    {
+        LineDisplayType = LineDisplayType.Area,
+        ShowDataMarkers = true,
+        ChartPalette = new[] { "#4CAF50" }
+    };
+    private List<ChartSeries<double>> _series = new()
+    {
+        new ChartSeries<double> { Name = "Приход", Data = new double[] { 50000, 75000, 60000, 110000, 95000, 150000, 130000 } },
+    };
+    private string[] _xAxisLabels = { "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс" };
+
+    public enum OrderStatus { Draft, Processed, Canceled }
+    public record RecentOrder(DateTime Date, string Name, decimal Amount, OrderStatus Status);
+    public record RefBook(string Title, int Count, string Type);
+
+    private List<RecentOrder> _recentOrders = new()
+    {
+        new RecentOrder(DateTime.Now, "Оплата консалтинга", 25000m, OrderStatus.Processed),
+        new RecentOrder(DateTime.Now.AddHours(-2), "Поставка канцелярии", 5430m, OrderStatus.Draft),
+        new RecentOrder(DateTime.Now.AddDays(-1), "Возврат средств", 1500m, OrderStatus.Canceled),
+    };
+
+    private List<RefBook> _referenceBooks = new()
+    {
+        new RefBook("Контрагенты", 1240, "Финансы"),
+        new RefBook("Номенклатура", 850, "Склад"),
+        new RefBook("ЦФО", 12, "Структура"),
+        new RefBook("Статьи МСФО", 45, "Финансы"),
+    };
+
+    private string GetStatusName(OrderStatus status) => status switch {
+        OrderStatus.Draft => "Черновик",
+        OrderStatus.Processed => "Проведен",
+        OrderStatus.Canceled => "Отменен",
+        _ => status.ToString()
+    };
+
+    private Color GetStatusColor(OrderStatus status) => status switch {
+        OrderStatus.Processed => Color.Success,
+        OrderStatus.Draft => Color.Warning,
+        OrderStatus.Canceled => Color.Error,
+        _ => Color.Default
+    };
+    
+    private string GetMetricColor(Color color) => $"var(--mud-palette-{color.ToString().ToLower()})";
+}

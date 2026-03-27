@@ -39,15 +39,30 @@
                                    AnchorOrigin="Origin.BottomCenter"
                                    Clearable="true"
                                    Placeholder="Выберите счет из списка">
-                            @foreach (var acc in _ifrsAccounts)
+
+                            <MudSelectItem T="Guid?" Value="Guid.Empty" Disabled="false" Class="sticky-action-item pa-0">
+                                <div @onclick="CreateAccount" class="d-flex align-center gap-2 pa-3 cursor-pointer action-content">
+                                    <MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Primary" />
+                                    <MudText Color="Color.Primary"><b>Создать счёт</b></MudText>
+                                </div>
+                            </MudSelectItem>
+
+                            @if (_ifrsAccounts == null)
                             {
-                                <MudSelectItem T="Guid?" Value="@((Guid?)acc.Id)">
-                                    <div class="d-flex align-center gap-2">
-                                        <MudText Typo="Typo.body2" Color="Color.Primary" FontWeight="FontWeight.Bold">@acc.AccountNumber</MudText>
-                                        <MudDivider Vertical="true" FlexItem="true" Class="mx-1" />
-                                        <MudText Typo="Typo.body2">@acc.AccountName</MudText>
-                                    </div>
-                                </MudSelectItem>
+                                <MudSelectItem T="Guid?" Value="null" Disabled="true">Загрузка счетов...</MudSelectItem>
+                            }
+                            else
+                            {
+                                @foreach (var acc in _ifrsAccounts)
+                                {
+                                    <MudSelectItem T="Guid?" Value="@((Guid?)acc.Id)">
+                                        <div class="d-flex align-center gap-2">
+                                            <MudText Typo="Typo.body2" Color="Color.Primary">@acc.AccountNumber</MudText>
+                                            <MudDivider Vertical="true" FlexItem="true" Class="mx-1" />
+                                            <MudText Typo="Typo.body2">@acc.AccountName</MudText>
+                                        </div>
+                                    </MudSelectItem>
+                                }
                             }
                         </MudSelect>
                     </MudItem>
@@ -87,3 +102,26 @@
         }
     </MudPaper>
 </MudContainer>
+                                
+<style>
+    .sticky-action-item {
+        position: sticky !important;
+        top: 0;
+        z-index: 10;
+        background-color: var(--mud-palette-surface) !important;
+        border-bottom: 1px solid var(--mud-palette-divider);
+    }
+
+    .action-content {
+        width: 100%;
+        user-select: none;
+    }
+
+        .action-content:hover {
+            background-color: var(--mud-palette-action-default-hover);
+        }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+</style>

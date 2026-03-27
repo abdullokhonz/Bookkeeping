@@ -18,20 +18,16 @@
         </MudStack>
     </MudPaper>
 
-    @if (_isLoading)
-    {
-        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-4" />
-    }
-
     <MudPaper Elevation="2" Class="pa-2">
         <MudTable ServerData="@ServerReload"
                   Dense="true"
                   Hover="true"
-                  Striped="false"
+                  Striped="true"
+                  Bordered="true"
                   @ref="_table"
-                  Bordered="false"
                   Elevation="0"
-                  Loading="false">
+                  Loading="_isLoading"
+                  LoadingProgressColor="Color.Primary">
             
             <HeaderContent>
                 <MudTh>№ Документа</MudTh>

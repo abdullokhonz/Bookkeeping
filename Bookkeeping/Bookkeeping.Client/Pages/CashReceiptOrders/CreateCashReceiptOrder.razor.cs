@@ -151,5 +151,11 @@ namespace Bookkeeping.Client.Pages.CashReceiptOrders
         }
 
         private void Cancel() => Nav.NavigateTo("/cash-receipt-orders");
+
+        private void CreateVatTax() => Nav.NavigateTo("/vat-taxes/create");
+
+        private void CreateIncomeCategory() => Nav.NavigateTo("/income-categories/create");
+
+        private void CreateReferenceBook() => Nav.NavigateTo("/reference-books/create");
     }
 }

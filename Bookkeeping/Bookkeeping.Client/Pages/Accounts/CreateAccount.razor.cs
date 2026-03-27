@@ -53,6 +53,8 @@ namespace Bookkeeping.Client.Pages.Accounts
 
         private void Cancel() => Nav.NavigateTo("/accounts");
 
+        private void CreateCategory() => Nav.NavigateTo("/accounts/categories/create");
+
         private string GetReadableName(AccountNature type) => type switch
         {
             AccountNature.Active => "Активный",

@@ -75,6 +75,14 @@
                                                    AnchorOrigin="Origin.BottomCenter"
                                                    Clearable="true"
                                                    Placeholder="Без НДС">
+
+                                            <MudSelectItem T="Guid?" Value="@Guid.Empty" Class="sticky-action-item pa-0">
+                                                <div @onclick="CreateVatTax" class="d-flex align-center gap-2 pa-3 cursor-pointer action-content">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Primary" />
+                                                    <MudText Color="Color.Primary"><b>Создать НДС</b></MudText>
+                                                </div>
+                                            </MudSelectItem>
+
                                             @foreach (var vat in _vatTaxes)
                                             {
                                                 <MudSelectItem T="Guid?" Value="@vat.Id">
@@ -96,6 +104,14 @@
                                                    AnchorOrigin="Origin.BottomCenter"
                                                    Clearable="true"
                                                    Placeholder="Выберите статью">
+
+                                            <MudSelectItem T="Guid?" Value="@Guid.Empty" Class="sticky-action-item pa-0">
+                                                <div @onclick="CreateIncomeCategory" class="d-flex align-center gap-2 pa-3 cursor-pointer action-content">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Primary" />
+                                                    <MudText Color="Color.Primary"><b>Создать статью</b></MudText>
+                                                </div>
+                                            </MudSelectItem>
+
                                             @foreach (var category in _incomeCategories)
                                             {
                                                 <MudSelectItem T="Guid?" Value="@category.Id">
@@ -117,6 +133,14 @@
                                                    AnchorOrigin="Origin.BottomCenter"
                                                    Clearable="true"
                                                    Placeholder="Выберите контрагента">
+
+                                            <MudSelectItem T="Guid?" Value="@Guid.Empty" Class="sticky-action-item pa-0">
+                                                <div @onclick="CreateReferenceBook" class="d-flex align-center gap-2 pa-3 cursor-pointer action-content">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Primary" />
+                                                    <MudText Color="Color.Primary"><b>Создать справочник</b></MudText>
+                                                </div>
+                                            </MudSelectItem>
+
                                             @foreach (var refBook in _referenceBooks)
                                             {
                                                 <MudSelectItem T="Guid?" Value="@refBook.Id">
@@ -241,3 +265,26 @@
         </EditForm>
     }
 </MudContainer>
+
+<style>
+    .sticky-action-item {
+        position: sticky !important;
+        top: 0;
+        z-index: 10;
+        background-color: var(--mud-palette-surface) !important;
+        border-bottom: 1px solid var(--mud-palette-divider);
+    }
+
+    .action-content {
+        width: 100%;
+        user-select: none;
+    }
+
+        .action-content:hover {
+            background-color: var(--mud-palette-action-default-hover);
+        }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+</style>

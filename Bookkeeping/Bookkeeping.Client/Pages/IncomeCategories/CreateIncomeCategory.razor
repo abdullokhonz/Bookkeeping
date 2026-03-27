@@ -31,6 +31,14 @@
                                AnchorOrigin="Origin.BottomCenter"
                                Clearable="true"
                                Placeholder="Выберите счет из списка">
+
+                        <MudSelectItem T="Guid?" Class="sticky-action-item pa-0">
+                            <div @onclick="CreateAccount" class="d-flex align-center gap-2 pa-3 cursor-pointer action-content">
+                                <MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Primary" />
+                                <MudText Color="Color.Primary"><b>Создать счёт</b></MudText>
+                            </div>
+                        </MudSelectItem>
+
                         @if (_accounts == null)
                         {
                             <MudSelectItem T="Guid?" Value="null" Disabled="true">Загрузка счетов...</MudSelectItem>
@@ -85,3 +93,26 @@
         </EditForm>
     </MudPaper>
 </MudContainer>
+
+<style>
+    .sticky-action-item {
+        position: sticky !important;
+        top: 0;
+        z-index: 10;
+        background-color: var(--mud-palette-surface) !important;
+        border-bottom: 1px solid var(--mud-palette-divider);
+    }
+
+    .action-content {
+        width: 100%;
+        user-select: none;
+    }
+
+        .action-content:hover {
+            background-color: var(--mud-palette-action-default-hover);
+        }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+</style>

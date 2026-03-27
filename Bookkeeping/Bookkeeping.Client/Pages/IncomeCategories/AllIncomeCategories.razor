@@ -15,20 +15,16 @@
         </MudStack>
     </MudPaper>
 
-    @if (_isLoading)
-    {
-        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-4" />
-    }
-
     <MudPaper Elevation="2" Class="pa-2">
         <MudTable ServerData="@ServerReload"
                   Dense="true"
                   Hover="true"
-                  Striped="false"
-                  @ref="_table"
+                  Striped="true"
                   Bordered="false"
+                  @ref="_table"
                   Elevation="0"
-                  Loading="false">
+                  Loading="_isLoading"
+                  LoadingProgressColor="Color.Primary">
             
             <HeaderContent>
                 <MudTh>Название</MudTh>
@@ -42,7 +38,7 @@
                     <MudText Typo="Typo.body2" Class="font-weight-bold">@context.Name</MudText>
                 </MudTd>
                 <MudTd DataLabel="Описание">
-                    <MudText Typo="Typo.caption" Class="mud-text-secondary text-truncate" Style="max-width: 250px; display: block;">
+                    <MudText Typo="Typo.body2" Class="mud-text-secondary text-truncate" Style="max-width: 250px; display: block;">
                         @(string.IsNullOrEmpty(context.Description) ? "—" : context.Description)
                     </MudText>
                 </MudTd>

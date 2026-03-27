@@ -18,20 +18,16 @@
         </MudStack>
     </MudPaper>
 
-    @if (_isLoading)
-    {
-        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-4" />
-    }
-
     <MudPaper Elevation="2" Class="pa-2">
         <MudTable ServerData="@ServerReload"
                   Dense="true"
                   Hover="true"
-                  Striped="false"
-                  @ref="_table"
+                  Striped="true"
                   Bordered="false"
+                  @ref="_table"
                   Elevation="0"
-                  Loading="false">
+                  Loading="_isLoading"
+                  LoadingProgressColor="Color.Primary">
             
             <HeaderContent>
                 <MudTh>Ставка (%)</MudTh>
@@ -41,7 +37,7 @@
 
             <RowTemplate>
                 <MudTd DataLabel="Ставка (%)">
-                    <MudChip T="string" Color="Color.Info" Variant="Variant.Text" Size="Size.Small" Class="font-weight-bold">
+                    <MudChip T="string" Variant="Variant.Text" Size="Size.Small" Class="font-weight-bold">
                         @context.VatRate.ToString("N2")%
                     </MudChip>
                 </MudTd>

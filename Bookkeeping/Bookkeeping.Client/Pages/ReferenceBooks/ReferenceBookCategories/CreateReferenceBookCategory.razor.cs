@@ -65,5 +65,7 @@ namespace Bookkeeping.Client.Pages.ReferenceBooks.ReferenceBookCategories
         }
 
         private void Cancel() => Nav.NavigateTo("/reference-books");
+
+        private void CreateAccount() => Nav.NavigateTo("/accounts/create");
     }
 }
