@@ -7,27 +7,31 @@ namespace Bookkeeping.Client.Pages.VatTaxes
 {
     public partial class AllVatTaxes
     {
-        private MudTable<VatTaxGetDto> _table = null!;
         private bool _isLoading = false;
+        private List<VatTaxGetDto> _allTaxes = new();
 
-        private async Task<TableData<VatTaxGetDto>> ServerReload(TableState state, CancellationToken token)
+        private string _searchString = "";
+        private string _searchField = "All";
+
+        protected override async Task OnInitializedAsync()
+        {
+            await LoadDataAsync();
+        }
+
+        private async Task LoadDataAsync()
         {
             _isLoading = true;
             try
             {
-                var url = $"/api/v1/VatTax/GetPaged?page={state.Page + 1}&size={state.PageSize}";
-                var response = await Http.GetFromJsonAsync<ApiResponse<List<VatTaxGetDto>>>(url, token);
+                var url = "/api/v1/VatTax/GetPaged?page=1&size=10000";
+                var response = await Http.GetFromJsonAsync<ApiResponse<List<VatTaxGetDto>>>(url);
 
-                if (response != null && response.IsSuccess)
+                if (response != null && response.IsSuccess && response.Data != null)
                 {
-                    return new TableData<VatTaxGetDto>()
-                    {
-                        TotalItems = response.Metadata?.TotalCount ?? response.Count ?? 0,
-                        Items = response.Data ?? new List<VatTaxGetDto>()
-                    };
+                    _allTaxes = response.Data;
                 }
             }
-            catch (Exception ex) when (ex is not TaskCanceledException)
+            catch (Exception)
             {
                 Snackbar.Add("Не удалось загрузить список налогов", Severity.Error);
             }
@@ -35,8 +39,29 @@ namespace Bookkeeping.Client.Pages.VatTaxes
             {
                 _isLoading = false;
             }
+        }
 
-            return new TableData<VatTaxGetDto>() { TotalItems = 0, Items = new List<VatTaxGetDto>() };
+        private void ResetSearch()
+        {
+            _searchString = string.Empty;
+            _searchField = "All";
+        }
+
+        private bool FilterFunc(VatTaxGetDto element)
+        {
+            if (string.IsNullOrWhiteSpace(_searchString))
+                return true;
+
+            var search = _searchString.Trim().ToLower();
+            var rateStr = element.VatRate.ToString("N2").ToLower();
+
+            return _searchField switch
+            {
+                "Rate" => rateStr.Contains(search),
+                "Description" => (element.Description ?? "").ToLower().Contains(search),
+                "All" or _ => rateStr.Contains(search) ||
+                              (element.Description ?? "").ToLower().Contains(search)
+            };
         }
     }
 }

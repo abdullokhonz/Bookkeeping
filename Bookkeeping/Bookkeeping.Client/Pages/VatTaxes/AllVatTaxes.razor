@@ -18,20 +18,64 @@
         </MudStack>
     </MudPaper>
 
+    <MudPaper Class="pa-4 mb-4" Elevation="2">
+        <MudGrid Spacing="2" Class="d-flex align-center">
+            <MudItem xs="12" md="3">
+                <MudSelect T="string" Label="Искать по полю" @bind-Value="_searchField"
+                           Variant="Variant.Outlined" Margin="Margin.Dense" Dense="true">
+                    <MudSelectItem Value="@("All")">Все поля</MudSelectItem>
+                    <MudSelectItem Value="@("Rate")">Ставка (%)</MudSelectItem>
+                    <MudSelectItem Value="@("Description")">Описание</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="7">
+                <MudTextField @bind-Value="_searchString"
+                              Placeholder="Введите текст для поиска..."
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              IconSize="Size.Medium"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Clearable="true"
+                              Immediate="true">
+                </MudTextField>
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Error"
+                           StartIcon="@Icons.Material.Filled.Clear"
+                           OnClick="ResetSearch"
+                           FullWidth="true"
+                           Style="height: 40px;">
+                    Сброс
+                </MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
     <MudPaper Elevation="2" Class="pa-2">
-        <MudTable ServerData="@ServerReload"
+        <MudTable Items="@_allTaxes"
+                  Filter="new Func<VatTaxGetDto, bool>(FilterFunc)"
                   Dense="true"
                   Hover="true"
                   Striped="true"
-                  Bordered="false"
-                  @ref="_table"
+                  Bordered="true"
                   Elevation="0"
                   Loading="_isLoading"
                   LoadingProgressColor="Color.Primary">
             
             <HeaderContent>
-                <MudTh>Ставка (%)</MudTh>
-                <MudTh>Описание</MudTh>
+                <MudTh>
+                    <MudTableSortLabel InitialDirection="SortDirection.Ascending"
+                                       SortBy="new Func<VatTaxGetDto, object>(x => x.VatRate)">
+                        Ставка (%)
+                    </MudTableSortLabel>
+                </MudTh>
+                <MudTh>
+                    <MudTableSortLabel SortBy="new Func<VatTaxGetDto, object>(x => x.Description ?? string.Empty)">
+                        Описание
+                    </MudTableSortLabel>
+                </MudTh>
                 <MudTh Style="text-align:right">Действия</MudTh>
             </HeaderContent>
 
@@ -47,32 +91,57 @@
                     </MudText>
                 </MudTd>
                 <MudTd DataLabel="Действия" Style="text-align:right; white-space:nowrap;">
-                    <MudTooltip Text="Просмотр">
-                        <MudIconButton Icon="@Icons.Material.Filled.Visibility"
-                                       Size="Size.Small"
-                                       Color="Color.Primary"
-                                       OnClick="@(() => Nav.NavigateTo($"/vat-taxes/details/{context.Id}"))" />
-                    </MudTooltip>
-                    <MudTooltip Text="Изменить">
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                       Size="Size.Small"
-                                       Color="Color.Inherit"
-                                       OnClick="@(() => Nav.NavigateTo($"/vat-taxes/edit/{context.Id}"))" />
-                    </MudTooltip>
-                    <MudTooltip Text="Удалить">
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                       Size="Size.Small"
-                                       Color="Color.Error"
-                                       OnClick="@(() => Nav.NavigateTo($"/vat-taxes/delete/{context.Id}"))" />
-                    </MudTooltip>
+                    <MudIconButton Icon="@Icons.Material.Filled.Visibility"
+                                   Size="Size.Small"
+                                   Color="Color.Primary"
+                                   OnClick="@(() => Nav.NavigateTo($"/vat-taxes/details/{context.Id}"))" />
+                    
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Size="Size.Small"
+                                   Color="Color.Default"
+                                   OnClick="@(() => Nav.NavigateTo($"/vat-taxes/edit/{context.Id}"))" />
+                    
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Size="Size.Small"
+                                   Color="Color.Error"
+                                   OnClick="@(() => Nav.NavigateTo($"/vat-taxes/delete/{context.Id}"))" />
                 </MudTd>
             </RowTemplate>
 
             <PagerContent>
                 <MudTablePager InfoFormat="{first_item}-{last_item} из {all_items}"
-                               RowsPerPageString="Строк на странице:"
+                               RowsPerPageString="Строк:"
                                PageSizeOptions="new int[]{10, 25, 50, 100}" />
             </PagerContent>
+            <NoRecordsContent>
+                <MudText>Налоги не найдены</MudText>
+            </NoRecordsContent>
         </MudTable>
     </MudPaper>
 </MudContainer>
+
+<style>
+    .mud-table-head .mud-table-cell {
+        transition: color 0.3s ease;
+        cursor: pointer;
+    }
+
+        .mud-table-head .mud-table-cell:hover {
+            color: var(--mud-palette-primary) !important;
+        }
+
+    .mud-table-sort-label-icon {
+        transition: transform 0.3s ease, opacity 0.2s ease, color 0.2s ease;
+        opacity: 0;
+    }
+
+    .mud-table-cell:hover .mud-table-sort-label-icon {
+        opacity: 0.4;
+    }
+
+    .mud-table-sort-label-icon.mud-direction-asc,
+    .mud-table-sort-label-icon.mud-direction-desc {
+        opacity: 1 !important;
+        color: var(--mud-palette-primary) !important;
+    }
+</style>

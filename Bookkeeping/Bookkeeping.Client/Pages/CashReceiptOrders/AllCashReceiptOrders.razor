@@ -18,23 +18,81 @@
         </MudStack>
     </MudPaper>
 
+    <MudPaper Class="pa-4 mb-4" Elevation="2">
+        <MudGrid Spacing="2" Class="d-flex align-center">
+            <MudItem xs="12" md="3">
+                <MudSelect T="string" Label="Искать по полю" @bind-Value="_searchField"
+                           Variant="Variant.Outlined" Margin="Margin.Dense" Dense="true">
+                    <MudSelectItem Value="@("All")">Все поля</MudSelectItem>
+                    <MudSelectItem Value="@("DocumentNumber")">№ Документа</MudSelectItem>
+                    <MudSelectItem Value="@("OperationDate")">Дата (ДД.ММ.ГГГГ)</MudSelectItem>
+                    <MudSelectItem Value="@("Amount")">Сумма</MudSelectItem>
+                    <MudSelectItem Value="@("Status")">Статус</MudSelectItem>
+                    <MudSelectItem Value="@("Vat")">НДС</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="7">
+                <MudTextField @bind-Value="_searchString"
+                              Placeholder="Введите текст для поиска..."
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              IconSize="Size.Medium"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Clearable="true"
+                              Immediate="true">
+                </MudTextField>
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Error"
+                           StartIcon="@Icons.Material.Filled.Clear"
+                           OnClick="ResetSearch"
+                           FullWidth="true"
+                           Style="height: 40px;">
+                    Сброс
+                </MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
     <MudPaper Elevation="2" Class="pa-2">
-        <MudTable ServerData="@ServerReload"
+        <MudTable Items="@_allOrders"
+                  Filter="new Func<CashReceiptOrderGetDto, bool>(FilterFunc)"
                   Dense="true"
                   Hover="true"
                   Striped="true"
                   Bordered="true"
-                  @ref="_table"
                   Elevation="0"
                   Loading="_isLoading"
                   LoadingProgressColor="Color.Primary">
             
             <HeaderContent>
-                <MudTh>№ Документа</MudTh>
-                <MudTh>Дата</MudTh>
-                <MudTh>Статус</MudTh>
-                <MudTh Style="text-align: right;">Сумма</MudTh>
-                <MudTh Style="text-align: right;">НДС</MudTh>
+                <MudTh>
+                    <MudTableSortLabel SortBy="new Func<CashReceiptOrderGetDto, object>(x => ParseNumberForSorting(x.DocumentNumber))">
+                        № Документа
+                    </MudTableSortLabel>
+                </MudTh>
+                <MudTh>
+                    <MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<CashReceiptOrderGetDto, object>(x => x.OperationDate)">
+                        Дата
+                    </MudTableSortLabel>
+                </MudTh>
+                <MudTh>
+                    <MudTableSortLabel SortBy="new Func<CashReceiptOrderGetDto, object>(x => GetStatusText(x.Status))">
+                        Статус
+                    </MudTableSortLabel>
+                </MudTh>
+                <MudTh Style="text-align: right;">
+                    <MudTableSortLabel SortBy="new Func<CashReceiptOrderGetDto, object>(x => x.Amount)">
+                        Сумма
+                    </MudTableSortLabel>
+                </MudTh>
+                <MudTh Style="text-align: right;">
+                    <MudTableSortLabel SortBy="new Func<CashReceiptOrderGetDto, object>(x => CalculateVatAmount(x.Amount, x.VatTaxId))">
+                        НДС
+                    </MudTableSortLabel>
+                </MudTh>
                 <MudTh Style="text-align: right;">Действия</MudTh>
             </HeaderContent>
 
@@ -42,11 +100,9 @@
                 <MudTd DataLabel="№ Документа">
                     <MudText Typo="Typo.body2" Class="font-weight-bold">@context.DocumentNumber</MudText>
                 </MudTd>
-    
                 <MudTd DataLabel="Дата">
                     <MudText Typo="Typo.body2">@context.OperationDate.ToString("dd.MM.yyyy")</MudText>
                 </MudTd>
-    
                 <MudTd DataLabel="Статус">
                     @switch (context.Status)
                     {
@@ -64,13 +120,11 @@
                             break;
                     }
                 </MudTd>
-    
                 <MudTd DataLabel="Сумма" Style="text-align: right;">
                     <MudText Typo="Typo.body2" Color="Color.Success" Class="font-weight-bold">
                         @(context.Amount % 1 == 0 ? context.Amount.ToString("N0") : context.Amount.ToString("N2"))
                     </MudText>
                 </MudTd>
-    
                 <MudTd DataLabel="НДС" Style="text-align: right;">
                     @if (context.VatTaxId.HasValue && _vatRates.TryGetValue(context.VatTaxId.Value, out var rate))
                     {
@@ -88,30 +142,46 @@
                         <MudText Typo="Typo.body2" Color="Color.Default">Без НДС</MudText>
                     }
                 </MudTd>
-    
                 <MudTd DataLabel="Действия" Style="text-align: right; white-space: nowrap;">
-                    <MudIconButton Icon="@Icons.Material.Filled.Visibility"
-                                   Color="Color.Primary"
-                                   Size="Size.Small"
-                                   OnClick="@(() => Nav.NavigateTo($"/cash-receipt-orders/details/{context.Id}"))" />
-        
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                   Color="Color.Default"
-                                   Size="Size.Small"
-                                   OnClick="@(() => Nav.NavigateTo($"/cash-receipt-orders/edit/{context.Id}"))" />
-        
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                   Color="Color.Error"
-                                   Size="Size.Small"
-                                   OnClick="@(() => Nav.NavigateTo($"/cash-receipt-orders/delete/{context.Id}"))" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Primary" Size="Size.Small" OnClick="@(() => Nav.NavigateTo($"/cash-receipt-orders/details/{context.Id}"))" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" Size="Size.Small" OnClick="@(() => Nav.NavigateTo($"/cash-receipt-orders/edit/{context.Id}"))" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => Nav.NavigateTo($"/cash-receipt-orders/delete/{context.Id}"))" />
                 </MudTd>
             </RowTemplate>
 
             <PagerContent>
-                <MudTablePager InfoFormat="{first_item}-{last_item} из {all_items}"
-                               RowsPerPageString="Строк на странице:"
-                               PageSizeOptions="new int[]{10, 25, 50, 100}" />
+                <MudTablePager InfoFormat="{first_item}-{last_item} из {all_items}" RowsPerPageString="Строк:" PageSizeOptions="new int[] { 10, 25, 50, 100 }" />
             </PagerContent>
+
+            <NoRecordsContent>
+                <MudText>Документы не найдены</MudText>
+            </NoRecordsContent>
         </MudTable>
     </MudPaper>
 </MudContainer>
+
+<style>
+    .mud-table-head .mud-table-cell {
+        transition: color 0.3s ease;
+        cursor: pointer;
+    }
+
+        .mud-table-head .mud-table-cell:hover {
+            color: var(--mud-palette-primary) !important;
+        }
+
+    .mud-table-sort-label-icon {
+        transition: transform 0.3s ease, opacity 0.2s ease, color 0.2s ease;
+        opacity: 0;
+    }
+
+    .mud-table-cell:hover .mud-table-sort-label-icon {
+        opacity: 0.4;
+    }
+
+    .mud-table-sort-label-icon.mud-direction-asc,
+    .mud-table-sort-label-icon.mud-direction-desc {
+        opacity: 1 !important;
+        color: var(--mud-palette-primary) !important;
+    }
+</style>

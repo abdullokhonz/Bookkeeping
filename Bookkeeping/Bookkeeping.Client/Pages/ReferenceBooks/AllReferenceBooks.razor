@@ -8,15 +8,39 @@
     <MudPaper Class="pa-4 mb-4" Elevation="2">
         <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.h6" Class="flex-grow-1">Справочники</MudText>
-            <MudButton Href="/reference-books/categories/create" Variant="Variant.Filled" Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.Add" Size="Size.Small">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Small"
+                       OnClick="@(() => Nav.NavigateTo("/reference-books/categories/create"))">
                 Создать категорию
             </MudButton>
-            <MudButton Href="/reference-books/create" Variant="Variant.Filled" Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.Add" Size="Size.Small">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Small"
+                       OnClick="@(() => Nav.NavigateTo("/reference-books/create"))">
                 Создать справочник
             </MudButton>
         </MudStack>
+    </MudPaper>
+
+    <MudPaper Class="pa-4 mb-4" Elevation="2">
+        <MudGrid Spacing="2" Class="d-flex align-center">
+            <MudItem xs="12" md="3">
+                <MudSelect T="string" Label="Искать по полю" Value="@_searchField" ValueChanged="OnSearchFieldChanged"
+                           Variant="Variant.Outlined" Margin="Margin.Dense" Dense="true">
+                    <MudSelectItem Value="@("All")">Все поля</MudSelectItem>
+                    <MudSelectItem Value="@("Name")">Название</MudSelectItem>
+                    <MudSelectItem Value="@("Description")">Описание</MudSelectItem>
+                    <MudSelectItem Value="@("Account")">Счет</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="7">
+                <MudTextField T="string" Value="@_searchString" ValueChanged="OnSearchStringChanged"
+                              Placeholder="Введите текст для поиска..." Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                              Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" Immediate="true" />
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Filled.Clear"
+                           OnClick="ResetSearch" FullWidth="true" Style="height: 40px;">Сброс</MudButton>
+            </MudItem>
+        </MudGrid>
     </MudPaper>
 
     @if (_isLoading)
@@ -26,26 +50,39 @@
     else
     {
         <MudPaper Elevation="2" Class="pa-2">
-            <table class="mud-table mud-table-hover mud-table-striped" style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+            <table class="mud-table mud-table-hover mud-table-striped custom-tree-table" style="width:100%; border-collapse:collapse;">
                 <thead class="mud-table-head">
                     <tr>
-                        <th class="mud-table-cell" style="width: 250px; padding-left: 16px;">Название</th>
-                        <th class="mud-table-cell">Описание</th>
-                        <th class="mud-table-cell" style="width: 200px;">Счет (План счетов)</th>
-                        <th class="mud-table-cell" style="width: 150px;">Записей</th>
+                        <th class="mud-table-cell" style="width: 300px;" @onclick='() => ToggleSort("Name")'>
+                            <div class="sort-header-wrapper">
+                                Название
+                                <MudIcon Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" Class="@GetSortIconClass("Name")" />
+                            </div>
+                        </th>
+                        <th class="mud-table-cell" @onclick='() => ToggleSort("Description")'>
+                            <div class="sort-header-wrapper">
+                                Описание
+                                <MudIcon Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" Class="@GetSortIconClass("Description")" />
+                            </div>
+                        </th>
+                        <th class="mud-table-cell" style="width: 250px;" @onclick='() => ToggleSort("Account")'>
+                            <div class="sort-header-wrapper">
+                                Счет (План счетов)
+                                <MudIcon Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" Class="@GetSortIconClass("Account")" />
+                            </div>
+                        </th>
+                        <th class="mud-table-cell" style="width: 120px;">Записей</th>
                         <th class="mud-table-cell" style="width: 130px; text-align:right;">Действия</th>
                     </tr>
                 </thead>
                 <tbody class="mud-table-body">
-                    @if (_treeNodes == null || !_treeNodes.Any())
+                    @if (!_displayTreeNodes.Any())
                     {
-                        <tr>
-                            <td colspan="5" class="mud-table-cell text-center" style="padding: 16px;">Нет данных</td>
-                        </tr>
+                        <tr><td colspan="5" class="mud-table-cell text-center pa-4">Данные не найдены</td></tr>
                     }
                     else
                     {
-                        @foreach (var node in _treeNodes)
+                        @foreach (var node in _displayTreeNodes)
                         {
                             @RenderNode(node, 0)
                         }
@@ -56,6 +93,48 @@
     }
 </MudContainer>
 
+<style>
+    .custom-tree-table .mud-table-cell {
+        padding: 8px 12px;
+        font-size: 0.875rem;
+    }
+
+    .mud-table-head .mud-table-cell {
+        transition: color 0.3s ease;
+        cursor: pointer;
+        user-select: none;
+        font-weight: 600;
+    }
+
+        .mud-table-head .mud-table-cell:hover {
+            color: var(--mud-palette-primary) !important;
+        }
+
+    .sort-header-wrapper {
+        display: flex;
+        align-items: center;
+    }
+
+    .custom-sort-icon {
+        transition: transform 0.3s ease, opacity 0.2s ease, color 0.2s ease;
+        opacity: 0;
+        margin-left: 6px;
+    }
+
+    .mud-table-cell:hover .custom-sort-icon {
+        opacity: 0.4;
+    }
+
+    .custom-sort-icon.active {
+        opacity: 1 !important;
+        color: var(--mud-palette-primary) !important;
+    }
+
+    .custom-sort-icon.desc {
+        transform: rotate(180deg);
+    }
+</style>
+
 @code {
     private RenderFragment RenderNode(TreeNode node, int level) => __builder =>
     {
@@ -64,56 +143,39 @@
         var isCategory = node.Type == NodeType.Category;
 
         <tr class="mud-table-row">
-            <td class="mud-table-cell" style="padding: 8px 12px;">
+            <td class="mud-table-cell">
                 <div style="display: flex; align-items: center; padding-left: @(level * 24)px;">
                     @if (isCategory && hasChildren)
                     {
-                        <MudIconButton Icon="@(isExpanded? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)"
-                                       Size="Size.Small" Variant="Variant.Text"
-                                       OnClick="@(() => ToggleNode(node.Id))" OnClickStopPropagation="true" Class="mr-1" />
+                        <MudIconButton Icon="@(isExpanded ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ChevronRight)"
+                                       Size="Size.Small" Variant="Variant.Text" OnClick="@(() => ToggleNode(node.Id))" Class="mr-1" />
                     }
                     else if (isCategory)
                     {
-                        <span style="width: 32px; display:inline-block;"></span>
+                        <span style="width: 32px;"></span>
                     }
-
-                    @if (isCategory)
-                    {
-                        <MudIcon Icon="@(isExpanded? Icons.Material.Filled.FolderOpen : Icons.Material.Filled.Folder)" Size="Size.Small" Class="mr-2 mud-text-secondary" />
-                    }
-                    else
-                    {
-                        <MudIcon Icon="@Icons.Material.Filled.InsertDriveFile" Size="Size.Small" Class="mr-2 mud-text-info" />
-                    }
-
-                    <MudText Typo="@(isCategory? Typo.body1: Typo.body2)" Class="@(isCategory ? "font-weight-bold" : "")">
-                        @node.Name
-                    </MudText>
+                    <MudIcon Icon="@(isCategory ? (isExpanded? Icons.Custom.Uncategorized.FolderOpen : Icons.Custom.Uncategorized.Folder) : Icons.Material.Filled.InsertDriveFile)" 
+                             Size="Size.Small" Class="@(isCategory ? "mr-2 mud-text-secondary" : "mr-2 mud-text-info")" />
+                    <MudText Typo="@(isCategory ? Typo.body1 : Typo.body2)" Class="@(isCategory ? "font-weight-bold" : "")">@node.Name</MudText>
                 </div>
             </td>
-            
             <td class="mud-table-cell">
                 <MudText Typo="Typo.body2" Class="mud-text-secondary text-truncate" Style="max-width: 300px; display: block;">
                     @(string.IsNullOrEmpty(node.Description) ? "—" : node.Description)
                 </MudText>
             </td>
-
             <td class="mud-table-cell">
                 @if (node.AccountId.HasValue)
                 {
                     <div class="d-flex align-center">
-                        @if (_accountCache.TryGetValue(node.AccountId.Value, out var accountName))
+                        @if (_accountCache.TryGetValue(node.AccountId.Value, out var accNum))
                         {
-                            <MudLink Typo="Typo.body2" Color="Color.Info" Underline="Underline.Hover"
-                                     OnClick="@(() => Nav.NavigateTo($"/accounts/details/{node.AccountId}"))"
-                                     Style="cursor: pointer; font-weight: 500;">
-                                @accountName
-                            </MudLink>
+                            <MudLink Typo="Typo.body2" Color="Color.Info" Underline="Underline.Hover" OnClick="@(() => Nav.NavigateTo($"/accounts/details/{node.AccountId}"))" Style="cursor: pointer; font-weight: 500;">@accNum</MudLink>
                             <MudIcon Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" Class="mud-text-primary ml-2" />
                         }
                         else
                         {
-                            <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" Style="width:12px; height:12px;" />
+                            <MudProgressCircular Size="Size.Small" Indeterminate="true" Style="width:12px; height:12px;" />
                         }
                     </div>
                 }
@@ -122,37 +184,20 @@
                     <MudText Typo="Typo.caption" Class="mud-text-disabled">не привязан</MudText>
                 }
             </td>
-
             <td class="mud-table-cell">
-                @if (node.Type == NodeType.ReferenceBook)
+                @if (!isCategory)
                 {
-                    <MudChip T="string" Size="Size.Small" Color="Color.Default" Variant="Variant.Outlined">
-                        @node.InfoItemsCount парам.
-                    </MudChip>
+                    <MudChip T="string" Size="Size.Small" Color="Color.Default" Variant="Variant.Text">@node.InfoItemsCount парам.</MudChip>
                 }
             </td>
-
             <td class="mud-table-cell" style="text-align:right; white-space:nowrap;">
-                <MudIconButton Icon="@Icons.Material.Filled.Visibility" Size="Size.Small" Color="Color.Primary"
-                               OnClick="@(() => NavigateToDetail(node))" Title="Просмотр" />
-                
-                @if (node.Type == NodeType.ReferenceBook)
-                {
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Inherit"
-                                   Href="@($"/reference-books/edit/{node.Id}")" />
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error"
-                                   Href="@($"/reference-books/delete/{node.Id}")" />
-                }
-                else
-                {
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Inherit"
-                                   Href="@($"/reference-books/categories/edit/{node.Id}")" />
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error"
-                                   Href="@($"/reference-books/categories/delete/{node.Id}")" />
-                }
+                <MudIconButton Icon="@Icons.Material.Filled.Visibility" Size="Size.Small" Color="Color.Primary" OnClick="@(() => NavigateToDetail(node))" />
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Default" 
+                               OnClick="@(() => Nav.NavigateTo(isCategory ? $"/reference-books/categories/edit/{node.Id}" : $"/reference-books/edit/{node.Id}"))" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error"
+                               OnClick="@(() => Nav.NavigateTo(isCategory ? $"/reference-books/categories/delete/{node.Id}" : $"/reference-books/delete/{node.Id}"))" />
             </td>
         </tr>
-
         @if (hasChildren && isExpanded)
         {
             @foreach (var child in node.Children)
