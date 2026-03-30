@@ -2,6 +2,7 @@
 using Bookkeeping.Entities.Base;
 using Bookkeeping.Entities.CashReceiptOrders;
 using Bookkeeping.Entities.ReferenceBooks;
+using Bookkeeping.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookkeeping.Infrastructure.Data
@@ -29,11 +30,28 @@ namespace Bookkeeping.Infrastructure.Data
 
         public DbSet<CashReceiptOrder> CashReceiptOrders { get; set; } = null!;
 
+        public DbSet<User> Users { get; set; } = null!;
+
+        public DbSet<UserProfile> UserProfiles { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Ignore<BaseEntity>();
+
+            // Вместо .HasPostgresEnum<>() в OnModelCreating
+            // используется .HasConversion<string>() в конфигурациях сущностей
+
+            // Если используете Npgsql.EntityFrameworkCore.PostgreSQL,
+            // то можно зарегистрировать enum-ы так:
+            /*
+            modelBuilder.HasPostgresEnum<AccountNature>("AccountNature");
+            modelBuilder.HasPostgresEnum<DocumentStatus>("DocumentStatus");
+            modelBuilder.HasPostgresEnum<UserType>("UserType");
+            modelBuilder.HasPostgresEnum<UserRole>("UserRole");
+            modelBuilder.HasPostgresEnum<UserGender>("UserGender");
+            */
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(PostgreSQLDbContext).Assembly);
         }
