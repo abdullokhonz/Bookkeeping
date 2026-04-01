@@ -1,0 +1,99 @@
+﻿@page "/profile"
+@using Bookkeeping.Contracts.DTOs.Users
+@using Bookkeeping.Contracts.Enums.Users
+@using Bookkeeping.Client.Providers
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Net.Http.Json
+
+@attribute [Authorize]
+
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+@inject NavigationManager NavManager
+@inject AuthenticationStateProvider AuthStateProvider
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-6">
+    @if (_isLoading)
+    {
+        <div class="d-flex justify-center my-8">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        </div>
+    }
+    else if (_user == null)
+    {
+        <MudAlert Severity="Severity.Error">Пользователь не найден.</MudAlert>
+    }
+    else
+    {
+        <MudCard Elevation="3" Style="border-radius: 12px;">
+            <MudCardHeader Class="pb-0">
+                <CardHeaderAvatar>
+                    <MudAvatar Color="Color.Primary" Size="Size.Large" Variant="Variant.Filled">
+                        @(_user.FirstName?.FirstOrDefault() ?? _user.Username.FirstOrDefault())
+                    </MudAvatar>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5">@(_user.FirstName) @(_user.LastName)</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">@@@_user.Username • @TranslateRole(_user.UserRole)</MudText>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudTooltip Text="Редактировать профиль">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" OnClick='() => NavManager.NavigateTo("/profile/edit")' />
+                    </MudTooltip>
+                    <MudTooltip Text="Выйти из аккаунта">
+                        <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Error" OnClick="Logout" />
+                    </MudTooltip>
+                </CardHeaderActions>
+            </MudCardHeader>
+
+            <MudCardContent>
+                <MudGrid Spacing="3">
+                    <MudItem xs="12">
+                        <MudDivider Class="mb-4" />
+                        <MudText Typo="Typo.subtitle2" Color="Color.Primary" Class="mb-2">Основные данные</MudText>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="4">
+                        <MudTextField Value="@_user.LastName" Label="Фамилия" Variant="Variant.Outlined" ReadOnly="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        <MudTextField Value="@_user.FirstName" Label="Имя" Variant="Variant.Outlined" ReadOnly="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        <MudTextField Value="@_user.MiddleName" Label="Отчество" Variant="Variant.Outlined" ReadOnly="true" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="@_user.Email" Label="Email" Variant="Variant.Outlined" ReadOnly="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="@_user.PhoneNumber" Label="Телефон" Variant="Variant.Outlined" ReadOnly="true" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudDivider Class="my-4" />
+                        <MudText Typo="Typo.subtitle2" Color="Color.Primary" Class="mb-2">Дополнительно</MudText>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="4">
+                        <MudTextField Value="@(_user.DateOfBirth?.ToString("dd.MM.yyyy") ?? "Не указано")" Label="Дата рождения" Variant="Variant.Outlined" ReadOnly="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        <MudTextField Value="@TranslateGender(_user.Gender)" Label="Пол" Variant="Variant.Outlined" ReadOnly="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        <MudTextField Value="@TranslateType(_user.UserType)" Label="Тип аккаунта" Variant="Variant.Outlined" ReadOnly="true" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTextField Value="@_user.Location" Label="Местоположение" Variant="Variant.Outlined" ReadOnly="true" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTextField Value="@_user.Description" Label="О себе" Variant="Variant.Outlined" Lines="3" ReadOnly="true" />
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    }
+</MudContainer>

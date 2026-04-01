@@ -39,8 +39,14 @@ namespace Bookkeeping.Mapping.Users
                 .ForMember(dest => dest.IsConfirmed, opt => opt.Ignore())
                 .ForMember(dest => dest.IsPersonalDataAccepted, opt => opt.Ignore())
                 .ForMember(dest => dest.IsBlocked, opt => opt.Ignore())
-                .ForMember(dest => dest.Profile, opt => opt.Ignore())
-                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+                // Собираем профиль по частям через ForPath
+                .ForPath(dest => dest.Profile!.FirstName, opt => opt.MapFrom(src => src.FirstName))
+                .ForPath(dest => dest.Profile!.LastName, opt => opt.MapFrom(src => src.LastName))
+                .ForPath(dest => dest.Profile!.MiddleName, opt => opt.MapFrom(src => src.MiddleName))
+                .ForPath(dest => dest.Profile!.Description, opt => opt.MapFrom(src => src.Description))
+                .ForPath(dest => dest.Profile!.Location, opt => opt.MapFrom(src => src.Location))
+                .ForPath(dest => dest.Profile!.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth))
+                .ForPath(dest => dest.Profile!.Gender, opt => opt.MapFrom(src => src.Gender));
 
             // Дополнительный маппинг для обновления самого профиля
             CreateMap<UserUpdateDto, UserProfile>()

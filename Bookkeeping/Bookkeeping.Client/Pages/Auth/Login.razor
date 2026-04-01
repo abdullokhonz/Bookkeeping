@@ -1,0 +1,51 @@
+﻿@page "/login"
+
+@layout EmptyLayout
+@attribute [AllowAnonymous]
+
+
+
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Small"
+              Class="d-flex align-center justify-center"
+              Style="min-height: 100dvh; padding: 16px;">
+    <MudPaper Elevation="4" Class="pa-8 mud-width-full" Style="max-width:400px; border-radius: 12px;">
+        <div class="d-flex justify-center mb-4">
+            <MudIcon Icon="@Icons.Material.Filled.AccountBalance" Color="Color.Primary" Size="Size.Large" />
+        </div>
+        <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-6">Вход в Bookkeeping</MudText>
+
+        <MudForm @ref="_form" @bind-IsValid="@_isValid">
+            <MudTextField @bind-Value="_model.Login" Label="Логин / Email"
+                          Variant="Variant.Outlined" Required="true" Class="mb-4"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" />
+
+            <MudTextField @bind-Value="_model.Password" Label="Пароль"
+                          InputType="@_passwordInput" Variant="Variant.Outlined" Required="true"
+                          Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon"
+                          OnAdornmentClick="TogglePassword" />
+
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Size="Size.Large"
+                       Disabled="@(!_isValid || _isLoading)" OnClick="Submit" Class="mt-6">
+                @if (_isLoading)
+                {
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                }
+                else
+                {
+                    <MudText>Войти</MudText>
+                }
+            </MudButton>
+        </MudForm>
+
+        <div class="d-flex justify-space-between mt-4">
+            <MudLink href="/register" Typo="Typo.body2">Регистрация</MudLink>
+            <MudLink href="/forgot-password" Typo="Typo.body2">Забыли пароль?</MudLink>
+        </div>
+    </MudPaper>
+</MudContainer>

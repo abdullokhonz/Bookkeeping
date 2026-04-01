@@ -89,6 +89,9 @@ builder.Services.AddScoped(sp =>
     return client;
 });
 
+builder.Services.AddAuthorization();
+builder.Services.AddCascadingAuthenticationState();
+
 var app = builder.Build();
 
 var webRootPath = app.Environment.WebRootPath

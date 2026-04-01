@@ -1,0 +1,9 @@
+﻿@inject NavigationManager NavigationManager
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Принудительно отправляем на страницу логина
+        NavigationManager.NavigateTo("/login", true);
+    }
+}

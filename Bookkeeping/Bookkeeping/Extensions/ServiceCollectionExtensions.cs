@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Bookkeeping.Client.Providers;
 using Bookkeeping.Infrastructure.Auth;
 using Bookkeeping.Infrastructure.Repositories;
 using Bookkeeping.Services.Implementations.Accounts5d;
@@ -17,6 +18,7 @@ using Bookkeeping.Services.Interfaces.Notifications;
 using Bookkeeping.Services.Interfaces.ReferenceBooks;
 using Bookkeeping.Services.Interfaces.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using MudBlazor.Services;
@@ -52,6 +54,8 @@ namespace Bookkeeping.Extensions
 
             service.AddTransient<IEmailService, EmailService>();
             service.AddTransient<ISmsService, SmsService>();
+
+            service.AddScoped<AuthenticationStateProvider, JwtAuthStateProvider>();
 
             service.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
@@ -99,6 +103,22 @@ namespace Bookkeeping.Extensions
                     {
                         Console.WriteLine("--- ОШИБКА JWT ---");
                         Console.WriteLine(context.Exception.Message);
+                        return Task.CompletedTask;
+                    },
+                    OnChallenge = context =>
+                    {
+                        // Если это запрос к API (например, из Postman), пусть работает стандартно (выдает 401)
+                        if (context.Request.Path.StartsWithSegments("/api"))
+                        {
+                            return Task.CompletedTask;
+                        }
+
+                        // Если это попытка зайти на страницу (F5) - делаем редирект на логин
+                        // и передаем в URL адрес, на который юзер хотел попасть
+                        var returnUrl = context.Request.Path;
+                        context.Response.Redirect($"/login?returnUrl={returnUrl}");
+                        context.HandleResponse();
+
                         return Task.CompletedTask;
                     }
                 };

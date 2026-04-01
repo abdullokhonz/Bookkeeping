@@ -1,15 +1,43 @@
-﻿<Router AppAssembly="typeof(Program).Assembly"
-        AdditionalAssemblies="new[] { typeof(Client._Imports).Assembly }"
-        NotFoundPage="typeof(Pages.NotFound)">
+﻿<CascadingAuthenticationState>
+    <Router AppAssembly="typeof(Program).Assembly"
+            AdditionalAssemblies="new[] { typeof(Bookkeeping.Client._Imports).Assembly }">
+        
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)">
+                
+                <Authorizing>
+                    <div class="d-flex justify-center align-center" style="height: 100vh;">
+                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                    </div>
+                </Authorizing>
 
-    <Found Context="routeData">
+                <NotAuthorized>
+                    <Bookkeeping.Client.Helpers.RedirectToLogin />
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            
+            <FocusOnNavigate RouteData="routeData" Selector="h1" />
+        </Found>
 
-        <RouteView RouteData="routeData"
-                   DefaultLayout="typeof(Layout.MainLayout)" />
-
-        <FocusOnNavigate RouteData="routeData"
-                         Selector="h1" />
-
-    </Found>
-
-</Router>
+        <NotFound>
+            <PageTitle>404 - Не найдено</PageTitle>
+            <AuthorizeView>
+                <Authorized>
+                    <LayoutView Layout="typeof(MainLayout)">
+                        <NotFound />
+                    </LayoutView>
+                </Authorized>
+                <Authorizing>
+                    <div class="d-flex justify-center align-center" style="height: 100vh;">
+                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                    </div>
+                </Authorizing>
+                <NotAuthorized>
+                    <LayoutView Layout="typeof(EmptyLayout)">
+                        <NotFound />
+                    </LayoutView>
+                </NotAuthorized>
+            </AuthorizeView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

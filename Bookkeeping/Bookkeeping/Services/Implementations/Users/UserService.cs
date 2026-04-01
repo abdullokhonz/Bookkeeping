@@ -123,6 +123,8 @@ namespace Bookkeeping.Services.Implementations.Users
                     existingUser.Profile.UpdatedAt = DateTime.UtcNow;
                 }
 
+                _context.Users.Update(existingUser);
+
                 await _context.SaveChangesAsync(ct);
                 return Result.Success();
             }

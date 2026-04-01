@@ -1,0 +1,95 @@
+﻿@page "/profile/edit"
+@using Bookkeeping.Contracts.Common.Responses
+@using Bookkeeping.Contracts.DTOs.Users
+@using Bookkeeping.Contracts.Enums.Users
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Net.Http.Json
+
+@attribute [Authorize]
+
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+@inject NavigationManager NavManager
+@inject AuthenticationStateProvider AuthStateProvider
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-6">
+    @if (_isLoading)
+    {
+        <div class="d-flex justify-center my-8">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        </div>
+    }
+    else
+    {
+        <MudCard Elevation="3" Style="border-radius: 12px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5">Редактирование профиля</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+
+            <MudCardContent>
+                <MudForm @ref="_form">
+                    <MudGrid Spacing="3">
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.subtitle2" Color="Color.Primary">Основные данные</MudText>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="4">
+                            <MudTextField @bind-Value="_updateModel.LastName" Label="Фамилия" Variant="Variant.Outlined" Required="true" />
+                        </MudItem>
+                        <MudItem xs="12" sm="4">
+                            <MudTextField @bind-Value="_updateModel.FirstName" Label="Имя" Variant="Variant.Outlined" Required="true" />
+                        </MudItem>
+                        <MudItem xs="12" sm="4">
+                            <MudTextField @bind-Value="_updateModel.MiddleName" Label="Отчество" Variant="Variant.Outlined" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_updateModel.Email" Label="Email" Variant="Variant.Outlined" InputType="InputType.Email" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_updateModel.PhoneNumber" Label="Телефон" Variant="Variant.Outlined" />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.subtitle2" Color="Color.Primary" Class="mt-2">Дополнительно</MudText>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudDatePicker @bind-Date="_updateModel.DateOfBirth" Label="Дата рождения" Variant="Variant.Outlined" Clearable="true" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudSelect T="UserGender?" @bind-Value="_updateModel.Gender" Label="Пол" Variant="Variant.Outlined" Clearable="true" AnchorOrigin="Origin.BottomCenter">
+                                <MudSelectItem T="UserGender?" Value="@(UserGender.Male)">Мужской</MudSelectItem>
+                                <MudSelectItem T="UserGender?" Value="@(UserGender.Female)">Женский</MudSelectItem>
+                                <MudSelectItem T="UserGender?" Value="@(UserGender.Other)">Другое</MudSelectItem>
+                            </MudSelect>
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="_updateModel.Location" Label="Местоположение" Variant="Variant.Outlined" />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="_updateModel.Description" Label="О себе" Variant="Variant.Outlined" Lines="4" />
+                        </MudItem>
+                    </MudGrid>
+                </MudForm>
+            </MudCardContent>
+
+            <MudCardActions Class="pa-4 d-flex justify-end">
+                <MudButton OnClick='() => NavManager.NavigateTo("/profile")' Class="mr-2" Variant="Variant.Text">Отмена</MudButton>
+                <MudButton OnClick="SaveChanges" Variant="Variant.Filled" Color="Color.Primary" Disabled="@_isSaving">
+                    @if (_isSaving)
+                    {
+                        <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                    }
+                    Сохранить изменения
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    }
+</MudContainer>
+
+

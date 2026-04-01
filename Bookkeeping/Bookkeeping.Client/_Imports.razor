@@ -23,3 +23,11 @@
 @using Bookkeeping.Contracts.DTOs.CashReceiptOrders.CashReceiptOrderDto
 @using Bookkeeping.Contracts.DTOs.CashReceiptOrders.ImageDto
 @using Dialogs
+@using Bookkeeping.Client.Layouts
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@using Bookkeeping.Contracts.DTOs.Auth
+@using Bookkeeping.Contracts.DTOs.Users
+@using Bookkeeping.Client.Providers
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Text.Json.Serialization;
