@@ -18,8 +18,8 @@ namespace Bookkeeping.Application.Commands.IncomeCategories.DeleteIncomeCategory
 
         }
 
-        public async Task<Result> Handle
-            (DeleteIncomeCategoryCommand request, CancellationToken ct)
+        public async Task<Result> Handle(
+            DeleteIncomeCategoryCommand request, CancellationToken ct)
         {
             return await base.Handle(request, ct);
         }

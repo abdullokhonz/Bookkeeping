@@ -39,4 +39,25 @@ public static class DomainErrors
         public static readonly Error EmptyFile =
             new("Image.EmptyFile", "Файл не передан или пуст.");
     }
+
+    public static class Auth
+    {
+        public static readonly Error InvalidCredentials =
+            new("Auth.InvalidCredentials", "Неверный логин, почта, телефон или пароль.");
+
+        public static readonly Error UserNotFound =
+            new("Auth.UserNotFound", "Пользователь не найден.");
+
+        public static readonly Error NotConfirmed =
+            new("Auth.NotConfirmed", "Аккаунт не подтвержден. Пожалуйста, введите код подтверждения.");
+
+        public static readonly Error Blocked =
+            new("Auth.Blocked", "Аккаунт заблокирован. Обратитесь в поддержку.");
+
+        public static readonly Error InvalidToken =
+            new("Auth.InvalidToken", "Недействительный или просроченный токен.");
+
+        public static readonly Error InvalidConfirmationCode =
+            new("Auth.InvalidConfirmationCode", "Неверный код подтверждения.");
+    }
 }

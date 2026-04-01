@@ -1,17 +1,14 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Bookkeeping.Server.Infrastructure.Auth
+namespace Bookkeeping.Infrastructure.Auth
 {
     public class AuthOptions
     {
-        public const string ISSUER = "BookkeepingServer"; // Изменили имя
-        public const string AUDIENCE = "BookkeepingClient";
-
-        // В реальном проекте это значение будет приходить из конфигурации
-        public string Key { get; set; } = "SUPER_SECRET_KEY_2026_DO_NOT_SHARE";
-
-        public int LifetimeMinutes { get; set; } = 15;
+        public string Key { get; set; } = string.Empty;
+        public string Issuer { get; set; } = string.Empty;
+        public string Audience { get; set; } = string.Empty;
+        public int LifetimeMinutes { get; set; }
 
         public SymmetricSecurityKey GetSymmetricSecurityKey() =>
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Key));
