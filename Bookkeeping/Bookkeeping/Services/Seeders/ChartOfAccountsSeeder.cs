@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bookkeeping.Services.Seeders
 {
-    // Теперь модель стала максимально простой: ID категории, Код счета, Название
     public record AccountSeedModel(Guid CategoryId, string Code, string Name);
 
     public class ChartOfAccountsSeeder
@@ -21,7 +20,7 @@ namespace Bookkeeping.Services.Seeders
 
         public async Task<int> SeedAsync(CancellationToken ct = default)
         {
-            // 1. Заранее парсим твои готовые ID категорий из БД
+            // Заранее парсим твои готовые ID категорий из БД
             var oborotnieId = Guid.Parse("ae24f717-a65c-49eb-bc1d-a5670432a775");
             var vneoborotnieId = Guid.Parse("67966a47-1c02-4e93-9d00-8ac2edbb3011");
             var tekushieObyazId = Guid.Parse("b1b939be-5123-46e6-8697-9db6d51d0107");
@@ -34,7 +33,7 @@ namespace Bookkeeping.Services.Seeders
             // Вспомогательная функция для добавления "00" в конец кода
             string FullCode(string shortCode) => shortCode + "00";
 
-            // 2. Формируем список счетов с привязкой к конкретным ID
+            // Формируем список счетов с привязкой к конкретным ID
             var accountsToSeed = new List<AccountSeedModel>
             {
                 // ========== ОБОРОТНЫЕ АКТИВЫ ==========
@@ -306,7 +305,7 @@ namespace Bookkeeping.Services.Seeders
 
             foreach (var item in accountsToSeed)
             {
-                // Наша логика типа счета (Активный/Пассивный) идеально работает по первой цифре
+                // логика типа счета (Активный/Пассивный) идеально работает по первой цифре
                 AccountNature nature = DetermineAccountNature(item.Code);
 
                 if (!existingAccountsCodes.Contains(item.Code))
@@ -315,7 +314,7 @@ namespace Bookkeeping.Services.Seeders
                     {
                         AccountNumber = item.Code,
                         AccountName = item.Name,
-                        CategoryAccountId = item.CategoryId, // Используем твой точный GUID
+                        CategoryAccountId = item.CategoryId,
                         AccountNature = nature,
                         IsActive = true,
                         Description = "Импортировано автоматически",

@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using Bookkeeping.Contracts.DTOs.Auth;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -10,11 +13,19 @@ namespace Bookkeeping.Client.Providers
     {
         private readonly IJSRuntime _jsRuntime;
         private readonly HttpClient _httpClient;
+        private readonly IConfiguration _config;
+        private readonly NavigationManager _navManager;
 
-        public JwtAuthStateProvider(IJSRuntime jsRuntime, HttpClient httpClient)
+        public JwtAuthStateProvider(
+            IJSRuntime jsRuntime,
+            HttpClient httpClient,
+            IConfiguration config,
+            NavigationManager navManager)
         {
             _jsRuntime = jsRuntime;
             _httpClient = httpClient;
+            _config = config;
+            _navManager = navManager;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -22,16 +33,42 @@ namespace Bookkeeping.Client.Providers
             try
             {
                 var token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+                var refreshToken = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "refreshToken");
 
                 if (string.IsNullOrWhiteSpace(token))
                 {
-                    _httpClient.DefaultRequestHeaders.Authorization = null;
-                    return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+                    return Anonymous();
+                }
+
+                var claims = ParseClaimsFromJwt(token);
+                var expClaim = claims.FirstOrDefault(c => c.Type == "exp");
+
+                if (expClaim != null)
+                {
+                    var expTime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expClaim.Value));
+
+                    if (expTime <= DateTimeOffset.UtcNow.AddMinutes(1))
+                    {
+                        if (string.IsNullOrWhiteSpace(refreshToken))
+                            return Anonymous();
+
+                        var isRefreshed = await RefreshTokenOnStartupAsync(refreshToken);
+
+                        if (isRefreshed)
+                        {
+                            token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+                            claims = ParseClaimsFromJwt(token);
+                        }
+                        else
+                        {
+                            await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "authToken");
+                            await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "refreshToken");
+                            return Anonymous();
+                        }
+                    }
                 }
 
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-                var claims = ParseClaimsFromJwt(token);
                 var identity = new ClaimsIdentity(claims, "jwt");
                 var user = new ClaimsPrincipal(identity);
 
@@ -39,8 +76,45 @@ namespace Bookkeeping.Client.Providers
             }
             catch
             {
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+                return Anonymous();
             }
+        }
+
+        private async Task<bool> RefreshTokenOnStartupAsync(string refreshToken)
+        {
+            try
+            {
+                var apiBaseUrl = _config["ApiSettings:BaseUrl"] ?? _navManager.BaseUri;
+                if (!apiBaseUrl.EndsWith("/")) apiBaseUrl += "/";
+
+                var requestPayload = new RefreshTokenRequestDto { RefreshToken = refreshToken };
+
+                using var client = new HttpClient { BaseAddress = new Uri(apiBaseUrl) };
+
+                var response = await client.PostAsJsonAsync("api/v1/Auth/refresh-token", requestPayload);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<TokenResponseDto>();
+                    if (result != null && !string.IsNullOrEmpty(result.AccessToken))
+                    {
+                        await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "authToken", result.AccessToken);
+                        await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "refreshToken", result.RefreshToken);
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private AuthenticationState Anonymous()
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = null;
+            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
         public void NotifyUserAuthentication(string token)
@@ -54,6 +128,7 @@ namespace Bookkeeping.Client.Providers
         public async Task NotifyUserLogout()
         {
             await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "authToken");
+            await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "refreshToken");
 
             _httpClient.DefaultRequestHeaders.Authorization = null;
 
