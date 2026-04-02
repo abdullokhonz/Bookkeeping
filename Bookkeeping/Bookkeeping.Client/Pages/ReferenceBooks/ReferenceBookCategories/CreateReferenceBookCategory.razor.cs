@@ -21,7 +21,7 @@ namespace Bookkeeping.Client.Pages.ReferenceBooks.ReferenceBookCategories
                 var response = await Http.GetFromJsonAsync<ApiResponse<List<IfrsAccountTreeDto>>>("/api/v1/IfrsAccount/tree");
                 if (response != null && response.IsSuccess)
                 {
-                    _ifrsAccounts = response.Data;
+                    _ifrsAccounts = response.Data?.OrderBy(a => a.AccountNumber).ToList();
                 }
                 else
                 {

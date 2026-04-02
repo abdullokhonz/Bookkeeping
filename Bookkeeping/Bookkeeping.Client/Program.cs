@@ -25,7 +25,7 @@ builder.Services.AddScoped(sp =>
 
     handler.InnerHandler = new HttpClientHandler();
 
-    var client = new HttpClient
+    var client = new HttpClient(handler)
     {
         BaseAddress = new Uri(apiBaseUrl)
     };

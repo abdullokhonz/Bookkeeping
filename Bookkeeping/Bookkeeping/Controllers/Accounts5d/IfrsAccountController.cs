@@ -7,11 +7,13 @@ using Bookkeeping.Application.Queries.IfrsAccounts.GetAllIfrsAccount;
 using Bookkeeping.Application.Queries.IfrsAccounts.GetIfrsAccountById;
 using Bookkeeping.Application.Queries.IfrsAccounts.GetPagedIfrsAccount;
 using Bookkeeping.Application.Queries.IfrsAccounts.GetTreeIfrsAccount;
+using Bookkeeping.Contracts.Common.Responses;
 using Bookkeeping.Contracts.Common.Results;
 using Bookkeeping.Contracts.DTOs.Accounts5d.IfrsAccountDto;
 using Bookkeeping.Contracts.Models;
 using Bookkeeping.Controllers.Base;
 using Bookkeeping.Entities.Accounts5d;
+using Bookkeeping.Services.Seeders;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,12 +27,15 @@ namespace Bookkeeping.Controllers.Accounts5d
             IfrsAccountCreateDto,
             IfrsAccountUpdateDto>
     {
+        private readonly ChartOfAccountsSeeder _seeder;
+
         public IfrsAccountController(
+            ChartOfAccountsSeeder seeder,
             IMediator mediator,
             ILogger<IfrsAccountController> logger)
             : base(mediator, logger)
         {
-
+            _seeder = seeder;
         }
 
         protected override IRequest<Result<IEnumerable<IfrsAccountTreeDto>>> GetAllQuery()
@@ -59,5 +64,15 @@ namespace Bookkeeping.Controllers.Accounts5d
 
         protected override IRequest<Result> RemoveTreeCommand(Guid id)
             => new RemoveTreeIfrsAccountCommand(id);
+
+        [HttpPost("import-chart-of-accounts")]
+        public async Task<IActionResult> ImportAccounts(CancellationToken ct)
+        {
+            var accountsAdded = await _seeder.SeedAsync(ct);
+            
+            return Ok(ApiResponse<object>.Success(
+                new { AccountsCreated = accountsAdded },
+                $"Импорт завершен. Создано новых счетов: {accountsAdded}"));
+        }
     }
 }

@@ -17,6 +17,7 @@ using Bookkeeping.Services.Interfaces.CashReceiptOrders;
 using Bookkeeping.Services.Interfaces.Notifications;
 using Bookkeeping.Services.Interfaces.ReferenceBooks;
 using Bookkeeping.Services.Interfaces.Users;
+using Bookkeeping.Services.Seeders;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.IdentityModel.Tokens;
@@ -56,6 +57,8 @@ namespace Bookkeeping.Extensions
             service.AddTransient<ISmsService, SmsService>();
 
             service.AddScoped<AuthenticationStateProvider, JwtAuthStateProvider>();
+
+            service.AddScoped<ChartOfAccountsSeeder>();
 
             service.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 

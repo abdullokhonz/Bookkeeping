@@ -24,7 +24,7 @@ namespace Bookkeeping.Client.Pages.ReferenceBooks.ReferenceBookCategories
         private async Task LoadAccounts()
         {
             var result = await Http.GetFromJsonAsync<ApiResponse<List<IfrsAccountTreeDto>>>("/api/v1/IfrsAccount/tree");
-            if (result?.IsSuccess == true) _accounts = result.Data;
+            if (result?.IsSuccess == true) _accounts = result.Data?.OrderBy(a => a.AccountNumber).ToList();
         }
 
         private async Task LoadCategoryData()

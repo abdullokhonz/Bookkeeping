@@ -80,12 +80,12 @@ namespace Bookkeeping.Controllers.Auth
             Description = "Получение новой пары токенов по Refresh Token")]
         [ProducesResponseType(typeof(TokenResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto request)
         {
-            if (string.IsNullOrWhiteSpace(refreshToken))
+            if (string.IsNullOrWhiteSpace(request.RefreshToken))
                 return BadRequest("Refresh token не может быть пустым");
 
-            var result = await _authService.RefreshTokenAsync(refreshToken);
+            var result = await _authService.RefreshTokenAsync(request.RefreshToken);
 
             if (!result.IsSuccess)
                 return BadRequest(new { error = result.Error.Message });
