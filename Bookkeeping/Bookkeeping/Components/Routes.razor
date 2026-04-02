@@ -24,7 +24,7 @@
             <AuthorizeView>
                 <Authorized>
                     <LayoutView Layout="typeof(MainLayout)">
-                        <NotFound />
+                        <NotFoundPage />
                     </LayoutView>
                 </Authorized>
                 <Authorizing>
@@ -34,7 +34,7 @@
                 </Authorizing>
                 <NotAuthorized>
                     <LayoutView Layout="typeof(EmptyLayout)">
-                        <NotFound />
+                        <NotFoundPage />
                     </LayoutView>
                 </NotAuthorized>
             </AuthorizeView>

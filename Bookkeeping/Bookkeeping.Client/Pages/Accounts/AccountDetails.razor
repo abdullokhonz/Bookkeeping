@@ -58,12 +58,12 @@
                         <MudPaper Variant="Variant.Outlined" Class="pa-4 rounded-lg">
                             <div class="d-flex flex-column gap-4">
                                 <div class="d-flex justify-space-between align-center">
-                                    <MudText Color="Color.Secondary">Категория:</MudText>
-                                    <MudText FontWeight="FontWeight.Bold">@(_categoryName ?? "Не указана")</MudText>
+                                    <MudText>Категория:</MudText>
+                                    <MudText>@(_categoryName ?? "Не указана")</MudText>
                                 </div>
                                 <MudDivider />
                                 <div class="d-flex justify-space-between align-center">
-                                    <MudText Color="Color.Secondary">Тип счета:</MudText>
+                                    <MudText>Тип счета:</MudText>
                                     <MudChip T="string" Size="Size.Small" Color="Color.Primary" Variant="Variant.Outlined">
                                         @GetReadableNature(_account.AccountNature)
                                     </MudChip>

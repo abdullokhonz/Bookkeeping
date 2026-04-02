@@ -40,7 +40,7 @@
                         
                         <MudPaper Variant="Variant.Outlined" Class="pa-4 rounded-lg bg-transparent mb-6">
                             <div class="d-flex justify-space-between align-center">
-                                <MudText Color="Color.Secondary">Родительская категория:</MudText>
+                                <MudText>Родительская категория:</MudText>
                                 <MudText FontWeight="FontWeight.Bold">
                                     @(_parentName ?? (_category.ParentId.HasValue ? "Загрузка..." : "Корневая категория"))
                                 </MudText>

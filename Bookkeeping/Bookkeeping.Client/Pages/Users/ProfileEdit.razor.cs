@@ -89,7 +89,11 @@ namespace Bookkeeping.Client.Pages.Users
                     MiddleName = _updateModel.MiddleName,
                     Description = _updateModel.Description,
                     Location = _updateModel.Location,
-                    DateOfBirth = _updateModel.DateOfBirth,
+
+                    DateOfBirth = _updateModel.DateOfBirth.HasValue
+                        ? DateTime.SpecifyKind(_updateModel.DateOfBirth.Value, DateTimeKind.Utc)
+                        : null,
+
                     Gender = _updateModel.Gender ?? UserGender.Unknown
                 };
 

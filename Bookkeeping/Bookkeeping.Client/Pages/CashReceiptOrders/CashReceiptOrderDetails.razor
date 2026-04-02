@@ -59,19 +59,19 @@
                         <MudPaper Variant="Variant.Outlined" Class="pa-4 rounded-lg">
                             <div class="d-flex flex-column gap-4">
                                 <div class="d-flex justify-space-between align-center">
-                                    <MudText Color="Color.Secondary">Сумма:</MudText>
+                                    <MudText>Сумма:</MudText>
                                     <MudText FontWeight="FontWeight.Bold" Color="Color.Success" Typo="Typo.h6">
                                         @FormatAmount(_order.Amount)
                                     </MudText>
                                 </div>
                                 <MudDivider />
                                 <div class="d-flex justify-space-between align-center">
-                                    <MudText Color="Color.Secondary">Дата операции:</MudText>
+                                    <MudText>Дата операции:</MudText>
                                     <MudText FontWeight="FontWeight.Bold">@_order.OperationDate.ToString("dd.MM.yyyy HH:mm")</MudText>
                                 </div>
                                 <MudDivider />
                                 <div class="d-flex justify-space-between align-center">
-                                    <MudText Color="Color.Secondary">Дебет счета:</MudText>
+                                    <MudText>Дебет счета:</MudText>
                                     <div class="d-flex align-center gap-2">
                                         @if (_debitAccount != null)
                                         {
@@ -92,7 +92,7 @@
                                 </div>
                                 <MudDivider />
                                 <div class="d-flex justify-space-between align-center">
-                                    <MudText Color="Color.Secondary">Кредит счета:</MudText>
+                                    <MudText>Кредит счета:</MudText>
                                     <div class="d-flex align-center gap-2">
                                         @if (_creditAccount != null)
                                         {
@@ -113,7 +113,7 @@
                                 </div>
                                 <MudDivider />
                                 <div class="d-flex justify-space-between align-center">
-                                    <MudText Color="Color.Secondary">Статья доходов:</MudText>
+                                    <MudText>Статья доходов:</MudText>
                                     <div class="d-flex align-center gap-2">
                                         @if (_incomeCategory != null)
                                         {
@@ -134,7 +134,7 @@
                                 </div>
                                 <MudDivider />
                                 <div class="d-flex justify-space-between align-center">
-                                    <MudText Color="Color.Secondary">Контрагент:</MudText>
+                                    <MudText>Контрагент:</MudText>
                                     <div class="d-flex align-center gap-2">
                                         @if (_referenceBook != null)
                                         {
@@ -155,7 +155,7 @@
                                 </div>
                                 <MudDivider />
                                 <div class="d-flex justify-space-between align-center">
-                                    <MudText Color="Color.Secondary">НДС:</MudText>
+                                    <MudText>НДС:</MudText>
                                     @if (_vatTax != null)
                                     {
                                         var vatAmount = _order.Amount * (_vatTax.VatRate / 100m);
@@ -171,11 +171,11 @@
                                 <MudDivider />
                                 <div class="d-flex flex-column gap-2">
                                     <div class="d-flex justify-space-between align-center">
-                                        <MudText Color="Color.Secondary">Главный бухгалтер:</MudText>
+                                        <MudText>Главный бухгалтер:</MudText>
                                         <MudText FontWeight="FontWeight.Bold">@_order.Accountant</MudText>
                                     </div>
                                     <div class="d-flex justify-space-between align-center">
-                                        <MudText Color="Color.Secondary">Кассир:</MudText>
+                                        <MudText>Кассир:</MudText>
                                         <MudText FontWeight="FontWeight.Bold">@_order.Cashier</MudText>
                                     </div>
                                 </div>

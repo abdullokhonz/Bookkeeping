@@ -1,6 +1,6 @@
 namespace Bookkeeping.Components.Pages
 {
-    public partial class NotFound
+    public partial class NotFoundPage
     {
         private void GoToHome() => Nav.NavigateTo("/");
     }

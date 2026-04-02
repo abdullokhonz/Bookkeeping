@@ -50,7 +50,7 @@
                         <MudPaper Variant="Variant.Outlined" Class="pa-4 rounded-lg">
                             @if (_book.Info == null || !_book.Info.Any())
                             {
-                                <MudText Color="Color.Secondary">Дополнительных параметров нет.</MudText>
+                                <MudText>Дополнительных параметров нет.</MudText>
                             }
                             else
                             {
@@ -58,7 +58,7 @@
                                     @foreach (var kvp in _book.Info)
                                     {
                                         <div class="d-flex justify-space-between align-center">
-                                            <MudText Color="Color.Secondary">@kvp.Key:</MudText>
+                                            <MudText>@kvp.Key:</MudText>
                                             <MudText FontWeight="FontWeight.Medium">@kvp.Value</MudText>
                                         </div>
                                         <MudDivider />
