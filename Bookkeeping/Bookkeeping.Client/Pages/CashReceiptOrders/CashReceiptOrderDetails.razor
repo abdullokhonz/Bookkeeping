@@ -219,20 +219,20 @@
                             <MudPaper Variant="Variant.Outlined" Class="pa-4 rounded-lg">
                                 <div class="d-flex flex-column gap-3">
                                     <div class="d-flex justify-space-between align-center">
-                                        <MudText Color="Color.Secondary">Название:</MudText>
+                                        <MudText>Название:</MudText>
                                         <MudText FontWeight="FontWeight.Bold">@_image.Name</MudText>
                                     </div>
                                     @if (!string.IsNullOrWhiteSpace(_image.Description))
                                     {
                                         <MudDivider />
                                         <div class="d-flex justify-space-between align-center">
-                                            <MudText Color="Color.Secondary">Описание:</MudText>
+                                            <MudText>Описание:</MudText>
                                             <MudText>@_image.Description</MudText>
                                         </div>
                                     }
                                     <MudDivider />
                                     <div class="d-flex justify-space-between align-center">
-                                        <MudText Color="Color.Secondary">Дата загрузки:</MudText>
+                                        <MudText>Дата загрузки:</MudText>
                                         <MudText>@_image.CreatedAt.ToString("dd.MM.yyyy HH:mm")</MudText>
                                     </div>
                                     @if (!string.IsNullOrWhiteSpace(_image?.Path))

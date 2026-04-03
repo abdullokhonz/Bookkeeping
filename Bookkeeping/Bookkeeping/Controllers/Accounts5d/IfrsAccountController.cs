@@ -15,10 +15,12 @@ using Bookkeeping.Controllers.Base;
 using Bookkeeping.Entities.Accounts5d;
 using Bookkeeping.Services.Seeders;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookkeeping.Controllers.Accounts5d
 {
+    [Authorize]
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class IfrsAccountController : TreeBaseController

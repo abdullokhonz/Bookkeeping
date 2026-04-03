@@ -11,10 +11,12 @@ using Bookkeeping.Contracts.Models;
 using Bookkeeping.Controllers.Base;
 using Bookkeeping.Entities.ReferenceBooks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookkeeping.Controllers.ReferenceBooks
 {
+    [Authorize]
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class ReferenceBookCategoryController : BaseController

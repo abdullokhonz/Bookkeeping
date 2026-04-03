@@ -58,6 +58,7 @@
                             <MudSelect T="UserGender?" @bind-Value="_updateModel.Gender" Label="Пол" Variant="Variant.Outlined" Clearable="true" AnchorOrigin="Origin.BottomCenter">
                                 <MudSelectItem T="UserGender?" Value="@(UserGender.Male)">Мужской</MudSelectItem>
                                 <MudSelectItem T="UserGender?" Value="@(UserGender.Female)">Женский</MudSelectItem>
+                                <MudSelectItem T="UserGender?" Value="@(UserGender.Unknown)">Неизвестный</MudSelectItem>
                                 <MudSelectItem T="UserGender?" Value="@(UserGender.Other)">Другое</MudSelectItem>
                             </MudSelect>
                         </MudItem>

@@ -11,10 +11,12 @@ using Bookkeeping.Contracts.Models;
 using Bookkeeping.Controllers.Base;
 using Bookkeeping.Entities.CashReceiptOrders;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookkeeping.Controllers.CashReceiptOrders
 {
+    [Authorize]
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class CashReceiptOrderController

@@ -30,7 +30,7 @@ namespace Bookkeeping.Client.Pages.ReferenceBooks
         private async Task LoadCategories()
         {
             var result = await Http.GetFromJsonAsync<ApiResponse<List<ReferenceBookCategoryGetDto>>>("/api/v1/ReferenceBookCategory/GetAll");
-            if (result != null && result.IsSuccess) categories = result.Data;
+            if (result != null && result.IsSuccess) categories = result.Data?.OrderBy(a => a.Name).ToList();
         }
 
         private async Task LoadData()

@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bookkeeping.Controllers.Users
 {
+    [Authorize]
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class UserController

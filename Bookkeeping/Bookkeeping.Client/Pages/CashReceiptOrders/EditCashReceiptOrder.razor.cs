@@ -48,7 +48,7 @@ namespace Bookkeeping.Client.Pages.CashReceiptOrders
                 await Task.WhenAll(vatTask, catTask, refTask, orderTask);
 
                 _vatTaxes = vatTask.Result?.Data ?? new();
-                _incomeCategories = catTask.Result?.Data ?? new();
+                _incomeCategories = catTask.Result?.Data?.OrderBy(a => a.Name).ToList() ?? new();
                 _referenceBooks = refTask.Result?.Data ?? new();
 
                 var orderData = orderTask.Result?.Data;

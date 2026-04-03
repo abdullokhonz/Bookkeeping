@@ -35,7 +35,7 @@ namespace Bookkeeping.Client.Pages.ReferenceBooks
                 var response = await Http.GetFromJsonAsync<ApiResponse<List<ReferenceBookCategoryGetDto>>>("/api/v1/ReferenceBookCategory/GetAll");
                 if (response != null && response.IsSuccess)
                 {
-                    _categories = response.Data;
+                    _categories = response.Data?.OrderBy(a => a.Name).ToList();
                 }
             }
             catch (Exception ex)
