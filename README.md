@@ -73,6 +73,198 @@ The platform enforces a strict **Clean Architecture**, ensuring the core domain 
 
 ---
 
+# 📸 Application Gallery
+
+Explore the complete visual ecosystem of the Bookkeeping application. The gallery showcases our sophisticated UI, covering complex CRUD workflows for both data records and their respective categories across Light and Dark themes.
+
+<details>
+  <summary><h2 style="display:inline; font-weight: bold;">&nbsp;🔐 1. Authentication & Onboarding (Fixed Theme)</h2></summary>
+  <br/>
+  <p><i>The authentication layer uses a dedicated, high-focus layout.</i></p>
+  <table width="100%">
+  <tr><td width="50%" align="center"><b>Login Page</b></td><td width="50%" align="center"><b>Registration Page</b></td></tr>
+  <tr><td align="center"><img src="docs/imgs/screenshots/auth/login.png" width="100%" alt="Login"/></td><td align="center"><img src="docs/imgs/screenshots/auth/register.png" width="100%" alt="Register"/></td></tr>
+  </table>
+</details>
+
+<br>
+
+<details>
+  <summary><h2 style="display:inline; font-weight: bold;">&nbsp;☀️ 2. Light Theme Experience</h2></summary>
+  <br/>
+  
+  <details style="margin: 0 0 5px 25px;">
+    <summary><b style="font-size: medium;">&nbsp;📊 Dashboard / Home Page</b></summary>
+    <br/>
+    <img src="docs/imgs/screenshots/light/home/home.png" width="100%" alt="Dashboard Light"/>
+  </details>
+
+  <details style="margin: 0 0 5px 25px;">
+    <summary><b  style="font-size: medium;">&nbsp;👤 User Profile</b></summary>
+    <br/>
+    <table width="100%">
+    <tr><td width="50%" align="center"><b>Profile View</b></td><td width="50%" align="center"><b>Edit Profile</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/light/profile/details.png" width="100%" alt="Profile View"/></td><td align="center"><img src="docs/imgs/screenshots/light/profile/edit.png" width="100%" alt="Edit Profile"/></td></tr>
+    </table>
+  </details>
+
+  <details style="margin: 0 0 5px 25px;">
+    <summary><b style="font-size: medium;">&nbsp;🗂️ IFRS Accounts (МСФО) — 9 Screen Workflow</b></summary>
+    <br/>
+    <p align="center"><b>Unified Main Table</b></p>
+    <img src="docs/imgs/screenshots/light/ifrs/main-list.png" width="100%" alt="IFRS Main"/>
+    <br/><br/>
+    <h4>🔹 Account Management</h4>
+    <table width="100%">
+    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/light/ifrs/acc-details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/ifrs/acc-create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/ifrs/acc-edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/ifrs/acc-delete.png" width="100%"/></td></tr>
+    </table>
+    <h4>🔹 Category Management</h4>
+    <table width="100%">
+    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/light/ifrs/cat-details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/ifrs/cat-create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/ifrs/cat-edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/ifrs/cat-delete.png" width="100%"/></td></tr>
+    </table>
+  </details>
+
+  <details style="margin: 0 0 5px 25px;">
+    <summary><b style="font-size: medium;">&nbsp;📋 Reference Books (Справочники) — 9 Screen Workflow</b></summary>
+    <br/>
+    <p align="center"><b>Unified Main Table</b></p>
+    <img src="docs/imgs/screenshots/light/reference/main-list.png" width="100%" alt="Reference Main"/>
+    <br/><br/>
+    <h4>🔹 Reference Item Management</h4>
+    <table width="100%">
+    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/light/reference/ref-details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/reference/ref-create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/reference/ref-edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/reference/ref-delete.png" width="100%"/></td></tr>
+    </table>
+    <h4>🔹 Category Management</h4>
+    <table width="100%">
+    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/light/reference/cat-details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/reference/cat-create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/reference/cat-edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/reference/cat-delete.png" width="100%"/></td></tr>
+    </table>
+  </details>
+
+  <details style="margin: 0 0 5px 25px;">
+    <summary><b style="font-size: medium;">&nbsp;💰 Cash Receipt Orders (ПКО)</b></summary>
+    <br/>
+    <img src="docs/imgs/screenshots/light/orders/list.png" width="100%" alt="Orders List"/>
+    <table width="100%">
+    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/light/orders/details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/orders/create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/orders/edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/orders/delete.png" width="100%"/></td></tr>
+    </table>
+  </details>
+
+  <details style="margin: 0 0 5px 25px;">
+    <summary><b style="font-size: medium;">&nbsp;📈 Income Articles (Статьи доходов)</b></summary>
+    <br/>
+    <img src="docs/imgs/screenshots/light/income/list.png" width="100%" alt="Income List"/>
+    <table width="100%">
+    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/light/income/details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/income/create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/income/edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/income/delete.png" width="100%"/></td></tr>
+    </table>
+  </details>
+
+  <details style="margin: 0 0 5px 25px;">
+    <summary><b style="font-size: medium;">&nbsp;⚖️ VAT Management (НДС)</b></summary>
+    <br/>
+    <img src="docs/imgs/screenshots/light/vat/list.png" width="100%" alt="VAT List"/>
+    <table width="100%">
+    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/light/vat/details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/vat/create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/vat/edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/vat/delete.png" width="100%"/></td></tr>
+    </table>
+  </details>
+</details>
+
+<br>
+
+<details>
+  <summary><h2 style="display:inline; font-weight: bold;">&nbsp;🌙 3. Dark Theme Experience</h2></summary>
+  <br/>
+  
+  <details style="margin: 0 0 5px 25px;">
+    <summary><b style="font-size: medium;">&nbsp;📊 Dashboard / Home Page</b></summary>
+    <br/>
+    <img src="docs/imgs/screenshots/dark/home/home.png" width="100%" alt="Dashboard Dark"/>
+  </details>
+
+  <details style="margin: 0 0 5px 25px;">
+    <summary><b style="font-size: medium;">&nbsp;👤 User Profile</b></summary>
+    <br/>
+    <table width="100%">
+    <tr><td width="50%" align="center"><b>Profile View</b></td><td width="50%" align="center"><b>Edit Profile</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/dark/profile/details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/profile/edit.png" width="100%"/></td></tr>
+    </table>
+  </details>
+
+  <details style="margin: 0 0 5px 25px;">
+    <summary><b style="font-size: medium;">&nbsp;🗂️ IFRS Accounts (МСФО) — 9 Screen Workflow</b></summary>
+    <br/>
+    <p align="center"><b>Unified Main Table</b></p>
+    <img src="docs/imgs/screenshots/dark/ifrs/main-list.png" width="100%" alt="IFRS Main Dark"/>
+    <br/><br/>
+    <h4>🔹 Account Management</h4>
+    <table width="100%">
+    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/acc-details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/acc-create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/acc-edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/acc-delete.png" width="100%"/></td></tr>
+    </table>
+    <h4>🔹 Category Management</h4>
+    <table width="100%">
+    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/cat-details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/cat-create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/cat-edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/cat-delete.png" width="100%"/></td></tr>
+    </table>
+  </details>
+
+  <details style="margin: 0 0 5px 25px;">
+    <summary><b style="font-size: medium;">&nbsp;📋 Reference Books (Справочники) — 9 Screen Workflow</b></summary>
+    <br/>
+    <p align="center"><b>Unified Main Table</b></p>
+    <img src="docs/imgs/screenshots/dark/reference/main-list.png" width="100%" alt="Reference Main Dark"/>
+    <br/><br/>
+    <h4>🔹 Reference Item Management</h4>
+    <table width="100%">
+    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/dark/reference/ref-details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/reference/ref-create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/reference/ref-edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/reference/ref-delete.png" width="100%"/></td></tr>
+    </table>
+    <h4>🔹 Category Management</h4>
+    <table width="100%">
+    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/dark/reference/cat-details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/reference/cat-create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/reference/cat-edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/reference/cat-delete.png" width="100%"/></td></tr>
+    </table>
+  </details>
+
+  <details style="margin: 0 0 5px 25px;">
+    <summary><b style="font-size: medium;">&nbsp;💰 Cash Receipt Orders (ПКО)</b></summary>
+    <br/>
+    <img src="docs/imgs/screenshots/dark/orders/list.png" width="100%" alt="Orders List Dark"/>
+    <table width="100%">
+    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/dark/orders/details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/orders/create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/orders/edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/orders/delete.png" width="100%"/></td></tr>
+    </table>
+  </details>
+
+  <details style="margin: 0 0 5px 25px;">
+    <summary><b style="font-size: medium;">&nbsp;📈 Income Articles (Статьи доходов)</b></summary>
+    <br/>
+    <img src="docs/imgs/screenshots/dark/income/list.png" width="100%" alt="Income List Dark"/>
+    <table width="100%">
+    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/dark/income/details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/income/create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/income/edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/income/delete.png" width="100%"/></td></tr>
+    </table>
+  </details>
+
+  <details style="margin: 0 0 5px 25px;">
+    <summary><b style="font-size: medium;">&nbsp;⚖️ VAT Management (НДС)</b></summary>
+    <br/>
+    <img src="docs/imgs/screenshots/dark/vat/list.png" width="100%" alt="VAT List Dark"/>
+    <table width="100%">
+    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/dark/vat/details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/vat/create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/vat/edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/vat/delete.png" width="100%"/></td></tr>
+    </table>
+  </details>
+</details>
+
+---
+
 ## 🤝 Contributing
 
 Contributions are welcome! If you have suggestions or want to contribute, please feel free to open issues or pull requests.
