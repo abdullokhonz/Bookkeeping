@@ -78,7 +78,7 @@ The platform enforces a strict **Clean Architecture**, ensuring the core domain 
 Explore the complete visual ecosystem of the Bookkeeping application. The gallery showcases our sophisticated UI, covering complex CRUD workflows for both data records and their respective categories across Light and Dark themes.
 
 <details>
-  <summary><h2 style="display:inline; font-weight: bold;">&nbsp;🔐 1. Authentication & Onboarding (Fixed Theme)</h2></summary>
+  <summary><h3 style="display:inline; font-weight: bold;">&nbsp;🔐 1. Authentication & Onboarding (Fixed Theme)</h3></summary>
   <br/>
   <p><i>The authentication layer uses a dedicated, high-focus layout.</i></p>
   <table width="100%">
@@ -88,7 +88,7 @@ Explore the complete visual ecosystem of the Bookkeeping application. The galler
 </details>
 
 <details>
-  <summary><h2 style="display:inline; font-weight: bold;">&nbsp;☀️ 2. Light Theme Experience</h2></summary>
+  <summary><h3 style="display:inline; font-weight: bold;">&nbsp;☀️ 2. Light Theme Experience</h3></summary>
   <br/>
   
   <details style="margin: 0 0 5px 25px;">
@@ -174,7 +174,7 @@ Explore the complete visual ecosystem of the Bookkeeping application. The galler
 </details>
 
 <details>
-  <summary><h2 style="display:inline; font-weight: bold;">&nbsp;🌙 3. Dark Theme Experience</h2></summary>
+  <summary><h3 style="display:inline; font-weight: bold;">&nbsp;🌙 3. Dark Theme Experience</h3></summary>
   <br/>
   
   <details style="margin: 0 0 5px 25px;">
