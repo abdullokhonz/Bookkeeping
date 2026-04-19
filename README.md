@@ -87,8 +87,6 @@ Explore the complete visual ecosystem of the Bookkeeping application. The galler
   </table>
 </details>
 
-<br>
-
 <details>
   <summary><h2 style="display:inline; font-weight: bold;">&nbsp;☀️ 2. Light Theme Experience</h2></summary>
   <br/>
@@ -174,8 +172,6 @@ Explore the complete visual ecosystem of the Bookkeeping application. The galler
     </table>
   </details>
 </details>
-
-<br>
 
 <details>
   <summary><h2 style="display:inline; font-weight: bold;">&nbsp;🌙 3. Dark Theme Experience</h2></summary>
