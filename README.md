@@ -78,7 +78,7 @@ The platform enforces a strict **Clean Architecture**, ensuring the core domain 
 Explore the complete visual ecosystem of the Bookkeeping application. The gallery showcases our sophisticated UI, covering complex CRUD workflows for both data records and their respective categories across Light and Dark themes.
 
 <details>
-  <summary><h3 style="font-weight: bold;">&nbsp;🔐 1. Authentication & Onboarding (Fixed Theme)</h3></summary>
+  <summary><h3 style="display:inline;">🔐 1. Authentication & Onboarding (Fixed Theme)</h3></summary>
   <br/>
   <p><i>The authentication layer uses a dedicated, high-focus layout.</i></p>
   <table width="100%">
@@ -88,17 +88,19 @@ Explore the complete visual ecosystem of the Bookkeeping application. The galler
 </details>
 
 <details>
-  <summary><h3 style="font-weight: bold;">&nbsp;☀️ 2. Light Theme Experience</h3></summary>
+  <summary><h3 style="display:inline;">☀️ 2. Light Theme Experience</h3></summary>
   <br/>
-  
-  <details style="margin: 0 0 5px 25px;">
-    <summary><b style="font-size: medium;">&nbsp;📊 Dashboard / Home Page</b></summary>
+
+  <details>
+    <summary><b>📊 Dashboard / Home Page</b></summary>
     <br/>
-    <img src="docs/imgs/screenshots/light/home/home.png" width="100%" alt="Dashboard Light"/>
+    <p align="center">
+      <img src="docs/imgs/screenshots/light/home/home.png" width="80%" alt="Dashboard Light" style="max-width:800px;"/>
+    </p>
   </details>
 
-  <details style="margin: 0 0 5px 25px;">
-    <summary><b  style="font-size: medium;">&nbsp;👤 User Profile</b></summary>
+  <details>
+    <summary><b>👤 User Profile</b></summary>
     <br/>
     <table width="100%">
     <tr><td width="50%" align="center"><b>Profile View</b></td><td width="50%" align="center"><b>Edit Profile</b></td></tr>
@@ -106,8 +108,8 @@ Explore the complete visual ecosystem of the Bookkeeping application. The galler
     </table>
   </details>
 
-  <details style="margin: 0 0 5px 25px;">
-    <summary><b style="font-size: medium;">&nbsp;🗂️ IFRS Accounts (МСФО) — 9 Screen Workflow</b></summary>
+  <details>
+    <summary><b>🗂️ IFRS Accounts (МСФО) — 9 Screen Workflow</b></summary>
     <br/>
     <p align="center"><b>Unified Main Table</b></p>
     <img src="docs/imgs/screenshots/light/ifrs/main-list.png" width="100%" alt="IFRS Main"/>
@@ -124,8 +126,8 @@ Explore the complete visual ecosystem of the Bookkeeping application. The galler
     </table>
   </details>
 
-  <details style="margin: 0 0 5px 25px;">
-    <summary><b style="font-size: medium;">&nbsp;📋 Reference Books (Справочники) — 9 Screen Workflow</b></summary>
+  <details>
+    <summary><b>📋 Reference Books (Справочники) — 9 Screen Workflow</b></summary>
     <br/>
     <p align="center"><b>Unified Main Table</b></p>
     <img src="docs/imgs/screenshots/light/reference/main-list.png" width="100%" alt="Reference Main"/>
@@ -134,7 +136,7 @@ Explore the complete visual ecosystem of the Bookkeeping application. The galler
     <table width="100%">
     <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
     <tr><td align="center"><img src="docs/imgs/screenshots/light/reference/ref-details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/reference/ref-create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/reference/ref-edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/reference/ref-delete.png" width="100%"/></td></tr>
-    </table>
+    <tr>
     <h4>🔹 Category Management</h4>
     <table width="100%">
     <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
@@ -142,8 +144,8 @@ Explore the complete visual ecosystem of the Bookkeeping application. The galler
     </table>
   </details>
 
-  <details style="margin: 0 0 5px 25px;">
-    <summary><b style="font-size: medium;">&nbsp;💰 Cash Receipt Orders (ПКО)</b></summary>
+  <details>
+    <summary><b>💰 Cash Receipt Orders (ПКО)</b></summary>
     <br/>
     <img src="docs/imgs/screenshots/light/orders/list.png" width="100%" alt="Orders List"/>
     <table width="100%">
@@ -152,8 +154,8 @@ Explore the complete visual ecosystem of the Bookkeeping application. The galler
     </table>
   </details>
 
-  <details style="margin: 0 0 5px 25px;">
-    <summary><b style="font-size: medium;">&nbsp;📈 Income Articles (Статьи доходов)</b></summary>
+  <details>
+    <summary><b>📈 Income Articles (Статьи доходов)</b></summary>
     <br/>
     <img src="docs/imgs/screenshots/light/income/list.png" width="100%" alt="Income List"/>
     <table width="100%">
@@ -162,29 +164,31 @@ Explore the complete visual ecosystem of the Bookkeeping application. The galler
     </table>
   </details>
 
-  <details style="margin: 0 0 5px 25px;">
-    <summary><b style="font-size: medium;">&nbsp;⚖️ VAT Management (НДС)</b></summary>
+  <details>
+    <summary><b>⚖️ VAT Management (НДС)</b></summary>
     <br/>
     <img src="docs/imgs/screenshots/light/vat/list.png" width="100%" alt="VAT List"/>
     <table width="100%">
     <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
     <tr><td align="center"><img src="docs/imgs/screenshots/light/vat/details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/vat/create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/vat/edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/light/vat/delete.png" width="100%"/></td></tr>
-    </table>
+    <tr>
   </details>
 </details>
 
 <details>
-  <summary><h3 style="font-weight: bold;">&nbsp;🌙 3. Dark Theme Experience</h3></summary>
+  <summary><h3 style="display:inline;">🌙 3. Dark Theme Experience</h3></summary>
   <br/>
-  
-  <details style="margin: 0 0 5px 25px;">
-    <summary><b style="font-size: medium;">&nbsp;📊 Dashboard / Home Page</b></summary>
+
+  <details>
+    <summary><b>📊 Dashboard / Home Page</b></summary>
     <br/>
-    <img src="docs/imgs/screenshots/dark/home/home.png" width="100%" alt="Dashboard Dark"/>
+    <p align="center">
+      <img src="docs/imgs/screenshots/dark/home/home.png" width="80%" alt="Dashboard Dark" style="max-width:800px;"/>
+    </p>
   </details>
 
-  <details style="margin: 0 0 5px 25px;">
-    <summary><b style="font-size: medium;">&nbsp;👤 User Profile</b></summary>
+  <details>
+    <summary><b>👤 User Profile</b></summary>
     <br/>
     <table width="100%">
     <tr><td width="50%" align="center"><b>Profile View</b></td><td width="50%" align="center"><b>Edit Profile</b></td></tr>
@@ -192,8 +196,8 @@ Explore the complete visual ecosystem of the Bookkeeping application. The galler
     </table>
   </details>
 
-  <details style="margin: 0 0 5px 25px;">
-    <summary><b style="font-size: medium;">&nbsp;🗂️ IFRS Accounts (МСФО) — 9 Screen Workflow</b></summary>
+  <details>
+    <summary><b>🗂️ IFRS Accounts (МСФО) — 9 Screen Workflow</b></summary>
     <br/>
     <p align="center"><b>Unified Main Table</b></p>
     <img src="docs/imgs/screenshots/dark/ifrs/main-list.png" width="100%" alt="IFRS Main Dark"/>
@@ -205,56 +209,56 @@ Explore the complete visual ecosystem of the Bookkeeping application. The galler
     </table>
     <h4>🔹 Category Management</h4>
     <table width="100%">
-    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
-    <tr><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/cat-details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/cat-create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/cat-edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/cat-delete.png" width="100%"/></td></tr>
+    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b>ERC20</td>
+    <tr><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/cat-details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/cat-create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/cat-edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/ifrs/cat-delete.png" width="100%"/>ERC20</td>
     </table>
   </details>
 
-  <details style="margin: 0 0 5px 25px;">
-    <summary><b style="font-size: medium;">&nbsp;📋 Reference Books (Справочники) — 9 Screen Workflow</b></summary>
+  <details>
+    <summary><b>📋 Reference Books (Справочники) — 9 Screen Workflow</b></summary>
     <br/>
     <p align="center"><b>Unified Main Table</b></p>
     <img src="docs/imgs/screenshots/dark/reference/main-list.png" width="100%" alt="Reference Main Dark"/>
     <br/><br/>
     <h4>🔹 Reference Item Management</h4>
     <table width="100%">
-    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
-    <tr><td align="center"><img src="docs/imgs/screenshots/dark/reference/ref-details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/reference/ref-create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/reference/ref-edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/reference/ref-delete.png" width="100%"/></td></tr>
+    <tr><td width="25%" align="center"><b>Details</b>ERC20<td width="25%" align="center"><b>Create</b>ERC20<td width="25%" align="center"><b>Edit</b>ERC20<td width="25%" align="center"><b>Delete</b>ERC20</tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/dark/reference/ref-details.png" width="100%"/>ERC20<td align="center"><img src="docs/imgs/screenshots/dark/reference/ref-create.png" width="100%"/>ERC20<td align="center"><img src="docs/imgs/screenshots/dark/reference/ref-edit.png" width="100%"/>ERC20<td align="center"><img src="docs/imgs/screenshots/dark/reference/ref-delete.png" width="100%"/>ERC20</tr>
     </table>
     <h4>🔹 Category Management</h4>
     <table width="100%">
-    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
-    <tr><td align="center"><img src="docs/imgs/screenshots/dark/reference/cat-details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/reference/cat-create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/reference/cat-edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/reference/cat-delete.png" width="100%"/></td></tr>
+    <tr><td width="25%" align="center"><b>Details</b>ERC20<td width="25%" align="center"><b>Create</b>ERC20<td width="25%" align="center"><b>Edit</b>ERC20<td width="25%" align="center"><b>Delete</b>ERC20</tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/dark/reference/cat-details.png" width="100%"/>ERC20<td align="center"><img src="docs/imgs/screenshots/dark/reference/cat-create.png" width="100%"/>ERC20<td align="center"><img src="docs/imgs/screenshots/dark/reference/cat-edit.png" width="100%"/>ERC20<td align="center"><img src="docs/imgs/screenshots/dark/reference/cat-delete.png" width="100%"/>ERC20</tr>
     </table>
   </details>
 
-  <details style="margin: 0 0 5px 25px;">
-    <summary><b style="font-size: medium;">&nbsp;💰 Cash Receipt Orders (ПКО)</b></summary>
+  <details>
+    <summary><b>💰 Cash Receipt Orders (ПКО)</b></summary>
     <br/>
     <img src="docs/imgs/screenshots/dark/orders/list.png" width="100%" alt="Orders List Dark"/>
     <table width="100%">
-    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
-    <tr><td align="center"><img src="docs/imgs/screenshots/dark/orders/details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/orders/create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/orders/edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/orders/delete.png" width="100%"/></td></tr>
+    <tr><td width="25%" align="center"><b>Details</b>ERC20<td width="25%" align="center"><b>Create</b>ERC20<td width="25%" align="center"><b>Edit</b>ERC20<td width="25%" align="center"><b>Delete</b>ERC20</tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/dark/orders/details.png" width="100%"/>ERC20<td align="center"><img src="docs/imgs/screenshots/dark/orders/create.png" width="100%"/>ERC20<td align="center"><img src="docs/imgs/screenshots/dark/orders/edit.png" width="100%"/>ERC20<td align="center"><img src="docs/imgs/screenshots/dark/orders/delete.png" width="100%"/>ERC20</tr>
     </table>
   </details>
 
-  <details style="margin: 0 0 5px 25px;">
-    <summary><b style="font-size: medium;">&nbsp;📈 Income Articles (Статьи доходов)</b></summary>
+  <details>
+    <summary><b>📈 Income Articles (Статьи доходов)</b></summary>
     <br/>
     <img src="docs/imgs/screenshots/dark/income/list.png" width="100%" alt="Income List Dark"/>
     <table width="100%">
-    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
-    <tr><td align="center"><img src="docs/imgs/screenshots/dark/income/details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/income/create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/income/edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/income/delete.png" width="100%"/></td></tr>
+    <tr><td width="25%" align="center"><b>Details</b>ERC20<td width="25%" align="center"><b>Create</b>ERC20<td width="25%" align="center"><b>Edit</b>ERC20<td width="25%" align="center"><b>Delete</b>ERC20</tr>
+    <tr><td align="center"><img src="docs/imgs/screenshots/dark/income/details.png" width="100%"/>ERC20<td align="center"><img src="docs/imgs/screenshots/dark/income/create.png" width="100%"/>ERC20<td align="center"><img src="docs/imgs/screenshots/dark/income/edit.png" width="100%"/>ERC20<td align="center"><img src="docs/imgs/screenshots/dark/income/delete.png" width="100%"/>ERC20</tr>
     </table>
   </details>
 
-  <details style="margin: 0 0 5px 25px;">
-    <summary><b style="font-size: medium;">&nbsp;⚖️ VAT Management (НДС)</b></summary>
+  <details>
+    <summary><b>⚖️ VAT Management (НДС)</b></summary>
     <br/>
     <img src="docs/imgs/screenshots/dark/vat/list.png" width="100%" alt="VAT List Dark"/>
     <table width="100%">
-    <tr><td width="25%" align="center"><b>Details</b></td><td width="25%" align="center"><b>Create</b></td><td width="25%" align="center"><b>Edit</b></td><td width="25%" align="center"><b>Delete</b></td></tr>
-    <tr><td align="center"><img src="docs/imgs/screenshots/dark/vat/details.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/vat/create.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/vat/edit.png" width="100%"/></td><td align="center"><img src="docs/imgs/screenshots/dark/vat/delete.png" width="100%"/></td></tr>
+    <tr><td width="25%" align="center"><b>Details</b>ERC20<td width="25%" align="center"><b>Create</b>ERC20<td width="25%" align="center"><b>Edit</b>ERC20<td width="25%" align="center"><b>Delete</b>ERC20</td>
+    <tr><td align="center"><img src="docs/imgs/screenshots/dark/vat/details.png" width="100%"/>ERC20<td align="center"><img src="docs/imgs/screenshots/dark/vat/create.png" width="100%"/>ERC20<td align="center"><img src="docs/imgs/screenshots/dark/vat/edit.png" width="100%"/>ERC20<td align="center"><img src="docs/imgs/screenshots/dark/vat/delete.png" width="100%"/>ERC20</tr>
     </table>
   </details>
 </details>
