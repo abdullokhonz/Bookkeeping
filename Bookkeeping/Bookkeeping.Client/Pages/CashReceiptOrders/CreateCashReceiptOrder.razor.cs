@@ -1,3 +1,4 @@
+using Bookkeeping.Contracts.Common.Responses;
 using Bookkeeping.Contracts.DTOs.CashReceiptOrders.CashReceiptOrderDto;
 using Bookkeeping.Contracts.DTOs.CashReceiptOrders.ImageDto;
 using Microsoft.AspNetCore.Components.Forms;
@@ -13,13 +14,6 @@ namespace Bookkeeping.Client.Pages.CashReceiptOrders
         public record IncomeCategoryGetDto(Guid Id, string Name);
         public record ReferenceBookGetDto(Guid Id, string Name);
         public record VatTaxGetDto(Guid Id, decimal VatRate);
-
-        public class ApiResponse<T>
-        {
-            public T? Data { get; set; }
-            public bool IsSuccess { get; set; }
-            public string? Message { get; set; }
-        }
 
         private CashReceiptOrderCreateDto _pkoModel = new();
         private ImageCreateDto _imageModel = new();

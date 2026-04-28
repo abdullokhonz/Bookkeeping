@@ -1,4 +1,5 @@
 using Bookkeeping.Client.Dialogs;
+using Bookkeeping.Contracts.Common.Responses;
 using Bookkeeping.Contracts.DTOs.CashReceiptOrders.CashReceiptOrderDto;
 using Bookkeeping.Contracts.DTOs.CashReceiptOrders.ImageDto;
 using Bookkeeping.Contracts.Enums;
@@ -17,13 +18,6 @@ namespace Bookkeeping.Client.Pages.CashReceiptOrders
         public record IncomeCategoryGetDto(Guid Id, string Name);
         public record ReferenceBookGetDto(Guid Id, string Name);
         public record VatTaxGetDto(Guid Id, decimal VatRate);
-
-        public class ApiResponse<T>
-        {
-            public bool IsSuccess { get; set; }
-            public T? Data { get; set; }
-            public string? Message { get; set; }
-        }
 
         private CashReceiptOrderUpdateDto? _pkoModel;
         private ImageGetDto? _existingImage;
