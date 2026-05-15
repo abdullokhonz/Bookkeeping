@@ -263,7 +263,102 @@ Explore the complete visual ecosystem of the Bookkeeping application. The galler
 </details>
 </details>
 
----
+<hr />
+
+<h2 id="getting-started">🚀 Getting Started</h2>
+<p>Follow these steps to get a local copy up and running. Running the commands from the main server directory will automatically restore and build all linked projects (Client and Contracts).</p>
+
+<h3>📋 1. Prerequisites</h3>
+<ul>
+    <li><strong><a href="https://dotnet.microsoft.com/download/dotnet/10.0">.NET 10 SDK</a></strong></li>
+    <li><strong><a href="https://www.postgresql.org/download/">PostgreSQL</a></strong></li>
+</ul>
+
+<h3>🛠️ 2. Installation &amp; Setup</h3>
+
+<ol>
+    <li>
+        <strong>Clone the repository:</strong>
+        <pre><code>git clone https://github.com/abdullokhonz/Bookkeeping.git
+cd Bookkeeping</code></pre>
+    </li>
+    <li>
+        <strong>Navigate to the Main Server project:</strong>
+        <p><i>The solution is structured to build all dependencies from this entry point:</i></p>
+        <pre><code>cd Bookkeeping
+cd Bookkeeping</code></pre>
+    </li>
+    <li>
+        <strong>Configure Environment (appsettings.json):</strong>
+        <p>Update the configuration file inside the <code>Bookkeeping</code> folder with your credentials. You will need to set up the database, JWT, and service providers:</p>
+<pre><code>{
+  "ApiSettings": { "BaseUrl": "https://localhost:7277/" },
+  "ConnectionStrings": {
+    "DbPostgres": "Host=localhost;Port=5432;Database=BookkeepingDB;User ID=postgres;Password=your_password"
+  },
+  "JwtSettings": {
+    "Key": "YOUR_SECURE_JWT_KEY_HERE",
+    "Issuer": "Bookkeeping_IdentityServer",
+    "Audience": "Bookkeeping_WebClient",
+    "LifetimeMinutes": 15
+  },
+  "EmailSettings": {
+    "SmtpHost": "YOUR_SMTP_HOST_HERE",
+    "SmtpPort": "YOUR_SMTP_PORT_HERE",
+    "FromName": "Bookkeeping Notifications",
+    "FromEmail": "YOUR_EMAIL_HERE",
+    "EmailPassword": "YOUR_EMAIL_PASSWORD_HERE"
+  },
+  "SmsSettings": {
+    "Dlm": "YOUR_SMS_DLM_HERE",
+    "T": "YOUR_SMS_T_HERE",
+    "Login": "YOUR_SMS_LOGIN_HERE",
+    "PassHash": "YOUR_SMS_PASSHASH_HERE",
+    "Sender": "YOUR_SMS_SENDER_HERE"
+  }
+}</code></pre>
+    </li>
+    <li>
+        <strong>Build &amp; Launch:</strong>
+        <p>This will restore all projects (Server, Client, Contracts) and start the application:</p>
+        <pre><code>dotnet restore
+dotnet build
+dotnet run</code></pre>
+        <p><i>The platform will be available at your configured <code>BaseUrl</code>.</i></p>
+    </li>
+</ol>
+
+<hr />
+
+<h2 id="authentication-notes">🔐 Important Notes on Authentication</h2>
+
+<table width="100%">
+    <thead>
+        <tr>
+            <th align="left">Environment</th>
+            <th align="left">Access Instructions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>🌐 Web Frontend (Blazor)</strong></td>
+            <td>Full authentication flow is active. You can register and log in to access the dashboard.</td>
+        </tr>
+        <tr>
+            <td><strong>🚀 Postman / External</strong></td>
+            <td>Use <code>/auth/login</code> to obtain a token and add it to <code>Authorization: Bearer</code> header.</td>
+        </tr>
+        <tr>
+            <td><strong>🛠️ Swagger UI</strong></td>
+            <td>
+                <strong>Warning:</strong> Authorize via Swagger UI is currently not configured.<br />
+                <u>To test via Swagger:</u> Manually remove the <code>[Authorize]</code> attribute from Controllers.
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<hr />
 
 ## 🤝 Contributing
 
